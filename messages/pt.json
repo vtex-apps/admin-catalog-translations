@@ -1,4 +1,7 @@
 {
+  "catalog-translation.navigation.label": "Tradução Catálogos",
+  "catalog-translation.navigation.search.kws": "catalogos, traducao",
+  "catalog-translation.header": "Tradução Catálogos",
   "admin-example.navigation.label-group": "Admins de exemplo",
   "admin-example.navigation.label-details": "Exemplo de detalhes",
   "admin-example.navigation.label-table": "Exemplo de tabela",

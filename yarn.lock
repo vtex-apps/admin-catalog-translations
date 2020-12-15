@@ -108,10 +108,10 @@
     semver "^6.3.0"
     tsutils "^3.17.1"
 
-"@vtex/prettier-config@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@vtex/prettier-config/-/prettier-config-0.2.0.tgz#76e666aef3c90b3fd98d767d6753f09af7f7b627"
-  integrity sha512-J9aEAlOi+iJ54SDYn6BdY/VjtgK+KuY8be+XEhLWZNwTVyZMJXUnIyG0q9RRLbaZZvgNWrjxKK4wUBvlhLVqBg==
+"@vtex/prettier-config@^0.3.6":
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/@vtex/prettier-config/-/prettier-config-0.3.6.tgz#31762608d9a59b815b6d4e963e439b12f1a12279"
+  integrity sha512-nXE3BcMODomFK3EowfK+Hdj2qQRqB8JcdRv8yTREXnN9xq8DYKmH/dWB+RY/Hn3KozFLbygpZRbqYsiA6HDINQ==
 
 acorn-jsx@^5.2.0:
   version "5.2.0"

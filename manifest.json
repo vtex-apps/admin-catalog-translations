@@ -1,8 +1,8 @@
 {
-  "name": "admin-example",
+  "name": "catalog-translation",
   "vendor": "vtex",
-  "version": "0.0.2",
-  "title": "Example Admin App",
+  "version": "0.0.1",
+  "title": "Catalog Translation",
   "description": "",
   "mustUpdateAt": "2022-08-28",
   "scripts": {
@@ -16,5 +16,6 @@
     "admin": "0.x",
     "messages": "1.x",
     "docs": "0.x"
-  }
+  },
+  "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }

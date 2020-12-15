@@ -1,5 +1,4 @@
 {
-  "admin-example.navigation.label": "Example admin",
-  "admin-example.hello-world": "",
-  "appframe.navigation.example": ""
+  "catalog-translation.navigation.label": "Catalog Translation",
+  "catalog-translation.header": "Catalog Translation"
 }
