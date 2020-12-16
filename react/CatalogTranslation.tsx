@@ -1,20 +1,16 @@
 import React, { FC, useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
-import { Layout, PageBlock, PageHeader, Spinner } from 'vtex.styleguide'
+import {
+  Layout,
+  PageBlock,
+  PageHeader,
+  Spinner,
+  Divider,
+} from 'vtex.styleguide'
 import { useQuery } from 'react-apollo'
 
 import accountLocalesQuery from './graphql/accountLocales.gql'
-
-interface Binding {
-  id: string
-  defaultLocale: string
-}
-
-interface BindingsData {
-  tenantInfo: {
-    bindings: Binding[]
-  }
-}
+import { filterLocales } from './utils'
 
 const CatalogTranslation: FC = () => {
   const [bindings, setBindings] = useState<Binding[]>([])
@@ -22,7 +18,7 @@ const CatalogTranslation: FC = () => {
 
   useEffect(() => {
     if (data) {
-      setBindings(data.tenantInfo.bindings)
+      setBindings(filterLocales(data.tenantInfo.bindings))
     }
   }, [data])
 
@@ -38,13 +34,30 @@ const CatalogTranslation: FC = () => {
         {loading ? (
           <Spinner />
         ) : (
-          bindings.map(({ id, defaultLocale }) => {
-            return (
-              <div key={id}>
-                <p>{defaultLocale}</p>
-              </div>
-            )
-          })
+          <div className="flex">
+            {bindings.map(({ id, defaultLocale }, index) => {
+              return (
+                <div className="flex" key={id}>
+                  <div style={{ textAlign: 'center', minWidth: '160px' }}>
+                    <p className="f4 mt0 mb1">{defaultLocale}</p>
+                    {index === 0 ? (
+                      <p
+                        style={{ fontStyle: 'italic' }}
+                        className="mt0 gray mb1"
+                      >
+                        x-vtex-tenant
+                      </p>
+                    ) : null}
+                  </div>
+                  {index !== bindings.length - 1 ? (
+                    <div className="ph6 flex">
+                      <Divider orientation="vertical" />
+                    </div>
+                  ) : null}
+                </div>
+              )
+            })}
+          </div>
         )}
       </PageBlock>
     </Layout>
