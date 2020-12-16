@@ -1,0 +1,8 @@
+query accountLocales {
+  tenantInfo {
+    bindings {
+      defaultLocale
+      canonicalBaseAddress
+    }
+  }
+}
