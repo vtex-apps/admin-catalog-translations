@@ -1,4 +1,10 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, {
+  FC,
+  FormEvent,
+  SyntheticEvent,
+  useEffect,
+  useState,
+} from 'react'
 import { FormattedMessage } from 'react-intl'
 import {
   Layout,
@@ -6,8 +12,9 @@ import {
   PageHeader,
   Spinner,
   Divider,
+  InputSearch,
 } from 'vtex.styleguide'
-import { useQuery } from 'react-apollo'
+import { useLazyQuery, useQuery } from 'react-apollo'
 
 import accountLocalesQuery from './graphql/accountLocales.gql'
 import { filterLocales } from './utils'
@@ -23,23 +30,22 @@ const CatalogTranslation: FC = () => {
   const [memoCatalog, setMemoCatalog] = useState<{
     [Identifier: string]: Catalog
   }>({})
+  const [categoryId, setCategoryId] = useState('')
 
   const { data: bindingsData, loading } = useQuery<BindingsData>(
     accountLocalesQuery
   )
-  const { data: catalogData, refetch } = useQuery<Catalog, { id: number }>(
-    getCategory,
-    {
-      variables: { id: 222 },
-      context: {
-        headers: {
-          'x-vtex-tenant': `${xVtexTenant}`,
-          'x-vtex-locale': `${selectedLocale.defaultLocale}`,
-        },
+  const [fetchCatalog, { data: catalogData, refetch }] = useLazyQuery<
+    Catalog,
+    { id: number }
+  >(getCategory, {
+    context: {
+      headers: {
+        'x-vtex-tenant': `${xVtexTenant}`,
+        'x-vtex-locale': `${selectedLocale.defaultLocale}`,
       },
-      skip: !(xVtexTenant && !!selectedLocale.defaultLocale),
-    }
-  )
+    },
+  })
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
@@ -57,13 +63,10 @@ const CatalogTranslation: FC = () => {
   }
 
   useEffect(() => {
-    if (
-      !memoCatalog[selectedLocale.defaultLocale] &&
-      xVtexTenant !== selectedLocale.defaultLocale
-    ) {
+    if (!memoCatalog[selectedLocale.defaultLocale] && refetch) {
       refetch()
     }
-  }, [xVtexTenant, selectedLocale])
+  }, [selectedLocale, refetch])
 
   useEffect(() => {
     if (catalogData) {
@@ -73,6 +76,16 @@ const CatalogTranslation: FC = () => {
       })
     }
   }, [catalogData])
+
+  const handleCategoryIdInput = (e: FormEvent<HTMLInputElement>) => {
+    setCategoryId(e.currentTarget.value)
+  }
+
+  const handleSubmitCategoryId = (e: SyntheticEvent) => {
+    e.preventDefault()
+    setMemoCatalog({})
+    fetchCatalog({ variables: { id: Number(categoryId) } })
+  }
 
   const {
     description,
@@ -128,6 +141,13 @@ const CatalogTranslation: FC = () => {
           </div>
         )}
       </PageBlock>
+      <InputSearch
+        value={categoryId}
+        label="Category Id"
+        size="regular"
+        onChange={handleCategoryIdInput}
+        onSubmit={handleSubmitCategoryId}
+      />
       {selectedLocale.id ? (
         <div>
           <div>Selected Locale</div>
