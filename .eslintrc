@@ -1,3 +1,4 @@
 {
-  "extends": "vtex"
+  "extends": ["plugin:react/recommended", "vtex"],
+  "root": true
 }

@@ -1,0 +1,12 @@
+query getCategory($id: ID!) {
+  category(id: $id) {
+    id
+    name
+    title
+    parentCategoryId
+    description
+    stockKeepingUnitSelectionMode
+    linkId
+    keywords
+  }
+}

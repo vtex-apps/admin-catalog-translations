@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "vtex.styleguide": "9.x",
-    "vtex.tenant-graphql": "0.x"
+    "vtex.tenant-graphql": "0.x",
+    "vtex.catalog-graphql": "1.x"
   },
   "builders": {
     "react": "3.x",
