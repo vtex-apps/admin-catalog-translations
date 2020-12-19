@@ -31,6 +31,9 @@ const CatalogTranslation: FC = () => {
     [Identifier: string]: Category
   }>({})
   const [categoryId, setCategoryId] = useState('')
+  const [categoryInfo, setCategoryInfo] = useState<CategoriesData>(
+    {} as CategoriesData
+  )
 
   const { data: bindingsData, loading } = useQuery<BindingsData>(
     accountLocalesQuery
@@ -45,7 +48,14 @@ const CatalogTranslation: FC = () => {
         'x-vtex-locale': `${selectedLocale.defaultLocale}`,
       },
     },
+    fetchPolicy: 'no-cache',
   })
+
+  useEffect(() => {
+    if (categoriesData) {
+      setCategoryInfo(categoriesData)
+    }
+  }, [categoriesData])
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
@@ -69,13 +79,13 @@ const CatalogTranslation: FC = () => {
   }, [selectedLocale, refetch])
 
   useEffect(() => {
-    if (categoriesData) {
+    if (categoryInfo?.category) {
       setMemoCategories({
         ...memoCategories,
-        ...{ [selectedLocale.defaultLocale]: categoriesData.category },
+        ...{ [selectedLocale.defaultLocale]: categoryInfo.category },
       })
     }
-  }, [categoriesData])
+  }, [categoryInfo])
 
   const handleCategoryIdInput = (e: FormEvent<HTMLInputElement>) => {
     setCategoryId(e.currentTarget.value)
@@ -84,6 +94,7 @@ const CatalogTranslation: FC = () => {
   const handleSubmitCategoryId = (e: SyntheticEvent) => {
     e.preventDefault()
     setMemoCategories({})
+    setCategoryInfo({} as CategoriesData)
     fetchCategories({ variables: { id: Number(categoryId) } })
   }
 
