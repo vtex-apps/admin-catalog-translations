@@ -74,10 +74,14 @@ const CatalogTranslation: FC = () => {
   }
 
   useEffect(() => {
-    if (!memoCategories[selectedLocale.defaultLocale] && refetch) {
+    if (
+      !memoCategories[selectedLocale.defaultLocale] &&
+      refetch &&
+      categoryId
+    ) {
       refetch()
     }
-  }, [selectedLocale, refetch])
+  }, [selectedLocale, refetch, categoryId])
 
   useEffect(() => {
     if (categoryInfo?.category) {
@@ -89,14 +93,27 @@ const CatalogTranslation: FC = () => {
   }, [categoryInfo])
 
   const handleCategoryIdInput = (e: FormEvent<HTMLInputElement>) => {
-    setCategoryId(e.currentTarget.value)
+    const onlyNumberRegex = /^\d{0,}$/
+    const inputValue = e.currentTarget.value
+    if (onlyNumberRegex.test(inputValue)) {
+      setCategoryId(e.currentTarget.value)
+    }
   }
 
   const handleSubmitCategoryId = (e: SyntheticEvent) => {
     e.preventDefault()
+    if (!categoryId) {
+      return
+    }
     setMemoCategories({})
     setCategoryInfo({} as CategoriesData)
     fetchCategories({ variables: { id: Number(categoryId) } })
+  }
+
+  const handleCleanSearch = () => {
+    setCategoryId('')
+    setMemoCategories({})
+    setCategoryInfo({} as CategoriesData)
   }
 
   const {
@@ -140,13 +157,17 @@ const CatalogTranslation: FC = () => {
           />
         </div>
       )}
-      <InputSearch
-        value={categoryId}
-        label="Category Id"
-        size="regular"
-        onChange={handleCategoryIdInput}
-        onSubmit={handleSubmitCategoryId}
-      />
+      <div>
+        <InputSearch
+          value={categoryId}
+          placeholder="Search category..."
+          label="Category Id"
+          size="regular"
+          onChange={handleCategoryIdInput}
+          onSubmit={handleSubmitCategoryId}
+          onClear={handleCleanSearch}
+        />
+      </div>
       {selectedLocale.id ? (
         <div>
           <h5>id</h5>
