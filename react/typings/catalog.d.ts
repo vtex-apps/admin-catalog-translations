@@ -1,4 +1,4 @@
-interface Catalog {
+interface CategoriesData {
   category: Category
 }
 

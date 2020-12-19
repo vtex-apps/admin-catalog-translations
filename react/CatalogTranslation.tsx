@@ -27,16 +27,16 @@ const CatalogTranslation: FC = () => {
     defaultLocale: '',
   })
   const [xVtexTenant, setXVtexTenant] = useState('')
-  const [memoCatalog, setMemoCatalog] = useState<{
-    [Identifier: string]: Catalog
+  const [memoCategories, setMemoCategories] = useState<{
+    [Identifier: string]: Category
   }>({})
   const [categoryId, setCategoryId] = useState('')
 
   const { data: bindingsData, loading } = useQuery<BindingsData>(
     accountLocalesQuery
   )
-  const [fetchCatalog, { data: catalogData, refetch }] = useLazyQuery<
-    Catalog,
+  const [fetchCategories, { data: categoriesData, refetch }] = useLazyQuery<
+    CategoriesData,
     { id: number }
   >(getCategory, {
     context: {
@@ -63,19 +63,19 @@ const CatalogTranslation: FC = () => {
   }
 
   useEffect(() => {
-    if (!memoCatalog[selectedLocale.defaultLocale] && refetch) {
+    if (!memoCategories[selectedLocale.defaultLocale] && refetch) {
       refetch()
     }
   }, [selectedLocale, refetch])
 
   useEffect(() => {
-    if (catalogData) {
-      setMemoCatalog({
-        ...memoCatalog,
-        ...{ [selectedLocale.defaultLocale]: catalogData },
+    if (categoriesData) {
+      setMemoCategories({
+        ...memoCategories,
+        ...{ [selectedLocale.defaultLocale]: categoriesData.category },
       })
     }
-  }, [catalogData])
+  }, [categoriesData])
 
   const handleCategoryIdInput = (e: FormEvent<HTMLInputElement>) => {
     setCategoryId(e.currentTarget.value)
@@ -83,8 +83,8 @@ const CatalogTranslation: FC = () => {
 
   const handleSubmitCategoryId = (e: SyntheticEvent) => {
     e.preventDefault()
-    setMemoCatalog({})
-    fetchCatalog({ variables: { id: Number(categoryId) } })
+    setMemoCategories({})
+    fetchCategories({ variables: { id: Number(categoryId) } })
   }
 
   const {
@@ -96,9 +96,7 @@ const CatalogTranslation: FC = () => {
     parentCategoryId,
     stockKeepingUnitSelectionMode,
     title,
-  } = memoCatalog[selectedLocale.defaultLocale]
-    ? memoCatalog[selectedLocale.defaultLocale].category
-    : ({} as Category)
+  } = memoCategories[selectedLocale.defaultLocale] || ({} as Category)
 
   return (
     <Layout
@@ -169,13 +167,13 @@ const CatalogTranslation: FC = () => {
           <h5>Keywords</h5>
           <ul>
             {keywords?.length
-              ? memoCatalog[
-                  selectedLocale.defaultLocale
-                ]?.category.keywords.map((keyword: string) => (
-                  <li key={keyword}>
-                    <p>{keyword}</p>
-                  </li>
-                ))
+              ? memoCategories[selectedLocale.defaultLocale]?.keywords.map(
+                  (keyword: string) => (
+                    <li key={keyword}>
+                      <p>{keyword}</p>
+                    </li>
+                  )
+                )
               : null}
           </ul>
         </div>
