@@ -11,8 +11,9 @@ import {
   PageBlock,
   PageHeader,
   Spinner,
-  Divider,
   InputSearch,
+  ButtonGroup,
+  Button,
 } from 'vtex.styleguide'
 import { useLazyQuery, useQuery } from 'react-apollo'
 
@@ -117,39 +118,28 @@ const CatalogTranslation: FC = () => {
         />
       }
     >
-      <PageBlock variation="full">
-        {loading ? (
-          <Spinner />
-        ) : (
-          <div className="flex">
-            {bindings.map(({ id: bindingId, defaultLocale }, index) => {
-              return (
-                <div className="flex" key={bindingId}>
-                  <div
-                    style={{ textAlign: 'center', minWidth: '160px' }}
-                    onClick={() => handleLocaleSelection({ id, defaultLocale })}
-                  >
-                    <p className="f4 mt0 mb1">{defaultLocale}</p>
-                    {index === 0 ? (
-                      <p
-                        style={{ fontStyle: 'italic' }}
-                        className="mt0 gray mb1"
-                      >
-                        x-vtex-tenant
-                      </p>
-                    ) : null}
-                  </div>
-                  {index !== bindings.length - 1 ? (
-                    <div className="ph6 flex">
-                      <Divider orientation="vertical" />
-                    </div>
-                  ) : null}
-                </div>
-              )
-            })}
-          </div>
-        )}
-      </PageBlock>
+      {loading ? (
+        <Spinner />
+      ) : (
+        <div>
+          <ButtonGroup
+            buttons={bindings.map(({ id: bindingId, defaultLocale }) => (
+              <div key={bindingId}>
+                <Button
+                  isActiveOfGroup={
+                    defaultLocale === selectedLocale.defaultLocale
+                  }
+                  onClick={() =>
+                    handleLocaleSelection({ id: bindingId, defaultLocale })
+                  }
+                >
+                  {defaultLocale}
+                </Button>
+              </div>
+            ))}
+          />
+        </div>
+      )}
       <InputSearch
         value={categoryId}
         label="Category Id"
@@ -159,8 +149,6 @@ const CatalogTranslation: FC = () => {
       />
       {selectedLocale.id ? (
         <div>
-          <div>Selected Locale</div>
-          <p>{selectedLocale.defaultLocale}</p>
           <h5>id</h5>
           <p>{id}</p>
           <h5>Description</h5>
