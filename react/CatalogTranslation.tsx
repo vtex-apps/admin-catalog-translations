@@ -39,10 +39,10 @@ const CatalogTranslation: FC = () => {
   const { data: bindingsData, loading } = useQuery<BindingsData>(
     accountLocalesQuery
   )
-  const [fetchCategories, { data: categoriesData, refetch }] = useLazyQuery<
-    CategoriesData,
-    { id: number }
-  >(getCategory, {
+  const [
+    fetchCategories,
+    { data: categoriesData, refetch, loading: loadingCategory, networkStatus },
+  ] = useLazyQuery<CategoriesData, { id: number }>(getCategory, {
     context: {
       headers: {
         'x-vtex-tenant': `${xVtexTenant}`,
@@ -50,6 +50,7 @@ const CatalogTranslation: FC = () => {
       },
     },
     fetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
   })
 
   useEffect(() => {
@@ -126,7 +127,7 @@ const CatalogTranslation: FC = () => {
     stockKeepingUnitSelectionMode,
     title,
   } = memoCategories[selectedLocale.defaultLocale] || ({} as Category)
-
+  const isLoadingOrRefatchingCategory = loadingCategory || networkStatus === 4
   return (
     <Layout
       pageHeader={
@@ -157,7 +158,7 @@ const CatalogTranslation: FC = () => {
           />
         </div>
       )}
-      <div>
+      <div style={{ maxWidth: '340px' }} className="mv7">
         <InputSearch
           value={categoryId}
           placeholder="Search category..."
@@ -168,35 +169,41 @@ const CatalogTranslation: FC = () => {
           onClear={handleCleanSearch}
         />
       </div>
-      {selectedLocale.id ? (
-        <div>
-          <h5>id</h5>
-          <p>{id}</p>
-          <h5>Description</h5>
-          <p>{description}</p>
-          <h5>Name</h5>
-          <p>{name}</p>
-          <h5>LinkId</h5>
-          <p>{linkId}</p>
-          <h5>parentCategoryId</h5>
-          <p>{parentCategoryId}</p>
-          <h5>stockKeepingUnitSelectionMode</h5>
-          <p>{stockKeepingUnitSelectionMode}</p>
-          <h5>Title</h5>
-          <p>{title}</p>
-          <h5>Keywords</h5>
-          <ul>
-            {keywords?.length
-              ? memoCategories[selectedLocale.defaultLocale]?.keywords.map(
-                  (keyword: string) => (
-                    <li key={keyword}>
-                      <p>{keyword}</p>
-                    </li>
-                  )
-                )
-              : null}
-          </ul>
-        </div>
+      {id || isLoadingOrRefatchingCategory ? (
+        <PageBlock variation="full" title="Category Info">
+          {isLoadingOrRefatchingCategory ? (
+            <Spinner />
+          ) : (
+            <div>
+              <h5>id</h5>
+              <p>{id}</p>
+              <h5>Description</h5>
+              <p>{description}</p>
+              <h5>Name</h5>
+              <p>{name}</p>
+              <h5>LinkId</h5>
+              <p>{linkId}</p>
+              <h5>parentCategoryId</h5>
+              <p>{parentCategoryId}</p>
+              <h5>stockKeepingUnitSelectionMode</h5>
+              <p>{stockKeepingUnitSelectionMode}</p>
+              <h5>Title</h5>
+              <p>{title}</p>
+              <h5>Keywords</h5>
+              <ul>
+                {keywords?.length
+                  ? memoCategories[selectedLocale.defaultLocale]?.keywords.map(
+                      (keyword: string) => (
+                        <li key={keyword}>
+                          <p>{keyword}</p>
+                        </li>
+                      )
+                    )
+                  : null}
+              </ul>
+            </div>
+          )}
+        </PageBlock>
       ) : null}
     </Layout>
   )
