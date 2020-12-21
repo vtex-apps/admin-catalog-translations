@@ -14,6 +14,7 @@ import {
   InputSearch,
   ButtonGroup,
   Button,
+  EmptyState,
 } from 'vtex.styleguide'
 import { useLazyQuery, useQuery } from 'react-apollo'
 
@@ -35,6 +36,7 @@ const CatalogTranslation: FC = () => {
   const [categoryInfo, setCategoryInfo] = useState<CategoriesData>(
     {} as CategoriesData
   )
+  const [categoryError, setCategoryError] = useState('')
 
   const { data: bindingsData, loading } = useQuery<BindingsData>(
     accountLocalesQuery
@@ -51,6 +53,9 @@ const CatalogTranslation: FC = () => {
     },
     fetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
+    onError: (e) => {
+      setCategoryError(e.message)
+    },
   })
 
   useEffect(() => {
@@ -70,7 +75,7 @@ const CatalogTranslation: FC = () => {
     }
   }, [bindingsData])
 
-  const handleLocaleSelection = ({ id, defaultLocale }: Binding): void => {
+  const handleLocaleSelection = ({ id, defaultLocale }: Binding) => {
     setSelectedLocale({ id, defaultLocale })
   }
 
@@ -82,7 +87,7 @@ const CatalogTranslation: FC = () => {
     ) {
       refetch()
     }
-  }, [selectedLocale, refetch, categoryId])
+  }, [selectedLocale, refetch])
 
   useEffect(() => {
     if (categoryInfo?.category) {
@@ -94,6 +99,9 @@ const CatalogTranslation: FC = () => {
   }, [categoryInfo])
 
   const handleCategoryIdInput = (e: FormEvent<HTMLInputElement>) => {
+    if (categoryError) {
+      setCategoryError('')
+    }
     const onlyNumberRegex = /^\d{0,}$/
     const inputValue = e.currentTarget.value
     if (onlyNumberRegex.test(inputValue)) {
@@ -117,6 +125,12 @@ const CatalogTranslation: FC = () => {
     setCategoryInfo({} as CategoriesData)
   }
 
+  useEffect(() => {
+    if (categoryError) {
+      setMemoCategories({})
+    }
+  }, [categoryError])
+
   const {
     description,
     id,
@@ -128,6 +142,7 @@ const CatalogTranslation: FC = () => {
     title,
   } = memoCategories[selectedLocale.defaultLocale] || ({} as Category)
   const isLoadingOrRefatchingCategory = loadingCategory || networkStatus === 4
+
   return (
     <Layout
       pageHeader={
@@ -169,9 +184,24 @@ const CatalogTranslation: FC = () => {
           onClear={handleCleanSearch}
         />
       </div>
-      {id || isLoadingOrRefatchingCategory ? (
+      {id || isLoadingOrRefatchingCategory || categoryError ? (
         <PageBlock variation="full" title="Category Info">
-          {isLoadingOrRefatchingCategory ? (
+          {categoryError ? (
+            <div>
+              {categoryError.indexOf('code 404') !== -1 ? (
+                <EmptyState title="Category not found">
+                  <p>{`The category ID ${categoryId} could not be found`}</p>
+                </EmptyState>
+              ) : (
+                <EmptyState title="Error getting category information">
+                  <p>
+                    There was an error getting the category information you
+                    searched for. Please try again
+                  </p>
+                </EmptyState>
+              )}
+            </div>
+          ) : isLoadingOrRefatchingCategory ? (
             <Spinner />
           ) : (
             <div>
