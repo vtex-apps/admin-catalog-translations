@@ -32,9 +32,6 @@ const CatalogTranslation: FC = () => {
     [Identifier: string]: Category
   }>({})
   const [categoryId, setCategoryId] = useState('')
-  const [categoryInfo, setCategoryInfo] = useState<CategoriesData>(
-    {} as CategoriesData
-  )
   const [categoryError, setCategoryError] = useState('')
 
   const { data: bindingsData, loading } = useQuery<BindingsData>(
@@ -70,23 +67,21 @@ const CatalogTranslation: FC = () => {
 
   const handleLocaleSelection = ({ id, defaultLocale }: Binding) => {
     setSelectedLocale({ id, defaultLocale })
-    setCategoryInfo({} as CategoriesData)
   }
 
   useEffect(() => {
     async function refetchAndUpdate() {
       const { data } = await refetch()
-      setCategoryInfo(data)
       setMemoCategories({
         ...memoCategories,
-        ...{ [selectedLocale.defaultLocale]: categoryInfo.category },
+        ...{ [selectedLocale.defaultLocale]: data.category },
       })
     }
 
     if (!memoCategories[selectedLocale.defaultLocale] && refetch) {
       refetchAndUpdate()
     }
-  }, [selectedLocale, refetch, memoCategories, categoryInfo.category])
+  }, [selectedLocale, refetch, memoCategories])
 
   const handleCategoryIdInput = (e: FormEvent<HTMLInputElement>) => {
     if (categoryError) {
