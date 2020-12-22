@@ -12,8 +12,6 @@ import {
   PageHeader,
   Spinner,
   InputSearch,
-  ButtonGroup,
-  Button,
   EmptyState,
 } from 'vtex.styleguide'
 import { useLazyQuery, useQuery } from 'react-apollo'
@@ -21,6 +19,7 @@ import { useLazyQuery, useQuery } from 'react-apollo'
 import accountLocalesQuery from './graphql/accountLocales.gql'
 import { filterLocales } from './utils'
 import getCategory from './graphql/getCategory.gql'
+import LocaleSelector from './LocaleSelector'
 
 const CatalogTranslation: FC = () => {
   const [bindings, setBindings] = useState<Binding[]>([])
@@ -150,24 +149,11 @@ const CatalogTranslation: FC = () => {
       {loading ? (
         <Spinner />
       ) : (
-        <div>
-          <ButtonGroup
-            buttons={bindings.map(({ id: bindingId, defaultLocale }) => (
-              <div key={bindingId}>
-                <Button
-                  isActiveOfGroup={
-                    defaultLocale === selectedLocale.defaultLocale
-                  }
-                  onClick={() =>
-                    handleLocaleSelection({ id: bindingId, defaultLocale })
-                  }
-                >
-                  {defaultLocale}
-                </Button>
-              </div>
-            ))}
-          />
-        </div>
+        <LocaleSelector
+          bindings={bindings}
+          selectedLocale={selectedLocale}
+          handleLocaleSelection={handleLocaleSelection}
+        />
       )}
       <div style={{ maxWidth: '340px' }} className="mv7">
         <InputSearch
