@@ -19,7 +19,8 @@ import { useLazyQuery, useQuery } from 'react-apollo'
 import accountLocalesQuery from './graphql/accountLocales.gql'
 import { filterLocales } from './utils'
 import getCategory from './graphql/getCategory.gql'
-import LocaleSelector from './LocaleSelector'
+import LocaleSelector from './components/LocaleSelector'
+import ErrorHandler from './components/ErrorHandler'
 
 const CatalogTranslation: FC = () => {
   const [bindings, setBindings] = useState<Binding[]>([])
@@ -151,20 +152,10 @@ const CatalogTranslation: FC = () => {
       {id || isLoadingOrRefetchingCategory || categoryError ? (
         <PageBlock variation="full" title="Category Info">
           {categoryError ? (
-            <div>
-              {categoryError.indexOf('code 404') !== -1 ? (
-                <EmptyState title="Category not found">
-                  <p>{`The category ID ${categoryId} could not be found`}</p>
-                </EmptyState>
-              ) : (
-                <EmptyState title="Error getting category information">
-                  <p>
-                    There was an error getting the category information you
-                    searched for. Please try again
-                  </p>
-                </EmptyState>
-              )}
-            </div>
+            <ErrorHandler
+              errorMessage={categoryError}
+              categoryId={categoryId}
+            />
           ) : isLoadingOrRefetchingCategory ? (
             <Spinner />
           ) : (
