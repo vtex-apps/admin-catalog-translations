@@ -19,6 +19,11 @@ const LocaleSelector: FC<LocaleSelectorProps> = ({
           <div key={bindingId}>
             <Button
               isActiveOfGroup={defaultLocale === selectedLocale.defaultLocale}
+              variation={
+                defaultLocale === selectedLocale.defaultLocale
+                  ? 'primary'
+                  : 'secondary'
+              }
               onClick={() =>
                 handleLocaleSelection({ id: bindingId, defaultLocale })
               }

@@ -12,7 +12,6 @@ import {
   PageHeader,
   Spinner,
   InputSearch,
-  EmptyState,
 } from 'vtex.styleguide'
 import { useLazyQuery, useQuery } from 'react-apollo'
 
@@ -21,6 +20,7 @@ import { filterLocales } from './utils'
 import getCategory from './graphql/getCategory.gql'
 import LocaleSelector from './components/LocaleSelector'
 import ErrorHandler from './components/ErrorHandler'
+import TranslationForm from './components/TranslationForm'
 
 const CatalogTranslation: FC = () => {
   const [bindings, setBindings] = useState<Binding[]>([])
@@ -109,16 +109,8 @@ const CatalogTranslation: FC = () => {
     setMemoCategories({})
   }
 
-  const {
-    description,
-    id,
-    keywords,
-    linkId,
-    name,
-    parentCategoryId,
-    stockKeepingUnitSelectionMode,
-    title,
-  } = memoCategories[selectedLocale.defaultLocale] || ({} as Category)
+  const { description, id, linkId, name, title } =
+    memoCategories[selectedLocale.defaultLocale] || ({} as Category)
   const isLoadingOrRefetchingCategory = loadingCategory || networkStatus === 4
 
   return (
@@ -150,7 +142,10 @@ const CatalogTranslation: FC = () => {
         />
       </div>
       {id || isLoadingOrRefetchingCategory || categoryError ? (
-        <PageBlock variation="full" title="Category Info">
+        <PageBlock
+          variation="full"
+          title={`Category Info - ${selectedLocale.defaultLocale}`}
+        >
           {categoryError ? (
             <ErrorHandler
               errorMessage={categoryError}
@@ -159,34 +154,13 @@ const CatalogTranslation: FC = () => {
           ) : isLoadingOrRefetchingCategory ? (
             <Spinner />
           ) : (
-            <div>
-              <h5>id</h5>
-              <p>{id}</p>
-              <h5>Description</h5>
-              <p>{description}</p>
-              <h5>Name</h5>
-              <p>{name}</p>
-              <h5>LinkId</h5>
-              <p>{linkId}</p>
-              <h5>parentCategoryId</h5>
-              <p>{parentCategoryId}</p>
-              <h5>stockKeepingUnitSelectionMode</h5>
-              <p>{stockKeepingUnitSelectionMode}</p>
-              <h5>Title</h5>
-              <p>{title}</p>
-              <h5>Keywords</h5>
-              <ul>
-                {keywords?.length
-                  ? memoCategories[selectedLocale.defaultLocale]?.keywords.map(
-                      (keyword: string) => (
-                        <li key={keyword}>
-                          <p>{keyword}</p>
-                        </li>
-                      )
-                    )
-                  : null}
-              </ul>
-            </div>
+            <TranslationForm
+              name={name}
+              title={title}
+              description={description}
+              linkId={linkId}
+              isXVtexTenant={xVtexTenant === selectedLocale.defaultLocale}
+            />
           )}
         </PageBlock>
       ) : null}
