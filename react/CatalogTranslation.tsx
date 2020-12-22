@@ -100,21 +100,13 @@ const CatalogTranslation: FC = () => {
       return
     }
     setMemoCategories({})
-    setCategoryInfo({} as CategoriesData)
     fetchCategories({ variables: { id: Number(categoryId) } })
   }
 
   const handleCleanSearch = () => {
     setCategoryId('')
     setMemoCategories({})
-    setCategoryInfo({} as CategoriesData)
   }
-
-  useEffect(() => {
-    if (categoryError) {
-      setMemoCategories({})
-    }
-  }, [categoryError])
 
   const {
     description,
