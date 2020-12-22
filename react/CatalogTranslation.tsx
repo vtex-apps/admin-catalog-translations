@@ -42,7 +42,7 @@ const CatalogTranslation: FC = () => {
   )
   const [
     fetchCategories,
-    { data: categoriesData, refetch, loading: loadingCategory, networkStatus },
+    { refetch, loading: loadingCategory, networkStatus },
   ] = useLazyQuery<CategoriesData, { id: number }>(getCategory, {
     context: {
       headers: {
@@ -58,12 +58,6 @@ const CatalogTranslation: FC = () => {
   })
 
   useEffect(() => {
-    if (categoriesData) {
-      setCategoryInfo(categoriesData)
-    }
-  }, [categoriesData])
-
-  useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
     if (bindingsData) {
       const fetchedLocales = bindingsData.tenantInfo.bindings
@@ -76,22 +70,23 @@ const CatalogTranslation: FC = () => {
 
   const handleLocaleSelection = ({ id, defaultLocale }: Binding) => {
     setSelectedLocale({ id, defaultLocale })
+    setCategoryInfo({} as CategoriesData)
   }
 
   useEffect(() => {
-    if (!memoCategories[selectedLocale.defaultLocale] && refetch) {
-      refetch()
-    }
-  }, [selectedLocale, refetch, memoCategories])
-
-  useEffect(() => {
-    if (categoryInfo?.category) {
-      setMemoCategories((categories) => ({
-        ...categories,
+    async function refetchAndUpdate() {
+      const { data } = await refetch()
+      setCategoryInfo(data)
+      setMemoCategories({
+        ...memoCategories,
         ...{ [selectedLocale.defaultLocale]: categoryInfo.category },
-      }))
+      })
     }
-  }, [categoryInfo, selectedLocale.defaultLocale])
+
+    if (!memoCategories[selectedLocale.defaultLocale] && refetch) {
+      refetchAndUpdate()
+    }
+  }, [selectedLocale, refetch, memoCategories, categoryInfo.category])
 
   const handleCategoryIdInput = (e: FormEvent<HTMLInputElement>) => {
     if (categoryError) {
@@ -136,7 +131,7 @@ const CatalogTranslation: FC = () => {
     stockKeepingUnitSelectionMode,
     title,
   } = memoCategories[selectedLocale.defaultLocale] || ({} as Category)
-  const isLoadingOrRefatchingCategory = loadingCategory || networkStatus === 4
+  const isLoadingOrRefetchingCategory = loadingCategory || networkStatus === 4
 
   return (
     <Layout
@@ -166,7 +161,7 @@ const CatalogTranslation: FC = () => {
           onClear={handleCleanSearch}
         />
       </div>
-      {id || isLoadingOrRefatchingCategory || categoryError ? (
+      {id || isLoadingOrRefetchingCategory || categoryError ? (
         <PageBlock variation="full" title="Category Info">
           {categoryError ? (
             <div>
@@ -183,7 +178,7 @@ const CatalogTranslation: FC = () => {
                 </EmptyState>
               )}
             </div>
-          ) : isLoadingOrRefatchingCategory ? (
+          ) : isLoadingOrRefetchingCategory ? (
             <Spinner />
           ) : (
             <div>
