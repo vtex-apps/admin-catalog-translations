@@ -80,23 +80,19 @@ const CatalogTranslation: FC = () => {
   }
 
   useEffect(() => {
-    if (
-      !memoCategories[selectedLocale.defaultLocale] &&
-      refetch &&
-      categoryId
-    ) {
+    if (!memoCategories[selectedLocale.defaultLocale] && refetch) {
       refetch()
     }
-  }, [selectedLocale, refetch])
+  }, [selectedLocale, refetch, memoCategories])
 
   useEffect(() => {
     if (categoryInfo?.category) {
-      setMemoCategories({
-        ...memoCategories,
+      setMemoCategories((categories) => ({
+        ...categories,
         ...{ [selectedLocale.defaultLocale]: categoryInfo.category },
-      })
+      }))
     }
-  }, [categoryInfo])
+  }, [categoryInfo, selectedLocale.defaultLocale])
 
   const handleCategoryIdInput = (e: FormEvent<HTMLInputElement>) => {
     if (categoryError) {
