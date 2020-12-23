@@ -8,21 +8,22 @@ type CategoryInfo = {
   linkId: string
 }
 
-interface TranslationFormProps extends CategoryInfo {
+interface TranslationFormProps {
   isXVtexTenant: boolean
+  categoryInfo: CategoryInfo
 }
 
 const TranslationForm: FC<TranslationFormProps> = ({
   isXVtexTenant,
-  ...categoryInfo
+  categoryInfo,
 }) => {
-  const [formState, setFormState] = useState<CategoryInfo>(categoryInfo)
+  const [formState, setFormState] = useState(categoryInfo)
   const [canEdit, setCanEdit] = useState<boolean>(false)
 
-  // useEffect(() => {
-  //   setFormState(categoryInfo)
-  //   setCanEdit(false)
-  // }, [categoryInfo])
+  useEffect(() => {
+    setCanEdit(false)
+    setFormState(categoryInfo)
+  }, [categoryInfo])
 
   const handleInputChange = (e: FormEvent<HTMLInputElement>) => {
     const { name: fieldName, value } = e.currentTarget
@@ -78,9 +79,9 @@ const TranslationForm: FC<TranslationFormProps> = ({
             <Button
               type="button"
               variation="secondary"
-              onClick={() => setCanEdit(true)}
+              onClick={() => setCanEdit(!canEdit)}
             >
-              Edit
+              {canEdit ? 'Cancel' : 'Edit'}
             </Button>
           )}
         </div>

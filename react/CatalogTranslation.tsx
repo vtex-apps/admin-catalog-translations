@@ -155,10 +155,7 @@ const CatalogTranslation: FC = () => {
             <Spinner />
           ) : (
             <TranslationForm
-              name={name}
-              title={title}
-              description={description}
-              linkId={linkId}
+              categoryInfo={{ name, title, description, linkId }}
               isXVtexTenant={xVtexTenant === selectedLocale.defaultLocale}
             />
           )}
