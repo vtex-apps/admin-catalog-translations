@@ -1,24 +1,36 @@
-import React, { FC, FormEvent, useEffect, useState } from 'react'
+import React, {
+  FC,
+  FormEvent,
+  SyntheticEvent,
+  useEffect,
+  useState,
+} from 'react'
 import { Input, Textarea, Button } from 'vtex.styleguide'
-// import { useMutation } from 'react-apollo'
+import { useMutation } from 'react-apollo'
 
-// import translateCategoryMutation from '../graphql/translateCategory.gql'
+import translateCategoryMutation from '../graphql/translateCategory.gql'
 import { hasChanges } from '../utils'
 
 interface TranslationFormProps {
   isXVtexTenant: boolean
   categoryInfo: CategoryInputTranslation
+  categoryId: string
+  keywords: string[]
+  locale: string
 }
 
 const TranslationForm: FC<TranslationFormProps> = ({
   isXVtexTenant,
   categoryInfo,
+  categoryId,
+  keywords,
+  locale,
 }) => {
   const [formState, setFormState] = useState(categoryInfo)
   const [canEdit, setCanEdit] = useState<boolean>(false)
-  // const [translateCategory, { data, loading, error }] = useMutation(
-  //   translateCategoryMutation
-  // )
+  const [translateCategory, { loading }] = useMutation(
+    translateCategoryMutation
+  )
 
   useEffect(() => {
     setCanEdit(false)
@@ -45,9 +57,34 @@ const TranslationForm: FC<TranslationFormProps> = ({
     }
   }
 
+  const handleSubmit = async (e: SyntheticEvent) => {
+    e.preventDefault()
+    if (loading) {
+      return
+    }
+    const args = { ...formState, ...{ id: categoryId, keywords } }
+    try {
+      const { data } = await translateCategory({
+        variables: {
+          args,
+          locale,
+        },
+      })
+      const { translateCategory: translateCategoryResult } = data
+      // eslint-disable-next-line no-console
+      console.log('mutation result', translateCategoryResult)
+      // Todo: send user feedback
+      // Deactivate can edit
+      // update cache value
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log(err)
+    }
+  }
+
   return (
     <div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="mb5">
           <Input
             label="Name"
@@ -55,6 +92,7 @@ const TranslationForm: FC<TranslationFormProps> = ({
             name="name"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="mb5">
@@ -64,6 +102,7 @@ const TranslationForm: FC<TranslationFormProps> = ({
             name="title"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="mb5">
@@ -74,6 +113,7 @@ const TranslationForm: FC<TranslationFormProps> = ({
             name="description"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="mb5">
@@ -83,6 +123,7 @@ const TranslationForm: FC<TranslationFormProps> = ({
             name="linkId"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
+            required
           />
         </div>
         {isXVtexTenant ? null : (
@@ -97,7 +138,12 @@ const TranslationForm: FC<TranslationFormProps> = ({
               </Button>
             </span>
             <span>
-              <Button type="submit" variation="primary" disabled={!changed}>
+              <Button
+                type="submit"
+                variation="primary"
+                disabled={!changed}
+                isLoading={loading}
+              >
                 Save
               </Button>
             </span>

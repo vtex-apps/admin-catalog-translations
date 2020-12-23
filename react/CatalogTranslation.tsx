@@ -109,7 +109,7 @@ const CatalogTranslation: FC = () => {
     setMemoCategories({})
   }
 
-  const { description, id, linkId, name, title } =
+  const { description, id, linkId, name, title, keywords } =
     memoCategories[selectedLocale.defaultLocale] || ({} as Category)
   const isLoadingOrRefetchingCategory = loadingCategory || networkStatus === 4
 
@@ -157,6 +157,9 @@ const CatalogTranslation: FC = () => {
             <TranslationForm
               categoryInfo={{ name, title, description, linkId }}
               isXVtexTenant={xVtexTenant === selectedLocale.defaultLocale}
+              categoryId={id}
+              keywords={keywords}
+              locale={selectedLocale.defaultLocale}
             />
           )}
         </PageBlock>
