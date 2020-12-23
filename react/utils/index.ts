@@ -20,3 +20,27 @@ export const filterLocales = (bindings: Binding[]): Binding[] => {
 
   return filteredBindings
 }
+
+/**
+ * Checks if an object from a form has any changes from its original one
+ *
+ * @param {object} formValues Object that hold values from the form
+ * @param {object} originalValues Object with the original values from the parent component
+ * @return {boolean} true if values have changed. false if not.
+ */
+
+export const hasChanges = (
+  formValues: CategoryInputTranslation,
+  orignalValues: CategoryInputTranslation
+): boolean => {
+  const keys = Object.keys(formValues)
+  for (const key of keys) {
+    if (
+      formValues[key as keyof CategoryInputTranslation] !==
+      orignalValues[key as keyof CategoryInputTranslation]
+    ) {
+      return true
+    }
+  }
+  return false
+}

@@ -1,16 +1,13 @@
 import React, { FC, FormEvent, useEffect, useState } from 'react'
 import { Input, Textarea, Button } from 'vtex.styleguide'
+// import { useMutation } from 'react-apollo'
 
-type CategoryInfo = {
-  name: string
-  title: string
-  description: string
-  linkId: string
-}
+// import translateCategoryMutation from '../graphql/translateCategory.gql'
+import { hasChanges } from '../utils'
 
 interface TranslationFormProps {
   isXVtexTenant: boolean
-  categoryInfo: CategoryInfo
+  categoryInfo: CategoryInputTranslation
 }
 
 const TranslationForm: FC<TranslationFormProps> = ({
@@ -19,6 +16,9 @@ const TranslationForm: FC<TranslationFormProps> = ({
 }) => {
   const [formState, setFormState] = useState(categoryInfo)
   const [canEdit, setCanEdit] = useState<boolean>(false)
+  // const [translateCategory, { data, loading, error }] = useMutation(
+  //   translateCategoryMutation
+  // )
 
   useEffect(() => {
     setCanEdit(false)
@@ -32,6 +32,17 @@ const TranslationForm: FC<TranslationFormProps> = ({
       ...state,
       ...{ [fieldName]: value },
     }))
+  }
+
+  const changed = hasChanges(formState, categoryInfo)
+
+  const handleToggleEdit = () => {
+    if (canEdit) {
+      setCanEdit(false)
+      setFormState(categoryInfo)
+    } else {
+      setCanEdit(true)
+    }
   }
 
   return (
@@ -74,17 +85,24 @@ const TranslationForm: FC<TranslationFormProps> = ({
             onChange={handleInputChange}
           />
         </div>
-        <div>
-          {isXVtexTenant ? null : (
-            <Button
-              type="button"
-              variation="secondary"
-              onClick={() => setCanEdit(!canEdit)}
-            >
-              {canEdit ? 'Cancel' : 'Edit'}
-            </Button>
-          )}
-        </div>
+        {isXVtexTenant ? null : (
+          <div>
+            <span className="mr5">
+              <Button
+                type="button"
+                variation="secondary"
+                onClick={handleToggleEdit}
+              >
+                {canEdit ? 'Cancel' : 'Edit'}
+              </Button>
+            </span>
+            <span>
+              <Button type="submit" variation="primary" disabled={!changed}>
+                Save
+              </Button>
+            </span>
+          </div>
+        )}
       </form>
     </div>
   )

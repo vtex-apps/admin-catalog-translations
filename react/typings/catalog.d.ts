@@ -2,13 +2,14 @@ interface CategoriesData {
   category: Category
 }
 
-interface Category {
-  description: string
-  id: string
+interface Category extends CategoryInputTranslation {
   keywords: string[]
+  id: string
+}
+
+interface CategoryInputTranslation {
+  description: string
   linkId: string
   name: string
-  parentCategoryId: string
-  stockKeepingUnitSelectionMode: string
   title: string
 }
