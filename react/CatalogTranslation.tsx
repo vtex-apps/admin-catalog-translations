@@ -21,6 +21,7 @@ import getCategory from './graphql/getCategory.gql'
 import LocaleSelector from './components/LocaleSelector'
 import ErrorHandler from './components/ErrorHandler'
 import TranslationForm from './components/TranslationForm'
+import { AlertProvider } from './providers/AlertProvider'
 
 const CatalogTranslation: FC = () => {
   const [bindings, setBindings] = useState<Binding[]>([])
@@ -114,58 +115,60 @@ const CatalogTranslation: FC = () => {
   const isLoadingOrRefetchingCategory = loadingCategory || networkStatus === 4
 
   return (
-    <Layout
-      pageHeader={
-        <PageHeader
-          title={<FormattedMessage id="catalog-translation.header" />}
-        />
-      }
-    >
-      {loading ? (
-        <Spinner />
-      ) : (
-        <LocaleSelector
-          bindings={bindings}
-          selectedLocale={selectedLocale}
-          handleLocaleSelection={handleLocaleSelection}
-        />
-      )}
-      <div style={{ maxWidth: '340px' }} className="mv7">
-        <InputSearch
-          value={categoryId}
-          placeholder="Search category..."
-          label="Category Id"
-          size="regular"
-          onChange={handleCategoryIdInput}
-          onSubmit={handleSubmitCategoryId}
-          onClear={handleCleanSearch}
-        />
-      </div>
-      {id || isLoadingOrRefetchingCategory || categoryError ? (
-        <PageBlock
-          variation="full"
-          title={`Category Info - ${selectedLocale.defaultLocale}`}
-        >
-          {categoryError ? (
-            <ErrorHandler
-              errorMessage={categoryError}
-              categoryId={categoryId}
-            />
-          ) : isLoadingOrRefetchingCategory ? (
-            <Spinner />
-          ) : (
-            <TranslationForm
-              categoryInfo={{ name, title, description, linkId }}
-              isXVtexTenant={xVtexTenant === selectedLocale.defaultLocale}
-              categoryId={id}
-              keywords={keywords}
-              locale={selectedLocale.defaultLocale}
-              updateMemoCategories={setMemoCategories}
-            />
-          )}
-        </PageBlock>
-      ) : null}
-    </Layout>
+    <AlertProvider>
+      <Layout
+        pageHeader={
+          <PageHeader
+            title={<FormattedMessage id="catalog-translation.header" />}
+          />
+        }
+      >
+        {loading ? (
+          <Spinner />
+        ) : (
+          <LocaleSelector
+            bindings={bindings}
+            selectedLocale={selectedLocale}
+            handleLocaleSelection={handleLocaleSelection}
+          />
+        )}
+        <div style={{ maxWidth: '340px' }} className="mv7">
+          <InputSearch
+            value={categoryId}
+            placeholder="Search category..."
+            label="Category Id"
+            size="regular"
+            onChange={handleCategoryIdInput}
+            onSubmit={handleSubmitCategoryId}
+            onClear={handleCleanSearch}
+          />
+        </div>
+        {id || isLoadingOrRefetchingCategory || categoryError ? (
+          <PageBlock
+            variation="full"
+            title={`Category Info - ${selectedLocale.defaultLocale}`}
+          >
+            {categoryError ? (
+              <ErrorHandler
+                errorMessage={categoryError}
+                categoryId={categoryId}
+              />
+            ) : isLoadingOrRefetchingCategory ? (
+              <Spinner />
+            ) : (
+              <TranslationForm
+                categoryInfo={{ name, title, description, linkId }}
+                isXVtexTenant={xVtexTenant === selectedLocale.defaultLocale}
+                categoryId={id}
+                keywords={keywords}
+                locale={selectedLocale.defaultLocale}
+                updateMemoCategories={setMemoCategories}
+              />
+            )}
+          </PageBlock>
+        ) : null}
+      </Layout>
+    </AlertProvider>
   )
 }
 

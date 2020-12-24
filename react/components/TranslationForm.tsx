@@ -10,6 +10,7 @@ import { useMutation } from 'react-apollo'
 
 import translateCategoryMutation from '../graphql/translateCategory.gql'
 import { hasChanges } from '../utils'
+import { useAlert } from '../providers/AlertProvider'
 
 interface TranslationFormProps {
   isXVtexTenant: boolean
@@ -37,6 +38,7 @@ const TranslationForm: FC<TranslationFormProps> = ({
   const [translateCategory, { loading }] = useMutation(
     translateCategoryMutation
   )
+  const { openAlert } = useAlert()
 
   useEffect(() => {
     setCanEdit(false)
@@ -77,12 +79,11 @@ const TranslationForm: FC<TranslationFormProps> = ({
         },
       })
       const { translateCategory: translateCategoryResult } = data
-      // eslint-disable-next-line no-console
-      console.log('mutation result', translateCategoryResult)
-      // Todo: send user feedback
       if (translateCategoryResult) {
         // update cache value (local state)
         updateMemoCategories({ locale: args })
+        // send user feedback
+        openAlert()
       }
     } catch (err) {
       // eslint-disable-next-line no-console
