@@ -133,6 +133,8 @@ const TranslationForm: FC<TranslationFormProps> = ({
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
             required
+            pattern="^[^\s]+$"
+            helpText={<p>Link ID cannot have whitespaces</p>}
           />
         </div>
         {isXVtexTenant ? null : (
