@@ -160,6 +160,7 @@ const CatalogTranslation: FC = () => {
               categoryId={id}
               keywords={keywords}
               locale={selectedLocale.defaultLocale}
+              updateMemoCategories={setMemoCategories}
             />
           )}
         </PageBlock>

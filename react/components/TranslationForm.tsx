@@ -17,6 +17,11 @@ interface TranslationFormProps {
   categoryId: string
   keywords: string[]
   locale: string
+  updateMemoCategories: React.Dispatch<
+    React.SetStateAction<{
+      [Identifier: string]: Category
+    }>
+  >
 }
 
 const TranslationForm: FC<TranslationFormProps> = ({
@@ -25,6 +30,7 @@ const TranslationForm: FC<TranslationFormProps> = ({
   categoryId,
   keywords,
   locale,
+  updateMemoCategories,
 }) => {
   const [formState, setFormState] = useState(categoryInfo)
   const [canEdit, setCanEdit] = useState<boolean>(false)
@@ -74,8 +80,10 @@ const TranslationForm: FC<TranslationFormProps> = ({
       // eslint-disable-next-line no-console
       console.log('mutation result', translateCategoryResult)
       // Todo: send user feedback
-      // Deactivate can edit
-      // update cache value
+      if (translateCategoryResult) {
+        // update cache value (local state)
+        updateMemoCategories({ locale: args })
+      }
     } catch (err) {
       // eslint-disable-next-line no-console
       console.log(err)
