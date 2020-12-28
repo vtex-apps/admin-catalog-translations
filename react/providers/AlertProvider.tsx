@@ -42,7 +42,7 @@ const AlertProvider: FC = ({ children }) => {
   return (
     <AlertContext.Provider value={{ openAlert }}>
       {open ? (
-        <div style={{ position: 'absolute', width: '100%' }}>
+        <div className="w-100 fixed z-max overflow-hidden">
           <div
             className="mt7"
             style={{ maxWidth: '520px', margin: '2rem auto' }}
