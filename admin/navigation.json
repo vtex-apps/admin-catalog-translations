@@ -2,5 +2,14 @@
   "section": "products",
   "titleId": "catalog-translation.navigation.label",
   "searchKeyWordsHelpers": "catalog-translation.navigation.search.kws",
-  "path": "/admin/catalog-translation"
+  "subSectionItems": [
+    {
+      "labelId": "catalog-translation.navigation.category",
+      "path": "/admin/catalog-translation/category"
+    },
+    {
+      "labelId": "catalog-translation.navigation.product",
+      "path": "/admin/catalog-translation/product"
+    }
+  ]
 }

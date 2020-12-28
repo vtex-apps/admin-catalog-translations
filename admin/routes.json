@@ -1,6 +1,10 @@
 {
-  "admin.app.catalog-translation": {
+  "admin.app.catalog-translation-category": {
     "component": "CatalogTranslation",
-    "path": "/admin/app/catalog-translation"
+    "path": "/admin/app/catalog-translation/category"
+  },
+  "admin.app.catalog-translation-product": {
+    "component": "ProductTranslation",
+    "path": "/admin/app/catalog-translation/product"
   }
 }

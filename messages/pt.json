@@ -1,5 +1,7 @@
 {
   "catalog-translation.navigation.label": "Tradução Catálogos",
   "catalog-translation.navigation.search.kws": "catalogos, traducao",
-  "catalog-translation.header": "Tradução Catálogos"
+  "catalog-translation.header": "Tradução Catálogos",
+  "catalog-translation.navigation.category": "Categorias",
+  "catalog-translation.navigation.product": "Produtos"
 }
