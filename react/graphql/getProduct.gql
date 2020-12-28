@@ -1,0 +1,12 @@
+query GetProduct($identifier: ProductUniqueIdentifier) {
+  product(identifier: $identifier) {
+    id
+    name
+    description
+    shortDescription
+    metaTagDescription
+    title
+    linkId
+    keywords
+  }
+}

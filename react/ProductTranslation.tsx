@@ -1,7 +1,14 @@
 import React, { FC } from 'react'
 
-const ProductTranslation: FC = () => {
-  return <div>Product Translation goes here</div>
+import CatalogTranslationWrapper from './components/CatalogTranslationWrapper'
+import ProductTranslation from './components/ProductTranslation/ProductTranslation'
+
+const ProductTranslationWrapped: FC = () => {
+  return (
+    <CatalogTranslationWrapper titleId="catalog-translation.header">
+      <ProductTranslation />
+    </CatalogTranslationWrapper>
+  )
 }
 
-export default ProductTranslation
+export default ProductTranslationWrapped
