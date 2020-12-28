@@ -9,7 +9,7 @@ import React, {
 import { Alert } from 'vtex.styleguide'
 
 interface AlertContextInterface {
-  openAlert: () => void
+  openAlert: (status: 'success' | 'error') => void
 }
 
 const AlertContext = createContext<AlertContextInterface>(
@@ -17,16 +17,16 @@ const AlertContext = createContext<AlertContextInterface>(
 )
 
 const AlertProvider: FC = ({ children }) => {
-  const [open, setOpen] = useState<boolean>(false)
+  const [open, setOpen] = useState<'success' | 'error' | ''>('')
 
   const handleClose = useCallback(() => {
     if (open) {
-      setOpen(false)
+      setOpen('')
     }
   }, [open])
 
-  const openAlert = () => {
-    setOpen(true)
+  const openAlert = (status: 'success' | 'error') => {
+    setOpen(status)
   }
 
   useEffect(() => {
@@ -47,9 +47,16 @@ const AlertProvider: FC = ({ children }) => {
             className="mt7"
             style={{ maxWidth: '520px', margin: '2rem auto' }}
           >
-            <Alert type="success" onClose={handleClose}>
-              The category was translated with success!
-            </Alert>
+            {open === 'success' && (
+              <Alert type="success" onClose={handleClose}>
+                The category was translated successfully!
+              </Alert>
+            )}
+            {open === 'error' && (
+              <Alert type="error" onClose={handleClose}>
+                There was an error translation category. Try again.
+              </Alert>
+            )}
           </div>
         </div>
       ) : null}

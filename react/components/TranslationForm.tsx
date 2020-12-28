@@ -72,7 +72,7 @@ const TranslationForm: FC<TranslationFormProps> = ({
     }
     const args = { ...formState, ...{ id: categoryId, keywords } }
     try {
-      const { data } = await translateCategory({
+      const { data, errors } = await translateCategory({
         variables: {
           args,
           locale,
@@ -83,11 +83,13 @@ const TranslationForm: FC<TranslationFormProps> = ({
         // update cache value (local state)
         updateMemoCategories({ locale: args })
         // send user feedback
-        openAlert()
+        openAlert('success')
+      }
+      if (errors?.length) {
+        throw new TypeError('Error translating category')
       }
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log(err)
+      openAlert('error')
     }
   }
 
