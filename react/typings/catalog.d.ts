@@ -18,13 +18,16 @@ interface ProductData {
   product: Product
 }
 
-interface Product {
+interface Product extends ProductInputTranslation {
   id: string
+  keywords: string[]
+}
+
+interface ProductInputTranslation {
   name: string
   description: string
   shortDescription: string
   metaTagDescription: string
   title: string
   linkId: string
-  keywords: string[]
 }

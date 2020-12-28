@@ -6,10 +6,11 @@ import React, {
   useState,
 } from 'react'
 import { useLazyQuery } from 'react-apollo'
-import { InputSearch } from 'vtex.styleguide'
+import { InputSearch, PageBlock, Spinner } from 'vtex.styleguide'
 
 import { useLocaleSelector } from '../LocaleSelector'
 import getProductQuery from '../../graphql/getProduct.gql'
+import ProductForm from './ProductForm'
 
 const ProductTranslation: FC = () => {
   const { selectedLocale, xVtexTenant } = useLocaleSelector()
@@ -82,8 +83,9 @@ const ProductTranslation: FC = () => {
     setMemoProducts({})
   }
 
-  // eslint-disable-next-line no-console
-  console.log(memoProducts)
+  const isLoadingOrRefetchingProduct = loadingProduct || networkStatus === 4
+
+  const { id, ...productInfo } = memoProducts[selectedLocale] || ({} as Product)
 
   return (
     <main>
@@ -98,6 +100,17 @@ const ProductTranslation: FC = () => {
           onClear={handleCleanSearch}
         />
       </div>
+      {id || isLoadingOrRefetchingProduct || productError ? (
+        <PageBlock variation="full" title={`Product Info - ${selectedLocale}`}>
+          {productError ? (
+            <div>Error</div>
+          ) : isLoadingOrRefetchingProduct ? (
+            <Spinner />
+          ) : (
+            <ProductForm productInfo={productInfo} />
+          )}
+        </PageBlock>
+      ) : null}
     </main>
   )
 }
