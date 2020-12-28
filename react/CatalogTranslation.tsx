@@ -80,9 +80,15 @@ const CatalogTranslation: FC = () => {
       })
     }
 
-    if (!memoCategories[selectedLocale.defaultLocale] && refetch) {
+    if (
+      !memoCategories[selectedLocale.defaultLocale] &&
+      refetch &&
+      categoryId
+    ) {
       refetchAndUpdate()
     }
+    // categoryId doesn't need to be in the dep array since it's in the if statement to avoid refetching when the input field is cleaned. We want this refetch function to run only when user changes the locale.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLocale, refetch, memoCategories])
 
   const handleCategoryIdInput = (e: FormEvent<HTMLInputElement>) => {
