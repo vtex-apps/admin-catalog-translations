@@ -11,13 +11,12 @@ import { useMutation } from 'react-apollo'
 import translateCategoryMutation from '../graphql/translateCategory.gql'
 import { hasChanges } from '../utils'
 import { useAlert } from '../providers/AlertProvider'
+import { useLocaleSelector } from './LocaleSelector'
 
 interface TranslationFormProps {
-  isXVtexTenant: boolean
   categoryInfo: CategoryInputTranslation
   categoryId: string
   keywords: string[]
-  locale: string
   updateMemoCategories: React.Dispatch<
     React.SetStateAction<{
       [Identifier: string]: Category
@@ -26,11 +25,9 @@ interface TranslationFormProps {
 }
 
 const TranslationForm: FC<TranslationFormProps> = ({
-  isXVtexTenant,
   categoryInfo,
   categoryId,
   keywords,
-  locale,
   updateMemoCategories,
 }) => {
   const [formState, setFormState] = useState(categoryInfo)
@@ -39,6 +36,8 @@ const TranslationForm: FC<TranslationFormProps> = ({
     translateCategoryMutation
   )
   const { openAlert } = useAlert()
+
+  const { isXVtexTenant, selectedLocale } = useLocaleSelector()
 
   useEffect(() => {
     setCanEdit(false)
@@ -75,7 +74,7 @@ const TranslationForm: FC<TranslationFormProps> = ({
       const { data, errors } = await translateCategory({
         variables: {
           args,
-          locale,
+          locale: selectedLocale,
         },
       })
       const { translateCategory: translateCategoryResult } = data
