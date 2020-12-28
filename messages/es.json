@@ -1,12 +1,5 @@
 {
   "catalog-translation.navigation.label": "Traducciones de catálogos",
   "catalog-translation.navigation.search.kws": "catalogos, traducciones",
-  "catalog-translation.header": "Traducciones de catálogos",
-  "admin-example.navigation.label-group": "Admins de ejemplo",
-  "admin-example.navigation.label-details": "Ejemplo de detalhes",
-  "admin-example.navigation.label-table": "Ejemplo de tabela",
-  "admin-example.navigation.search.kws": "teste, mock, fake",
-  "admin-example.navigation.details.search.kws": "detalhe, mock, test, oi",
-  "admin-example.navigation.table.search.kws": "tabela, mock, test, tchau",
-  "admin-example.hello-world": "Admin de ejemplo"
+  "catalog-translation.header": "Traducciones de catálogos"
 }
