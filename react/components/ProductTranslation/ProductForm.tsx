@@ -1,5 +1,5 @@
 import React, { FC, FormEvent, useEffect, useState } from 'react'
-import { Input, Textarea } from 'vtex.styleguide'
+import { Input, Textarea, Button } from 'vtex.styleguide'
 
 import { hasChanges } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
@@ -107,6 +107,29 @@ const ProductForm: FC<ProductFormProps> = ({ productInfo }) => {
             helpText={<p>Link ID cannot have whitespaces</p>}
           />
         </div>
+        {isXVtexTenant ? null : (
+          <div>
+            <span className="mr5">
+              <Button
+                type="button"
+                variation="secondary"
+                onClick={handleToggleEdit}
+              >
+                {canEdit ? 'Cancel' : 'Edit'}
+              </Button>
+            </span>
+            <span>
+              <Button
+                type="submit"
+                variation="primary"
+                disabled={!changed}
+                // isLoading={loading}
+              >
+                Save
+              </Button>
+            </span>
+          </div>
+        )}
       </form>
     </div>
   )
