@@ -1,6 +1,6 @@
 {
   "admin.app.catalog-translation-category": {
-    "component": "CatalogTranslation",
+    "component": "CategoryTranslation",
     "path": "/admin/app/catalog-translation/category"
   },
   "admin.app.catalog-translation-product": {

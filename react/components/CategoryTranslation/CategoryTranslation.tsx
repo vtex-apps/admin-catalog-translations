@@ -5,23 +5,15 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { FormattedMessage } from 'react-intl'
-import {
-  Layout,
-  PageBlock,
-  PageHeader,
-  Spinner,
-  InputSearch,
-} from 'vtex.styleguide'
+import { PageBlock, Spinner, InputSearch } from 'vtex.styleguide'
 import { useLazyQuery } from 'react-apollo'
 
-import getCategory from './graphql/getCategory.gql'
-import LocaleSelector, { useLocaleSelector } from './components/LocaleSelector'
-import ErrorHandler from './components/ErrorHandler'
-import TranslationForm from './components/TranslationForm'
-import ProviderWrapper from './providers'
+import getCategory from '../../graphql/getCategory.gql'
+import { useLocaleSelector } from '../LocaleSelector'
+import ErrorHandler from '../ErrorHandler'
+import TranslationForm from '../TranslationForm'
 
-const CatalogTranslation: FC = () => {
+const CategoryTranslation: FC = () => {
   const { selectedLocale, xVtexTenant } = useLocaleSelector()
   const [memoCategories, setMemoCategories] = useState<{
     [Identifier: string]: Category
@@ -92,14 +84,7 @@ const CatalogTranslation: FC = () => {
   const isLoadingOrRefetchingCategory = loadingCategory || networkStatus === 4
 
   return (
-    <Layout
-      pageHeader={
-        <PageHeader
-          title={<FormattedMessage id="catalog-translation.header" />}
-        />
-      }
-    >
-      <LocaleSelector />
+    <main>
       <div style={{ maxWidth: '340px' }} className="mv7">
         <InputSearch
           value={categoryId}
@@ -130,16 +115,8 @@ const CatalogTranslation: FC = () => {
           )}
         </PageBlock>
       ) : null}
-    </Layout>
+    </main>
   )
 }
 
-const Wrapped = () => {
-  return (
-    <ProviderWrapper>
-      <CatalogTranslation />
-    </ProviderWrapper>
-  )
-}
-
-export default Wrapped
+export default CategoryTranslation
