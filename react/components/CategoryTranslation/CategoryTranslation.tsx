@@ -101,7 +101,8 @@ const CategoryTranslation: FC = () => {
           {categoryError ? (
             <ErrorHandler
               errorMessage={categoryError}
-              categoryId={categoryId}
+              entryId={categoryId}
+              entry="Category"
             />
           ) : isLoadingOrRefetchingCategory ? (
             <Spinner />

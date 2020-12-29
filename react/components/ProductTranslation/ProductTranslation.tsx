@@ -11,6 +11,7 @@ import { InputSearch, PageBlock, Spinner } from 'vtex.styleguide'
 import { useLocaleSelector } from '../LocaleSelector'
 import getProductQuery from '../../graphql/getProduct.gql'
 import ProductForm from './ProductForm'
+import ErrorHandler from '../ErrorHandler'
 
 const ProductTranslation: FC = () => {
   const { selectedLocale, xVtexTenant } = useLocaleSelector()
@@ -43,11 +44,15 @@ const ProductTranslation: FC = () => {
 
   useEffect(() => {
     async function refetchAndUpdate() {
-      const { data } = await refetch()
-      setMemoProducts({
-        ...memoProducts,
-        ...{ [selectedLocale]: data.product },
-      })
+      try {
+        const { data } = await refetch()
+        setMemoProducts({
+          ...memoProducts,
+          ...{ [selectedLocale]: data.product },
+        })
+      } catch (e) {
+        setProductError(e.message)
+      }
     }
 
     if (!memoProducts[selectedLocale] && refetch && productId) {
@@ -103,7 +108,11 @@ const ProductTranslation: FC = () => {
       {id || isLoadingOrRefetchingProduct || productError ? (
         <PageBlock variation="full" title={`Product Info - ${selectedLocale}`}>
           {productError ? (
-            <div>Error</div>
+            <ErrorHandler
+              errorMessage={productError}
+              entryId={productId}
+              entry="Product"
+            />
           ) : isLoadingOrRefetchingProduct ? (
             <Spinner />
           ) : (
