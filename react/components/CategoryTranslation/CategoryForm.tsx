@@ -6,6 +6,7 @@ import translateCategoryMutation from '../../graphql/translateCategory.gql'
 import { useAlert } from '../../providers/AlertProvider'
 import { useLocaleSelector } from '../LocaleSelector'
 import useFormTranslation from '../../hooks/useFormTranslation'
+import ActionButtons from '../ActionButtons'
 
 interface CategoryFormProps {
   categoryInfo: CategoryInputTranslation
@@ -121,27 +122,12 @@ const CategoryForm: FC<CategoryFormProps> = ({
           />
         </div>
         {isXVtexTenant ? null : (
-          <div>
-            <span className="mr5">
-              <Button
-                type="button"
-                variation="secondary"
-                onClick={handleToggleEdit}
-              >
-                {canEdit ? 'Cancel' : 'Edit'}
-              </Button>
-            </span>
-            <span>
-              <Button
-                type="submit"
-                variation="primary"
-                disabled={!changed}
-                isLoading={loading}
-              >
-                Save
-              </Button>
-            </span>
-          </div>
+          <ActionButtons
+            toggleEdit={handleToggleEdit}
+            canEdit={canEdit}
+            changed={changed}
+            loading={loading}
+          />
         )}
       </form>
     </div>

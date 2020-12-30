@@ -6,6 +6,7 @@ import { useLocaleSelector } from '../LocaleSelector'
 import translateProductMutation from '../../graphql/translateProduct.gql'
 import { useAlert } from '../../providers/AlertProvider'
 import useFormTranslation from '../../hooks/useFormTranslation'
+import ActionButtons from '../ActionButtons'
 
 interface ProductFormProps {
   productInfo: ProductInputTranslation
@@ -136,27 +137,12 @@ const ProductForm: FC<ProductFormProps> = ({
           />
         </div>
         {isXVtexTenant ? null : (
-          <div>
-            <span className="mr5">
-              <Button
-                type="button"
-                variation="secondary"
-                onClick={handleToggleEdit}
-              >
-                {canEdit ? 'Cancel' : 'Edit'}
-              </Button>
-            </span>
-            <span>
-              <Button
-                type="submit"
-                variation="primary"
-                disabled={!changed}
-                isLoading={loading}
-              >
-                Save
-              </Button>
-            </span>
-          </div>
+          <ActionButtons
+            toggleEdit={handleToggleEdit}
+            canEdit={canEdit}
+            changed={changed}
+            loading={loading}
+          />
         )}
       </form>
     </div>
