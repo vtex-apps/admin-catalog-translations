@@ -15,7 +15,7 @@ There are two different pages for `Category` and `Product` translations. Both di
 Using [VTEX IO Toobelt](https://vtex.io/docs/recipes/development/vtex-io-cli-installation-and-command-reference/#command-reference) log into the VTEX account you are working on and install the latest version:
 
 ```
-$ vtex install vtex.catalog-translation
+$ vtex install vtex.admin-catalog-translation
 ```
 
 ---
