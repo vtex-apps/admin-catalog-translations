@@ -1,11 +1,16 @@
 import React, { FC } from 'react'
+import { FormattedMessage } from 'react-intl'
 
 import CategoryTranslation from './components/CategoryTranslation/CategoryTranslation'
 import CatalogTranslationWrapper from './components/CatalogTranslationWrapper'
 
 const CategoryTranslationWrapped: FC = () => {
   return (
-    <CatalogTranslationWrapper titleId="catalog-translation.category.header">
+    <CatalogTranslationWrapper
+      titleComponent={
+        <FormattedMessage id="catalog-translation.category.header" />
+      }
+    >
       <CategoryTranslation />
     </CatalogTranslationWrapper>
   )

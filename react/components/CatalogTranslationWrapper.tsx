@@ -1,22 +1,19 @@
-import React, { FC } from 'react'
+import React, { FC, ReactElement } from 'react'
 import { Layout, PageHeader } from 'vtex.styleguide'
-import { FormattedMessage } from 'react-intl'
 
 import ProviderWrapper from '../providers'
 import LocaleSelector from './LocaleSelector'
 
 interface CatalogTranslationWrapperProps {
-  titleId: string
+  titleComponent: ReactElement
 }
 
 const CatalogTranslationWrapper: FC<CatalogTranslationWrapperProps> = ({
-  titleId,
+  titleComponent,
   children,
 }) => (
   <ProviderWrapper>
-    <Layout
-      pageHeader={<PageHeader title={<FormattedMessage id={titleId} />} />}
-    >
+    <Layout pageHeader={<PageHeader title={titleComponent} />}>
       <LocaleSelector />
       {children}
     </Layout>
