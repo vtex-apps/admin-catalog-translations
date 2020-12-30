@@ -1,6 +1,7 @@
 {
   "catalog-translation.navigation.label": "Catalog Translation",
-  "catalog-translation.header": "Catalog Translation",
+  "catalog-translation.product.header": "Product Translation",
+  "catalog-translation.category.header": "Category Translation",
   "catalog-translation.navigation.category": "Categories",
   "catalog-translation.navigation.product": "Products"
 }

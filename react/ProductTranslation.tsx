@@ -5,7 +5,7 @@ import ProductTranslation from './components/ProductTranslation/ProductTranslati
 
 const ProductTranslationWrapped: FC = () => {
   return (
-    <CatalogTranslationWrapper titleId="catalog-translation.header">
+    <CatalogTranslationWrapper titleId="catalog-translation.product.header">
       <ProductTranslation />
     </CatalogTranslationWrapper>
   )

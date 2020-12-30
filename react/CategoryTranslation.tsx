@@ -5,7 +5,7 @@ import CatalogTranslationWrapper from './components/CatalogTranslationWrapper'
 
 const CategoryTranslationWrapped: FC = () => {
   return (
-    <CatalogTranslationWrapper titleId="catalog-translation.header">
+    <CatalogTranslationWrapper titleId="catalog-translation.category.header">
       <CategoryTranslation />
     </CatalogTranslationWrapper>
   )
