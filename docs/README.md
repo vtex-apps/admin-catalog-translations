@@ -1,28 +1,25 @@
-# [ WORK IN PROGRESS ] Admin Example
+# Catalog Translation Admin
 
-An example admin app that adds a menu button to the admin sidebar.
+The catalog translation app provides a way to read and update `Categories` and `Products` information for all bindings associated to an account. It uses the `catalog translation` queries on `vtex.catalog-graphql` instead of `messages app` so all the SEO relevant content is translated.
 
-# PREVIEW NOTICE :construction:
+![](./catalog-translation.gif)
 
-We're working on the **admin builder**, which will allow you to define two files: `admin/routes.json` file with everything you need to create an admin interface (routes paths and components), and `admin/navigation.json` which alows your admin app to insert itself in the sidebar navigation. This is a temporary example!
+---
+## Description
 
-### How to develop admins
+There are two different pages for `Category` and `Product` translations. Both display a list of bindings for the store. The first one is always the `X-Vtex-Tenant` and the details cannot be translated. For all the others, it's possible to edit the content. 
 
-1. Admins always declare routes in `/admin/app/<route>`
+---
+## Usage
 
-2. Declare the `admin` builder in your manifest
+Using [VTEX IO Toobelt](https://vtex.io/docs/recipes/development/vtex-io-cli-installation-and-command-reference/#command-reference) log into the VTEX account you are working on and install the latest version:
 
-3. When installed, the user navigates to `/admin/<route>`, but your app runs in an iframe that points to `/admin/app/<route>`.
+```
+$ vtex install vtex.catalog-translation
+```
 
-4. You can develop directly in the `/admin/app` route for convenience, but don't forget to test it inside the iframe. :)
+---
 
+## Knowing issue
 
-### Quickstart
-
-1. Clone this repo
-
-2. `yarn --cwd react/` for code completion
-
-3. `vtex link`
-
-4. Navigate to `workspace--account.myvtex.com/admin/app/example`
+It's not possible to add content for a specific field if there is no content for that same field in the `X-Vtex-Tenant` binding.
