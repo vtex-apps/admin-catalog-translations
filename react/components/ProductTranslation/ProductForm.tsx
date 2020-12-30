@@ -13,7 +13,7 @@ interface ProductFormProps {
   keywords: string[]
   updateMemoProducts: (
     value: React.SetStateAction<{
-      [Identifier: string]: Product
+      [Identifier: string]: ProductData
     }>
   ) => void
 }
@@ -61,7 +61,7 @@ const ProductForm: FC<ProductFormProps> = ({
       if (translateProductResult) {
         updateMemoProducts((state) => ({
           ...state,
-          ...{ [selectedLocale]: productArgs },
+          ...{ [selectedLocale]: { product: productArgs } },
         }))
         openAlert('success', 'product')
       }

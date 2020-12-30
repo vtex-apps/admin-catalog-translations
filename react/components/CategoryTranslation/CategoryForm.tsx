@@ -13,7 +13,7 @@ interface CategoryFormProps {
   keywords: string[]
   updateMemoCategories: (
     value: React.SetStateAction<{
-      [Identifier: string]: Category
+      [Identifier: string]: CategoriesData
     }>
   ) => void
 }
@@ -61,7 +61,7 @@ const CategoryForm: FC<CategoryFormProps> = ({
         // update cache value (local state)
         updateMemoCategories((state) => ({
           ...state,
-          ...{ [selectedLocale]: args },
+          ...{ [selectedLocale]: { category: args } },
         }))
         // send user feedback
         openAlert('success', 'category')

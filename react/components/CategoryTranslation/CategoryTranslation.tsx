@@ -1,117 +1,67 @@
-import React, {
-  FC,
-  FormEvent,
-  SyntheticEvent,
-  useEffect,
-  useState,
-} from 'react'
+import React, { FC, SyntheticEvent } from 'react'
 import { PageBlock, Spinner, InputSearch } from 'vtex.styleguide'
-import { useLazyQuery } from 'react-apollo'
 
 import getCategory from '../../graphql/getCategory.gql'
 import { useLocaleSelector } from '../LocaleSelector'
 import ErrorHandler from '../ErrorHandler'
 import CategoryForm from './CategoryForm'
+import useCatalogQuery from '../../hooks/useCatalogQuery'
 
 const CategoryTranslation: FC = () => {
-  const { selectedLocale, xVtexTenant } = useLocaleSelector()
-  const [memoCategories, setMemoCategories] = useState<{
-    [Identifier: string]: Category
-  }>({})
-  const [categoryId, setCategoryId] = useState('')
-  const [categoryError, setCategoryError] = useState('')
+  const {
+    entryInfo,
+    isLoadingOrRefetching,
+    entryId,
+    handleCleanSearch,
+    handleEntryIdInput,
+    fetchEntry,
+    setMemoEntries,
+    errorMessage,
+  } = useCatalogQuery<CategoriesData, { id: number }>(getCategory)
 
-  const [
-    fetchCategories,
-    { refetch, loading: loadingCategory, networkStatus },
-  ] = useLazyQuery<CategoriesData, { id: number }>(getCategory, {
-    context: {
-      headers: {
-        'x-vtex-tenant': `${xVtexTenant}`,
-        'x-vtex-locale': `${selectedLocale}`,
-      },
-    },
-    fetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-    onError: (e) => {
-      setCategoryError(e.message)
-    },
-  })
-
-  useEffect(() => {
-    async function refetchAndUpdate() {
-      const { data } = await refetch()
-      setMemoCategories({
-        ...memoCategories,
-        ...{ [selectedLocale]: data.category },
-      })
-    }
-
-    if (!memoCategories[selectedLocale] && refetch && categoryId) {
-      refetchAndUpdate()
-    }
-    // categoryId doesn't need to be in the dep array since it's in the if statement to avoid refetching when the input field is cleaned. We want this refetch function to run only when user changes the locale.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedLocale, refetch, memoCategories])
-
-  const handleCategoryIdInput = (e: FormEvent<HTMLInputElement>) => {
-    if (categoryError) {
-      setCategoryError('')
-    }
-    const onlyNumberRegex = /^\d{0,}$/
-    const inputValue = e.currentTarget.value
-    if (onlyNumberRegex.test(inputValue)) {
-      setCategoryId(e.currentTarget.value)
-    }
-  }
+  const { selectedLocale } = useLocaleSelector()
 
   const handleSubmitCategoryId = (e: SyntheticEvent) => {
     e.preventDefault()
-    if (!categoryId) {
+    if (!entryId) {
       return
     }
-    setMemoCategories({})
-    fetchCategories({ variables: { id: Number(categoryId) } })
+    setMemoEntries({})
+    fetchEntry({ variables: { id: Number(entryId) } })
   }
 
-  const handleCleanSearch = () => {
-    setCategoryId('')
-    setMemoCategories({})
-  }
-
-  const { description, id, linkId, name, title, keywords } =
-    memoCategories[selectedLocale] || ({} as Category)
-  const isLoadingOrRefetchingCategory = loadingCategory || networkStatus === 4
+  const { id, keywords, ...categoryInfo } =
+    entryInfo?.category || ({} as Category)
 
   return (
     <main>
       <div style={{ maxWidth: '340px' }} className="mv7">
         <InputSearch
-          value={categoryId}
+          value={entryId}
           placeholder="Search category..."
           label="Category Id"
           size="regular"
-          onChange={handleCategoryIdInput}
+          onChange={handleEntryIdInput}
           onSubmit={handleSubmitCategoryId}
           onClear={handleCleanSearch}
         />
       </div>
-      {id || isLoadingOrRefetchingCategory || categoryError ? (
+      {id || isLoadingOrRefetching || errorMessage ? (
         <PageBlock variation="full" title={`Category Info - ${selectedLocale}`}>
-          {categoryError ? (
+          {errorMessage ? (
             <ErrorHandler
-              errorMessage={categoryError}
-              entryId={categoryId}
+              errorMessage={errorMessage}
+              entryId={entryId}
               entry="Category"
             />
-          ) : isLoadingOrRefetchingCategory ? (
+          ) : isLoadingOrRefetching ? (
             <Spinner />
           ) : (
             <CategoryForm
-              categoryInfo={{ name, title, description, linkId }}
+              categoryInfo={categoryInfo}
               categoryId={id}
               keywords={keywords}
-              updateMemoCategories={setMemoCategories}
+              updateMemoCategories={setMemoEntries}
             />
           )}
         </PageBlock>
