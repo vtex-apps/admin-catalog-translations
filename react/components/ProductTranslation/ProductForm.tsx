@@ -11,6 +11,7 @@ import { useMutation } from 'react-apollo'
 import { hasChanges } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import translateProductMutation from '../../graphql/translateProduct.gql'
+import { useAlert } from '../../providers/AlertProvider'
 
 interface ProductFormProps {
   productInfo: ProductInputTranslation
@@ -38,6 +39,8 @@ const ProductForm: FC<ProductFormProps> = ({
     { translateProduct: boolean },
     { product: ProductInputTranslation; locale: string }
   >(translateProductMutation)
+
+  const { openAlert } = useAlert()
 
   useEffect(() => {
     setCanEdit(false)
@@ -86,13 +89,13 @@ const ProductForm: FC<ProductFormProps> = ({
           ...state,
           ...{ [selectedLocale]: productArgs },
         }))
+        openAlert('success', 'product')
       }
       if (errors?.length) {
         throw new TypeError('Error translation product')
       }
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.log('ERRRROR', err)
+      openAlert('error', 'product')
     }
   }
 

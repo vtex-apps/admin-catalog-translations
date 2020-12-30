@@ -9,7 +9,7 @@ import React, {
 import { Alert } from 'vtex.styleguide'
 
 interface AlertContextInterface {
-  openAlert: (status: 'success' | 'error') => void
+  openAlert: (status: 'success' | 'error', entry: string) => void
 }
 
 const AlertContext = createContext<AlertContextInterface>(
@@ -17,6 +17,7 @@ const AlertContext = createContext<AlertContextInterface>(
 )
 
 const AlertProvider: FC = ({ children }) => {
+  const [entryType, setEntryTipe] = useState('')
   const [open, setOpen] = useState<'success' | 'error' | ''>('')
 
   const handleClose = useCallback(() => {
@@ -25,7 +26,8 @@ const AlertProvider: FC = ({ children }) => {
     }
   }, [open])
 
-  const openAlert = (status: 'success' | 'error') => {
+  const openAlert = (status: 'success' | 'error', entry: string) => {
+    setEntryTipe(entry)
     setOpen(status)
   }
 
@@ -49,12 +51,12 @@ const AlertProvider: FC = ({ children }) => {
           >
             {open === 'success' && (
               <Alert type="success" onClose={handleClose}>
-                The category was translated successfully!
+                {`The ${entryType} was translated successfully!`}
               </Alert>
             )}
             {open === 'error' && (
               <Alert type="error" onClose={handleClose}>
-                There was an error translation category. Try again.
+                {`There was an error translating ${entryType}. Try again.`}
               </Alert>
             )}
           </div>

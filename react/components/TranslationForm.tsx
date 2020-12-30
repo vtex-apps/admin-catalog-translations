@@ -88,13 +88,13 @@ const TranslationForm: FC<TranslationFormProps> = ({
           ...{ [selectedLocale]: args },
         }))
         // send user feedback
-        openAlert('success')
+        openAlert('success', 'category')
       }
       if (errors?.length) {
         throw new TypeError('Error translating category')
       }
     } catch (err) {
-      openAlert('error')
+      openAlert('error', 'category')
     }
   }
 
