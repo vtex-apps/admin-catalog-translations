@@ -17,11 +17,11 @@ interface TranslationFormProps {
   categoryInfo: CategoryInputTranslation
   categoryId: string
   keywords: string[]
-  updateMemoCategories: React.Dispatch<
-    React.SetStateAction<{
+  updateMemoCategories: (
+    value: React.SetStateAction<{
       [Identifier: string]: Category
     }>
-  >
+  ) => void
 }
 
 const TranslationForm: FC<TranslationFormProps> = ({
@@ -80,7 +80,10 @@ const TranslationForm: FC<TranslationFormProps> = ({
       const { translateCategory: translateCategoryResult } = data
       if (translateCategoryResult) {
         // update cache value (local state)
-        updateMemoCategories({ locale: args })
+        updateMemoCategories((state) => ({
+          ...state,
+          ...{ [selectedLocale]: args },
+        }))
         // send user feedback
         openAlert('success')
       }
