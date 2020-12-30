@@ -69,7 +69,10 @@ const ProductForm: FC<ProductFormProps> = ({
     if (loading) {
       return
     }
-    const productArgs = { ...productFormState, ...{ id: productId, keywords } }
+    const productArgs = {
+      ...productFormState,
+      ...{ id: productId, keywords: keywords.length ? keywords : [''] },
+    }
     try {
       const { data, errors } = await translateProduct({
         variables: {

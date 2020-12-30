@@ -69,7 +69,10 @@ const TranslationForm: FC<TranslationFormProps> = ({
     if (loading) {
       return
     }
-    const args = { ...formState, ...{ id: categoryId, keywords } }
+    const args = {
+      ...formState,
+      ...{ id: categoryId, keywords: keywords.length ? keywords : [''] },
+    }
     try {
       const { data, errors } = await translateCategory({
         variables: {
