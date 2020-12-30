@@ -1,19 +1,13 @@
-import React, {
-  FC,
-  FormEvent,
-  SyntheticEvent,
-  useEffect,
-  useState,
-} from 'react'
+import React, { FC, SyntheticEvent } from 'react'
 import { Input, Textarea, Button } from 'vtex.styleguide'
 import { useMutation } from 'react-apollo'
 
-import translateCategoryMutation from '../graphql/translateCategory.gql'
-import { hasChanges } from '../utils'
-import { useAlert } from '../providers/AlertProvider'
-import { useLocaleSelector } from './LocaleSelector'
+import translateCategoryMutation from '../../graphql/translateCategory.gql'
+import { useAlert } from '../../providers/AlertProvider'
+import { useLocaleSelector } from '../LocaleSelector'
+import useFormTranslation from '../../hooks/useFormTranslation'
 
-interface TranslationFormProps {
+interface CategoryFormProps {
   categoryInfo: CategoryInputTranslation
   categoryId: string
   keywords: string[]
@@ -24,45 +18,27 @@ interface TranslationFormProps {
   ) => void
 }
 
-const TranslationForm: FC<TranslationFormProps> = ({
+const CategoryForm: FC<CategoryFormProps> = ({
   categoryInfo,
   categoryId,
   keywords,
   updateMemoCategories,
 }) => {
-  const [formState, setFormState] = useState(categoryInfo)
-  const [canEdit, setCanEdit] = useState<boolean>(false)
-  const [translateCategory, { loading }] = useMutation(
-    translateCategoryMutation
-  )
+  const {
+    formState,
+    canEdit,
+    handleInputChange,
+    changed,
+    handleToggleEdit,
+  } = useFormTranslation(categoryInfo)
+
+  const [translateCategory, { loading }] = useMutation<
+    { translateCategory: boolean },
+    { args: Category; locale: string }
+  >(translateCategoryMutation)
   const { openAlert } = useAlert()
 
   const { isXVtexTenant, selectedLocale } = useLocaleSelector()
-
-  useEffect(() => {
-    setCanEdit(false)
-    setFormState(categoryInfo)
-  }, [categoryInfo])
-
-  const handleInputChange = (e: FormEvent<HTMLInputElement>) => {
-    const { name: fieldName, value } = e.currentTarget
-
-    setFormState((state) => ({
-      ...state,
-      ...{ [fieldName]: value },
-    }))
-  }
-
-  const changed = hasChanges(formState, categoryInfo)
-
-  const handleToggleEdit = () => {
-    if (canEdit) {
-      setCanEdit(false)
-      setFormState(categoryInfo)
-    } else {
-      setCanEdit(true)
-    }
-  }
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
@@ -80,7 +56,7 @@ const TranslationForm: FC<TranslationFormProps> = ({
           locale: selectedLocale,
         },
       })
-      const { translateCategory: translateCategoryResult } = data
+      const { translateCategory: translateCategoryResult } = data ?? {}
       if (translateCategoryResult) {
         // update cache value (local state)
         updateMemoCategories((state) => ({
@@ -172,4 +148,4 @@ const TranslationForm: FC<TranslationFormProps> = ({
   )
 }
 
-export default TranslationForm
+export default CategoryForm

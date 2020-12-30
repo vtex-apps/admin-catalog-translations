@@ -29,16 +29,10 @@ export const filterLocales = (bindings: Binding[]): Binding[] => {
  * @return {boolean} true if values have changed. false if not.
  */
 
-export const hasChanges = (
-  formValues: CategoryInputTranslation,
-  orignalValues: CategoryInputTranslation
-): boolean => {
+export function hasChanges<S>(formValues: S, orignalValues: S): boolean {
   const keys = Object.keys(formValues)
   for (const key of keys) {
-    if (
-      formValues[key as keyof CategoryInputTranslation] !==
-      orignalValues[key as keyof CategoryInputTranslation]
-    ) {
+    if (formValues[key as keyof S] !== orignalValues[key as keyof S]) {
       return true
     }
   }

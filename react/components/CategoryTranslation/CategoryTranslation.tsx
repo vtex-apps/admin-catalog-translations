@@ -11,7 +11,7 @@ import { useLazyQuery } from 'react-apollo'
 import getCategory from '../../graphql/getCategory.gql'
 import { useLocaleSelector } from '../LocaleSelector'
 import ErrorHandler from '../ErrorHandler'
-import TranslationForm from '../TranslationForm'
+import CategoryForm from './CategoryForm'
 
 const CategoryTranslation: FC = () => {
   const { selectedLocale, xVtexTenant } = useLocaleSelector()
@@ -107,7 +107,7 @@ const CategoryTranslation: FC = () => {
           ) : isLoadingOrRefetchingCategory ? (
             <Spinner />
           ) : (
-            <TranslationForm
+            <CategoryForm
               categoryInfo={{ name, title, description, linkId }}
               categoryId={id}
               keywords={keywords}
