@@ -90,7 +90,8 @@ const ProductTranslation: FC = () => {
 
   const isLoadingOrRefetchingProduct = loadingProduct || networkStatus === 4
 
-  const { id, ...productInfo } = memoProducts[selectedLocale] || ({} as Product)
+  const { id, keywords, ...productInfo } =
+    memoProducts[selectedLocale] || ({} as Product)
 
   return (
     <main>
@@ -116,7 +117,12 @@ const ProductTranslation: FC = () => {
           ) : isLoadingOrRefetchingProduct ? (
             <Spinner />
           ) : (
-            <ProductForm productInfo={productInfo} />
+            <ProductForm
+              productInfo={productInfo}
+              productId={productId}
+              keywords={keywords}
+              updateMemoProducts={setMemoProducts}
+            />
           )}
         </PageBlock>
       ) : null}

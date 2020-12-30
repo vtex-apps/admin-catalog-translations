@@ -1,0 +1,6 @@
+mutation TranslateProduct(
+  $product: ProductInputTranslation!
+  $locale: Locale!
+) {
+  translateProduct(product: $product, locale: $locale)
+}

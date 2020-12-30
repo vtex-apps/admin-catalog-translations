@@ -1,18 +1,43 @@
-import React, { FC, FormEvent, useEffect, useState } from 'react'
+import React, {
+  FC,
+  FormEvent,
+  SyntheticEvent,
+  useEffect,
+  useState,
+} from 'react'
 import { Input, Textarea, Button } from 'vtex.styleguide'
+import { useMutation } from 'react-apollo'
 
 import { hasChanges } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
+import translateProductMutation from '../../graphql/translateProduct.gql'
 
 interface ProductFormProps {
   productInfo: ProductInputTranslation
+  productId: string
+  keywords: string[]
+  updateMemoProducts: (
+    value: React.SetStateAction<{
+      [Identifier: string]: Product
+    }>
+  ) => void
 }
 
-const ProductForm: FC<ProductFormProps> = ({ productInfo }) => {
+const ProductForm: FC<ProductFormProps> = ({
+  productInfo,
+  productId,
+  keywords,
+  updateMemoProducts,
+}) => {
   const [productFormState, setProductFormState] = useState(productInfo)
   const [canEdit, setCanEdit] = useState<boolean>(false)
 
   const { isXVtexTenant, selectedLocale } = useLocaleSelector()
+
+  const [translateProduct, { loading }] = useMutation<
+    { translateProduct: boolean },
+    { product: ProductInputTranslation; locale: string }
+  >(translateProductMutation)
 
   useEffect(() => {
     setCanEdit(false)
@@ -39,9 +64,38 @@ const ProductForm: FC<ProductFormProps> = ({ productInfo }) => {
     }
   }
 
+  const handleSubmit = async (e: SyntheticEvent) => {
+    e.preventDefault()
+    if (loading) {
+      return
+    }
+    const productArgs = { ...productFormState, ...{ id: productId, keywords } }
+    try {
+      const { data, errors } = await translateProduct({
+        variables: {
+          locale: selectedLocale,
+          product: productArgs,
+        },
+      })
+      const { translateProduct: translateProductResult } = data ?? {}
+      if (translateProductResult) {
+        updateMemoProducts((state) => ({
+          ...state,
+          ...{ [selectedLocale]: productArgs },
+        }))
+      }
+      if (errors?.length) {
+        throw new TypeError('Error translation product')
+      }
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.log('ERRRROR', err)
+    }
+  }
+
   return (
     <div>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="mb5">
           <Input
             label="Name"
@@ -49,7 +103,6 @@ const ProductForm: FC<ProductFormProps> = ({ productInfo }) => {
             name="name"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
-            required
           />
         </div>
         <div className="mb5">
@@ -60,7 +113,6 @@ const ProductForm: FC<ProductFormProps> = ({ productInfo }) => {
             name="description"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
-            required
           />
         </div>
         <div className="mb5">
@@ -71,7 +123,6 @@ const ProductForm: FC<ProductFormProps> = ({ productInfo }) => {
             name="shortDescription"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
-            required
           />
         </div>
         <div className="mb5">
@@ -82,7 +133,6 @@ const ProductForm: FC<ProductFormProps> = ({ productInfo }) => {
             name="metaTagDescription"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
-            required
           />
         </div>
         <div className="mb5">
@@ -92,7 +142,6 @@ const ProductForm: FC<ProductFormProps> = ({ productInfo }) => {
             name="title"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
-            required
           />
         </div>
         <div className="mb5">
@@ -102,7 +151,6 @@ const ProductForm: FC<ProductFormProps> = ({ productInfo }) => {
             name="linkId"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
-            required
             pattern="^[^\s]+$"
             helpText={<p>Link ID cannot have whitespaces</p>}
           />
@@ -123,7 +171,7 @@ const ProductForm: FC<ProductFormProps> = ({ productInfo }) => {
                 type="submit"
                 variation="primary"
                 disabled={!changed}
-                // isLoading={loading}
+                isLoading={loading}
               >
                 Save
               </Button>
