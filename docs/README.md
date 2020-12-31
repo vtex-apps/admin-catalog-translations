@@ -2,7 +2,7 @@
 
 The catalog translation app provides a way to read and update `Categories` and `Products` information for all bindings associated to an account. It uses the `catalog translation` queries on `vtex.catalog-graphql` instead of `messages app` so all the SEO relevant content is translated.
 
-![](./catalog-translation.gif)
+![](https://user-images.githubusercontent.com/38737958/103417721-972f2d00-4b6a-11eb-916e-cd3777ca8b20.gif)
 
 ---
 ## Description
