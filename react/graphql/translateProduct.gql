@@ -3,4 +3,5 @@ mutation TranslateProduct(
   $locale: Locale!
 ) {
   translateProduct(product: $product, locale: $locale)
+    @context(provider: "vtex.catalog-graphql")
 }

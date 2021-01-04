@@ -1,5 +1,5 @@
 query accountLocales {
-  tenantInfo {
+  tenantInfo @context(provider: "vtex.tenant-graphql") {
     bindings {
       id
       defaultLocale

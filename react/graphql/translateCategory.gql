@@ -1,3 +1,4 @@
 mutation translateCategory($args: CategoryInputTranslation, $locale: Locale) {
   translateCategory(category: $args, locale: $locale)
+    @context(provider: "vtex.catalog-graphql")
 }
