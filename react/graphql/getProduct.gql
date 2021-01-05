@@ -1,5 +1,5 @@
 query GetProduct($identifier: ProductUniqueIdentifier) {
-  product(identifier: $identifier) {
+  product(identifier: $identifier) @context(provider: "vtex.catalog-graphql") {
     id
     name
     description
