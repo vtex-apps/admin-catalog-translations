@@ -7,6 +7,5 @@ query GetProduct($identifier: ProductUniqueIdentifier) {
     metaTagDescription
     title
     linkId
-    keywords
   }
 }

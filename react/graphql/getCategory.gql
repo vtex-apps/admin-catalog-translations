@@ -5,6 +5,5 @@ query getCategory($id: ID!) {
     title
     description
     linkId
-    keywords
   }
 }

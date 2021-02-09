@@ -34,7 +34,7 @@ const ProductTranslation: FC = () => {
       variables: { identifier: { field: 'id', value: entryId } },
     })
   }
-  const { id, keywords, ...productInfo } = entryInfo?.product || ({} as Product)
+  const { id, ...productInfo } = entryInfo?.product || ({} as Product)
 
   return (
     <main>
@@ -63,7 +63,6 @@ const ProductTranslation: FC = () => {
             <ProductForm
               productInfo={productInfo}
               productId={entryId}
-              keywords={keywords}
               updateMemoProducts={setMemoEntries}
             />
           )}

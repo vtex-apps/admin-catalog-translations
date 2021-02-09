@@ -30,8 +30,7 @@ const CategoryTranslation: FC = () => {
     fetchEntry({ variables: { id: Number(entryId) } })
   }
 
-  const { id, keywords, ...categoryInfo } =
-    entryInfo?.category || ({} as Category)
+  const { id, ...categoryInfo } = entryInfo?.category || ({} as Category)
 
   return (
     <main>
@@ -60,7 +59,6 @@ const CategoryTranslation: FC = () => {
             <CategoryForm
               categoryInfo={categoryInfo}
               categoryId={id}
-              keywords={keywords}
               updateMemoCategories={setMemoEntries}
             />
           )}
