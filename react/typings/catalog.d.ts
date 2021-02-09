@@ -3,7 +3,6 @@ interface CategoriesData {
 }
 
 interface Category extends CategoryInputTranslation {
-  keywords: string[]
   id: string
 }
 
@@ -20,7 +19,6 @@ interface ProductData {
 
 interface Product extends ProductInputTranslation {
   id: string
-  keywords: string[]
 }
 
 interface ProductInputTranslation {

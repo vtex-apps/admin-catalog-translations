@@ -1,5 +1,5 @@
 import React, { FC, SyntheticEvent } from 'react'
-import { Input, Textarea, Button } from 'vtex.styleguide'
+import { Input, Textarea } from 'vtex.styleguide'
 import { useMutation } from 'react-apollo'
 
 import translateCategoryMutation from '../../graphql/translateCategory.gql'
@@ -11,7 +11,6 @@ import ActionButtons from '../ActionButtons'
 interface CategoryFormProps {
   categoryInfo: CategoryInputTranslation
   categoryId: string
-  keywords: string[]
   updateMemoCategories: (
     value: React.SetStateAction<{
       [Identifier: string]: CategoriesData
@@ -22,7 +21,6 @@ interface CategoryFormProps {
 const CategoryForm: FC<CategoryFormProps> = ({
   categoryInfo,
   categoryId,
-  keywords,
   updateMemoCategories,
 }) => {
   const {
@@ -48,7 +46,7 @@ const CategoryForm: FC<CategoryFormProps> = ({
     }
     const args = {
       ...formState,
-      ...{ id: categoryId, keywords: keywords.length ? keywords : [''] },
+      ...{ id: categoryId },
     }
     try {
       const { data, errors } = await translateCategory({

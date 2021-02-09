@@ -11,7 +11,6 @@ import ActionButtons from '../ActionButtons'
 interface ProductFormProps {
   productInfo: ProductInputTranslation
   productId: string
-  keywords: string[]
   updateMemoProducts: (
     value: React.SetStateAction<{
       [Identifier: string]: ProductData
@@ -22,7 +21,6 @@ interface ProductFormProps {
 const ProductForm: FC<ProductFormProps> = ({
   productInfo,
   productId,
-  keywords,
   updateMemoProducts,
 }) => {
   const {
@@ -49,7 +47,7 @@ const ProductForm: FC<ProductFormProps> = ({
     }
     const productArgs = {
       ...formState,
-      ...{ id: productId, keywords: keywords.length ? keywords : [''] },
+      ...{ id: productId },
     }
     try {
       const { data, errors } = await translateProduct({
