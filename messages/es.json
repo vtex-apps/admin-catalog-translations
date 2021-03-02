@@ -3,6 +3,8 @@
   "catalog-translation.navigation.search.kws": "catalogos, traducciones",
   "catalog-translation.product.header": "Traducciones de Productos",
   "catalog-translation.category.header": "Traducciones de Categorias",
+  "catalog-translation.sku.header": "Traducciones de SKU",
   "catalog-translation.navigation.category": "Categorias",
-  "catalog-translation.navigation.product": "Productos"
+  "catalog-translation.navigation.product": "Productos",
+  "catalog-translation.navigation.sku": "SKU"
 }

@@ -1,0 +1,4 @@
+mutation TranslateSKU($sku: SKUInputTranslation!, $locale: Locale!) {
+  translateSKU(sku: $sku, locale: $locale)
+    @context(provider: "vtex.catalog-graphql")
+}

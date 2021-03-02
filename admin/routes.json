@@ -6,5 +6,9 @@
   "admin.app.catalog-translation-product": {
     "component": "ProductTranslation",
     "path": "/admin/app/catalog-translation/product"
+  },
+  "admin.app.catalog-translation-sku": {
+    "component": "SKUTranslation",
+    "path": "/admin/app/catalog-translation/sku"
   }
 }
