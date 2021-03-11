@@ -10,5 +10,9 @@
   "admin.app.catalog-translation-sku": {
     "component": "SKUTranslation",
     "path": "/admin/app/catalog-translation/sku"
+  },
+  "admin.app.catalog-translation-brand": {
+    "component": "BrandTranslation",
+    "path": "/admin/app/catalog-translation/brand"
   }
 }
