@@ -2,6 +2,8 @@
   "catalog-translation.navigation.label": "Catalog Translation",
   "catalog-translation.product.header": "Product Translation",
   "catalog-translation.category.header": "Category Translation",
+  "catalog-translation.sku.header": "SKU Translation",
   "catalog-translation.navigation.category": "Categories",
-  "catalog-translation.navigation.product": "Products"
+  "catalog-translation.navigation.product": "Products",
+  "catalog-translation.navigation.sku": "SKU"
 }

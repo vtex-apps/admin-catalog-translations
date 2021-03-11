@@ -12,6 +12,15 @@ interface CategoryInputTranslation {
   name: string
   title: string
 }
+interface SKUData {
+  sku: SKU
+}
+interface SKU extends SKUInputTranslation {
+  id: string
+}
+interface SKUInputTranslation {
+  name: string
+}
 
 interface ProductData {
   product: Product

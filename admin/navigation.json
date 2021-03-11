@@ -10,6 +10,10 @@
     {
       "labelId": "catalog-translation.navigation.product",
       "path": "/admin/catalog-translation/product"
+    },
+    {
+      "labelId": "catalog-translation.navigation.sku",
+      "path": "/admin/catalog-translation/sku"
     }
   ]
 }

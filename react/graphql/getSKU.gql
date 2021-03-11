@@ -1,0 +1,6 @@
+query GetSKU($identifier: SKUUniqueIdentifier) {
+  sku(identifier: $identifier) @context(provider: "vtex.catalog-graphql") {
+    id
+    name
+  }
+}
