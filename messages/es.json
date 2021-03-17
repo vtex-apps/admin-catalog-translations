@@ -4,7 +4,9 @@
   "catalog-translation.product.header": "Traducciones de Productos",
   "catalog-translation.category.header": "Traducciones de Categorias",
   "catalog-translation.sku.header": "Traducciones de SKU",
+  "catalog-translation.brand.header": "Brand Translation",
   "catalog-translation.navigation.category": "Categorias",
   "catalog-translation.navigation.product": "Productos",
-  "catalog-translation.navigation.sku": "SKU"
+  "catalog-translation.navigation.sku": "SKU",
+  "catalog-translation.navigation.brand": "Marcas"
 }

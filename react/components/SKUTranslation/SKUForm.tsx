@@ -2,7 +2,6 @@ import React, { FC, SyntheticEvent } from 'react'
 import { useMutation } from 'react-apollo'
 import { Input, Textarea, Button } from 'vtex.styleguide'
 
-import useCatalogQuery from '../../hooks/useCatalogQuery'
 import { useAlert } from '../../providers/AlertProvider'
 import useFormTranslation from '../../hooks/useFormTranslation'
 import { useLocaleSelector } from '../LocaleSelector'

@@ -21,6 +21,17 @@ interface SKU extends SKUInputTranslation {
 interface SKUInputTranslation {
   name: string
 }
+interface BrandData {
+  brand: Brand
+}
+interface Brand extends BrandInputTranslation {
+  id: string
+}
+interface BrandInputTranslation {
+  name: string
+  text: string
+  siteTitle: string
+}
 
 interface ProductData {
   product: Product

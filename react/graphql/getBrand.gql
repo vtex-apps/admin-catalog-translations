@@ -1,0 +1,8 @@
+query getBrand($id: ID!) {
+  brand(id: $id) @context(provider: "vtex.catalog-graphql") {
+    id
+    name
+    text
+    siteTitle
+  }
+}
