@@ -8,12 +8,34 @@ import {
   ModalDialog,
   Checkbox,
 } from 'vtex.styleguide'
+import XLSX from 'xlsx'
 
 import getCategory from '../../graphql/getCategory.gql'
 import { useLocaleSelector } from '../LocaleSelector'
 import ErrorHandler from '../ErrorHandler'
 import CategoryForm from './CategoryForm'
 import useCatalogQuery from '../../hooks/useCatalogQuery'
+
+const fakeData = [
+  {
+    id: 1,
+    name: 'name-category1',
+    title: 'title-category1',
+    description: 'desc-category1',
+  },
+  {
+    id: 2,
+    name: 'name-category2',
+    title: 'title-category2',
+    description: 'desc-category2',
+  },
+  {
+    id: 3,
+    name: 'name-category3',
+    title: 'title-category3',
+    description: 'desc-category3',
+  },
+]
 
 const CategoryTranslation: FC = () => {
   const [isExportOpen, setisExportOpen] = useState(false)
@@ -46,11 +68,18 @@ const CategoryTranslation: FC = () => {
 
   const downloadCategories = async () => {
     setDownloading(true)
-    await new Promise((resolve) => {
+    const response: unknown[] = await new Promise((resolve) => {
       setTimeout(() => {
-        resolve('done')
+        resolve(fakeData)
       }, 5000)
     })
+
+    const workSheet = XLSX.utils.json_to_sheet(response)
+    const workBook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workBook, workSheet, 'category_data')
+    const exportFileName = `category-data.xls`
+    XLSX.writeFile(workBook, exportFileName)
+
     setDownloading(false)
     setisExportOpen(false)
   }
