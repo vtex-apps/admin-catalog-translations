@@ -1,5 +1,11 @@
 import React, { FC, SyntheticEvent } from 'react'
-import { PageBlock, Spinner, InputSearch } from 'vtex.styleguide'
+import {
+  PageBlock,
+  Spinner,
+  InputSearch,
+  ButtonWithIcon,
+  IconDownload,
+} from 'vtex.styleguide'
 
 import getCategory from '../../graphql/getCategory.gql'
 import { useLocaleSelector } from '../LocaleSelector'
@@ -34,16 +40,28 @@ const CategoryTranslation: FC = () => {
 
   return (
     <main>
-      <div style={{ maxWidth: '340px' }} className="mv7">
-        <InputSearch
-          value={entryId}
-          placeholder="Search category..."
-          label="Category Id"
-          size="regular"
-          onChange={handleEntryIdInput}
-          onSubmit={handleSubmitCategoryId}
-          onClear={handleCleanSearch}
-        />
+      <div className="flex">
+        <div style={{ maxWidth: '340px' }} className="mv7">
+          <InputSearch
+            value={entryId}
+            placeholder="Search category..."
+            label="Category Id"
+            size="regular"
+            onChange={handleEntryIdInput}
+            onSubmit={handleSubmitCategoryId}
+            onClear={handleCleanSearch}
+          />
+        </div>
+        <div className="mv7 self-end ml7">
+          <ButtonWithIcon
+            name="export-category"
+            type="button"
+            icon={<IconDownload />}
+            variation="primary"
+          >
+            Export
+          </ButtonWithIcon>
+        </div>
       </div>
       {id || isLoadingOrRefetching || errorMessage ? (
         <PageBlock variation="full" title={`Category Info - ${selectedLocale}`}>
