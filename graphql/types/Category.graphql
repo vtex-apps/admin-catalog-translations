@@ -1,0 +1,7 @@
+type Category {
+  categoryID: String
+  categoryName: String
+  categoryTitle: String
+  categoryDescription: String
+  locale: String
+}
