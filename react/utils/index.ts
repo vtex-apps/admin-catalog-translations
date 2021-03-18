@@ -1,3 +1,5 @@
+import XLSX from 'xlsx'
+
 /**
  * Returns all the unique binding locales, excluding the first one provided by the api (admin)
  *
@@ -37,4 +39,24 @@ export function hasChanges<S>(formValues: S, orignalValues: S): boolean {
     }
   }
   return false
+}
+
+/**
+ * Parse json to XLS and prompt a download window for user
+ *
+ * @param {object} data JSON to be parsed to xls
+ * @param {object} options
+ * @param {options.fileName} string
+ * @param {options.sheetName} string
+ */
+
+export function parseJSONToXLS(
+  data: unknown[],
+  { fileName, sheetName }: { fileName: string; sheetName: string }
+) {
+  const workSheet = XLSX.utils.json_to_sheet(data)
+  const workBook = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(workBook, workSheet, sheetName)
+  const exportFileName = `${fileName}.xls`
+  XLSX.writeFile(workBook, exportFileName)
 }

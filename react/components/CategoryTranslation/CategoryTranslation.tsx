@@ -1,4 +1,4 @@
-import React, { FC, SyntheticEvent, useState } from 'react'
+import React, { FC, SyntheticEvent, useEffect, useState } from 'react'
 import {
   PageBlock,
   Spinner,
@@ -8,34 +8,19 @@ import {
   ModalDialog,
   Checkbox,
 } from 'vtex.styleguide'
-import XLSX from 'xlsx'
+import { useLazyQuery } from 'react-apollo'
 
 import getCategory from '../../graphql/getCategory.gql'
 import { useLocaleSelector } from '../LocaleSelector'
 import ErrorHandler from '../ErrorHandler'
 import CategoryForm from './CategoryForm'
 import useCatalogQuery from '../../hooks/useCatalogQuery'
+import getAllCategories from '../../graphql/getAllCategories.gql'
+import { parseJSONToXLS } from '../../utils'
 
-const fakeData = [
-  {
-    id: 1,
-    name: 'name-category1',
-    title: 'title-category1',
-    description: 'desc-category1',
-  },
-  {
-    id: 2,
-    name: 'name-category2',
-    title: 'title-category2',
-    description: 'desc-category2',
-  },
-  {
-    id: 3,
-    name: 'name-category3',
-    title: 'title-category3',
-    description: 'desc-category3',
-  },
-]
+interface CategoryTranslations {
+  categoryTranslations: Category[]
+}
 
 const CategoryTranslation: FC = () => {
   const [isExportOpen, setisExportOpen] = useState(false)
@@ -55,6 +40,11 @@ const CategoryTranslation: FC = () => {
 
   const { selectedLocale, isXVtexTenant } = useLocaleSelector()
 
+  const [fetchCategories, { data }] = useLazyQuery<
+    CategoryTranslations,
+    { locale: string; active?: boolean }
+  >(getAllCategories)
+
   const handleSubmitCategoryId = (e: SyntheticEvent) => {
     e.preventDefault()
     if (!entryId) {
@@ -66,23 +56,25 @@ const CategoryTranslation: FC = () => {
 
   const { id, ...categoryInfo } = entryInfo?.category || ({} as Category)
 
-  const downloadCategories = async () => {
+  const downloadCategories = () => {
     setDownloading(true)
-    const response: unknown[] = await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(fakeData)
-      }, 5000)
+    fetchCategories({
+      variables: { active: onlyActive, locale: selectedLocale },
     })
-
-    const workSheet = XLSX.utils.json_to_sheet(response)
-    const workBook = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(workBook, workSheet, 'category_data')
-    const exportFileName = `category-data.xls`
-    XLSX.writeFile(workBook, exportFileName)
-
-    setDownloading(false)
-    setisExportOpen(false)
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line vtex/prefer-early-return
+    if (data) {
+      parseJSONToXLS(data.categoryTranslations, {
+        fileName: 'category-data',
+        sheetName: 'category_data',
+      })
+
+      setDownloading(false)
+      setisExportOpen(false)
+    }
+  }, [data])
 
   return (
     <>
