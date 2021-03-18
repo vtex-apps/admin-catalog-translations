@@ -1,7 +1,7 @@
 type Category {
-  categoryID: String
-  categoryName: String
-  categoryTitle: String
-  categoryDescription: String
+  id: String
+  name: String
+  title: String
+  description: String
   locale: String
 }

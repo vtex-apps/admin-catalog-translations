@@ -1,13 +1,35 @@
-import { ParamsContext, RecorderState, Service } from '@vtex/api'
+import {
+  ParamsContext,
+  RecorderState,
+  Service,
+  ServiceContext,
+} from '@vtex/api'
 
 import { Clients } from './clients'
+import { resolvers, queries } from './resolvers'
 
-export default new Service<Clients, RecorderState, ParamsContext>({
+declare global {
+  type Context = ServiceContext<Clients, State>
+
+  interface State extends RecorderState {
+    locale: string
+  }
+}
+
+export default new Service<Clients, State, ParamsContext>({
   clients: {
     implementation: Clients,
     options: {
       default: {
         retries: 2,
+      },
+    },
+  },
+  graphql: {
+    resolvers: {
+      ...resolvers,
+      Query: {
+        ...queries,
       },
     },
   },
