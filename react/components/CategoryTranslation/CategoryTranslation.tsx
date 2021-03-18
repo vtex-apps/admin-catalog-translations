@@ -53,7 +53,7 @@ const CategoryTranslation: FC = () => {
     errorMessage,
   } = useCatalogQuery<CategoriesData, { id: number }>(getCategory)
 
-  const { selectedLocale } = useLocaleSelector()
+  const { selectedLocale, isXVtexTenant } = useLocaleSelector()
 
   const handleSubmitCategoryId = (e: SyntheticEvent) => {
     e.preventDefault()
@@ -99,17 +99,19 @@ const CategoryTranslation: FC = () => {
               onClear={handleCleanSearch}
             />
           </div>
-          <div className="mv7 self-end ml7">
-            <ButtonWithIcon
-              name="export-category"
-              type="button"
-              icon={<IconDownload />}
-              variation="primary"
-              onClick={() => setisExportOpen(true)}
-            >
-              Export
-            </ButtonWithIcon>
-          </div>
+          {isXVtexTenant ? null : (
+            <div className="mv7 self-end ml7">
+              <ButtonWithIcon
+                name="export-category"
+                type="button"
+                icon={<IconDownload />}
+                variation="primary"
+                onClick={() => setisExportOpen(true)}
+              >
+                Export
+              </ButtonWithIcon>
+            </div>
+          )}
         </div>
         {id || isLoadingOrRefetching || errorMessage ? (
           <PageBlock
