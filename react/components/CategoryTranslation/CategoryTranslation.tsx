@@ -26,6 +26,7 @@ const CategoryTranslation: FC = () => {
   const [isExportOpen, setisExportOpen] = useState(false)
   const [onlyActive, setOnlyActive] = useState(true)
   const [downloading, setDownloading] = useState(false)
+  const [hasError, setHasError] = useState(false)
 
   const {
     entryInfo,
@@ -40,7 +41,7 @@ const CategoryTranslation: FC = () => {
 
   const { selectedLocale, isXVtexTenant } = useLocaleSelector()
 
-  const [fetchCategories, { data }] = useLazyQuery<
+  const [fetchCategories, { data, error }] = useLazyQuery<
     CategoryTranslations,
     { locale: string; active?: boolean }
   >(getAllCategories)
@@ -74,7 +75,15 @@ const CategoryTranslation: FC = () => {
       setDownloading(false)
       setisExportOpen(false)
     }
-  }, [data])
+  }, [data, error])
+
+  useEffect(() => {
+    // eslint-disable-next-line vtex/prefer-early-return
+    if (error) {
+      setDownloading(false)
+      setHasError(true)
+    }
+  }, [error])
 
   return (
     <>
@@ -139,7 +148,10 @@ const CategoryTranslation: FC = () => {
           onClick: downloadCategories,
         }}
         isOpen={isExportOpen}
-        onClose={() => setisExportOpen(false)}
+        onClose={() => {
+          setisExportOpen(false)
+          setHasError(false)
+        }}
       >
         <div>
           <h3>Export Category Data for {selectedLocale}</h3>
@@ -150,6 +162,7 @@ const CategoryTranslation: FC = () => {
             checked={onlyActive}
             onChange={() => setOnlyActive(!onlyActive)}
           />
+          {hasError ? <p>There was an error</p> : null}
         </div>
       </ModalDialog>
     </>
