@@ -64,6 +64,7 @@ const CategoryTranslation: FC = () => {
   const { id, ...categoryInfo } = entryInfo?.category || ({} as Category)
 
   const downloadCategories = () => {
+    setHasError(false)
     setDownloading(true)
     fetchCategories({
       variables: { active: onlyActive, locale: selectedLocale },
@@ -147,7 +148,10 @@ const CategoryTranslation: FC = () => {
         loading={downloading}
         cancelation={{
           label: 'Cancel',
-          onClick: () => setisExportOpen(false),
+          onClick: () => {
+            setisExportOpen(false)
+            setHasError(false)
+          },
         }}
         confirmation={{
           label: 'Export Categories',
@@ -168,8 +172,12 @@ const CategoryTranslation: FC = () => {
             checked={onlyActive}
             onChange={() => setOnlyActive(!onlyActive)}
           />
-          {hasError ? <p>There was an error</p> : null}
         </div>
+        {hasError ? (
+          <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
+            There was an error exporting categories. Please try again.
+          </p>
+        ) : null}
       </ModalDialog>
     </>
   )
