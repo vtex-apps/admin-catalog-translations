@@ -15,14 +15,16 @@ const CATEGORIES_QUERY = `
   }
 `
 
-interface CategoryIdsResponse {
-  categories: {
-    items: Array<{ id: string }>
-    paging: {
-      pages: number
+const GET_TRANSLATION_QUERY = `
+  query getTranslation($id:ID!) {
+    category(id: $id) {
+      id
+      name
+      title
+      description
     }
   }
-}
+`
 
 export class Catalog extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
@@ -65,6 +67,14 @@ export class Catalog extends AppGraphQLClient {
       variables: {
         active,
         page,
+      },
+    })
+
+  public getTranslation = (id: string) =>
+    this.graphql.query<TranslationResponse, { id: string }>({
+      query: GET_TRANSLATION_QUERY,
+      variables: {
+        id,
       },
     })
 }

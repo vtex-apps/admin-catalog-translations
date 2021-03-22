@@ -44,7 +44,13 @@ const CategoryTranslation: FC = () => {
   const [fetchCategories, { data, error }] = useLazyQuery<
     CategoryTranslations,
     { locale: string; active?: boolean }
-  >(getAllCategories)
+  >(getAllCategories, {
+    context: {
+      headers: {
+        'x-vtex-locale': `${selectedLocale}`,
+      },
+    },
+  })
 
   const handleSubmitCategoryId = (e: SyntheticEvent) => {
     e.preventDefault()
