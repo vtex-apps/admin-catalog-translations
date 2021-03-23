@@ -1,3 +1,5 @@
+import { statusToError } from '../utils'
+
 export const Category = {
   locale: (
     _root: ResolvedPromise<TranslationResponse>,
@@ -25,16 +27,20 @@ const categoryTranslations = async (
 
   ctx.state.locale = args.locale
 
-  const ids = await catalog.getCategoriesId()
+  try {
+    const ids = await catalog.getCategoriesId()
 
-  const translationsP = []
+    const translationsP = []
 
-  for (const { id } of ids) {
-    const promise = catalog.getTranslation(id)
-    translationsP.push(promise)
+    for (const { id } of ids) {
+      const promise = catalog.getTranslation(id)
+      translationsP.push(promise)
+    }
+
+    return translationsP
+  } catch (error) {
+    return statusToError(error)
   }
-
-  return translationsP
 }
 
 export const queries = {

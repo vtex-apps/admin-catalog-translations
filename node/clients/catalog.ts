@@ -1,5 +1,7 @@
 import { AppGraphQLClient, InstanceOptions, IOContext } from '@vtex/api'
 
+import { statusToError } from '../utils'
+
 const CATALOG_GRAPHQL_APP = 'vtex.catalog-graphql@1.x'
 
 const CATEGORIES_QUERY = `
@@ -32,27 +34,30 @@ export class Catalog extends AppGraphQLClient {
   }
 
   public getCategoriesId = async (active = true) => {
-    const response = await this.getCategoriesIdPerPage({ active, page: 1 })
-    const {
-      items,
-      paging: { pages },
-    } = (response.data as CategoryIdsResponse).categories
+    try {
+      const response = await this.getCategoriesIdPerPage({ active, page: 1 })
+      const {
+        items,
+        paging: { pages },
+      } = (response.data as CategoryIdsResponse).categories
+      const collectItems = items
+      const responsePromises = []
 
-    const collectItems = items
-    const responsePromises = []
+      for (let i = 2; i <= pages; i++) {
+        const promise = this.getCategoriesIdPerPage({ active, page: i })
+        responsePromises.push(promise)
+      }
 
-    for (let i = 2; i <= pages; i++) {
-      const promise = this.getCategoriesIdPerPage({ active, page: i })
-      responsePromises.push(promise)
+      const resolvedPromises = await Promise.all(responsePromises)
+
+      const flattenResponse = resolvedPromises.reduce((acc, curr) => {
+        return [...acc, ...(curr.data as CategoryIdsResponse).categories.items]
+      }, collectItems)
+
+      return flattenResponse
+    } catch (error) {
+      return statusToError(error)
     }
-
-    const resolvedPromises = await Promise.all(responsePromises)
-
-    const flattenResponse = resolvedPromises.reduce((acc, curr) => {
-      return [...acc, ...(curr.data as CategoryIdsResponse).categories.items]
-    }, collectItems)
-
-    return flattenResponse
   }
 
   private getCategoriesIdPerPage = ({
