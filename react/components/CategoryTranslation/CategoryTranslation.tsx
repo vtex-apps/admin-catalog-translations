@@ -82,7 +82,7 @@ const CategoryTranslation: FC = () => {
       setDownloading(false)
       setisExportOpen(false)
     }
-  }, [data, error])
+  }, [data])
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return

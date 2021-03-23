@@ -41,7 +41,7 @@ export class Catalog extends AppGraphQLClient {
     const collectItems = items
     const responsePromises = []
 
-    for (let i = 2; i <= (pages || 2); i++) {
+    for (let i = 2; i <= pages; i++) {
       const promise = this.getCategoriesIdPerPage({ active, page: i })
       responsePromises.push(promise)
     }
