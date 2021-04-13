@@ -1,3 +1,4 @@
 type Query {
   categoryTranslations(locale: String!, active: Boolean): [Category]
+  getCategoriesName: [CategoryName]
 }

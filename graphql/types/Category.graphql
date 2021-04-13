@@ -5,3 +5,8 @@ type Category {
   description: String
   locale: String
 }
+
+type CategoryName {
+  id: String
+  name: String
+}
