@@ -5,10 +5,11 @@ import { statusToError } from '../utils'
 const CATALOG_GRAPHQL_APP = 'vtex.catalog-graphql@1.x'
 
 const CATEGORIES_QUERY = `
-  query GetCategoriesId ($active: Boolean, $page: Int!) {
+  query GetCategories ($active: Boolean, $page: Int!) {
     categories(term:"*", page: $page, pageSize: 50, active: $active) {
       items {
         id
+        name
       }
       paging {
         pages
@@ -33,25 +34,25 @@ export class Catalog extends AppGraphQLClient {
     super(CATALOG_GRAPHQL_APP, ctx, opts)
   }
 
-  public getCategoriesId = async (active = true) => {
+  public getCategories = async (active = true) => {
     try {
-      const response = await this.getCategoriesIdPerPage({ active, page: 1 })
+      const response = await this.getCategoriesPerPage({ active, page: 1 })
       const {
         items,
         paging: { pages },
-      } = (response.data as CategoryIdsResponse).categories
+      } = (response.data as CategoryResponse).categories
       const collectItems = items
       const responsePromises = []
 
       for (let i = 2; i <= pages; i++) {
-        const promise = this.getCategoriesIdPerPage({ active, page: i })
+        const promise = this.getCategoriesPerPage({ active, page: i })
         responsePromises.push(promise)
       }
 
       const resolvedPromises = await Promise.all(responsePromises)
 
       const flattenResponse = resolvedPromises.reduce((acc, curr) => {
-        return [...acc, ...(curr.data as CategoryIdsResponse).categories.items]
+        return [...acc, ...(curr.data as CategoryResponse).categories.items]
       }, collectItems)
 
       return flattenResponse
@@ -60,14 +61,14 @@ export class Catalog extends AppGraphQLClient {
     }
   }
 
-  private getCategoriesIdPerPage = ({
+  private getCategoriesPerPage = ({
     active = true,
     page,
   }: {
     active: boolean
     page: number
   }) =>
-    this.graphql.query<CategoryIdsResponse, { active: boolean; page: number }>({
+    this.graphql.query<CategoryResponse, { active: boolean; page: number }>({
       query: CATEGORIES_QUERY,
       variables: {
         active,

@@ -1,6 +1,6 @@
-interface CategoryIdsResponse {
+interface CategoryResponse {
   categories: {
-    items: Array<{ id: string }>
+    items: Array<{ id: string; name: string }>
     paging: {
       pages: number
     }

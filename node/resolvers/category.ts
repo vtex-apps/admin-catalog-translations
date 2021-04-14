@@ -30,7 +30,7 @@ const categoryTranslations = async (
   ctx.state.locale = args.locale
 
   try {
-    const ids = await catalog.getCategoriesId(active)
+    const ids = await catalog.getCategories(active)
 
     const translationsP = []
 
