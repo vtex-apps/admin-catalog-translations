@@ -49,3 +49,7 @@ interface ProductInputTranslation {
   title: string
   linkId: string
 }
+
+interface CategoriesNameAndId {
+  getCategoriesName: Array<{ id: string; name: string }>
+}

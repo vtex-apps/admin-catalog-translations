@@ -60,3 +60,21 @@ export function parseJSONToXLS(
   const exportFileName = `${fileName}.xls`
   XLSX.writeFile(workBook, exportFileName)
 }
+
+interface FilterSearchCategoriesArgs {
+  categoryList: Array<{ id: string; name: string }>
+  term: string
+}
+
+export const filterSearchCategories = ({
+  categoryList,
+  term,
+}: FilterSearchCategoriesArgs): Array<{ label: string; value: string }> => {
+  return (
+    categoryList
+      .map(({ id, name }) => ({ label: `${id} - ${name}`, value: id }))
+      .filter(({ label }) =>
+        label.toLowerCase().includes(term.toLowerCase())
+      ) ?? []
+  )
+}

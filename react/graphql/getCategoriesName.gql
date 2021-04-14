@@ -1,0 +1,6 @@
+query getCategoriesName {
+  getCategoriesName @context(provider: "vtex.admin-catalog-translation") {
+    id
+    name
+  }
+}

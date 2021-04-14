@@ -51,7 +51,6 @@ const getCategoriesName = async (
   ctx: Context
 ) => {
   const {
-    // @ts-
     clients: { catalog },
   } = ctx
 
