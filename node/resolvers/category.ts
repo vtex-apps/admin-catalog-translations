@@ -25,10 +25,12 @@ const categoryTranslations = async (
     clients: { catalog },
   } = ctx
 
+  const { active } = args
+
   ctx.state.locale = args.locale
 
   try {
-    const ids = await catalog.getCategoriesId()
+    const ids = await catalog.getCategoriesId(active)
 
     const translationsP = []
 
