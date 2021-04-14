@@ -48,23 +48,14 @@ const categoryTranslations = async (
 const getCategoriesName = async (
   _root: unknown,
   _args: unknown,
-  _ctx: Context
+  ctx: Context
 ) => {
-  // const {
-  //   // @ts-
-  //   clients: { catalog },
-  // } = ctx
+  const {
+    // @ts-
+    clients: { catalog },
+  } = ctx
 
-  return [
-    {
-      id: 1,
-      name: 'nameOne',
-    },
-    {
-      id: 2,
-      name: 'nameTwo',
-    },
-  ]
+  return catalog.getCategories(false)
 }
 
 export const queries = {
