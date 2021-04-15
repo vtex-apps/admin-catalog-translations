@@ -22,7 +22,7 @@ const categoryTranslations = async (
   ctx: Context
 ) => {
   const {
-    clients: { catalog },
+    clients: { catalogGQL },
   } = ctx
 
   const { active } = args
@@ -30,12 +30,12 @@ const categoryTranslations = async (
   ctx.state.locale = args.locale
 
   try {
-    const ids = await catalog.getCategories(active)
+    const ids = await catalogGQL.getCategories(active)
 
     const translationsP = []
 
     for (const { id } of ids) {
-      const promise = catalog.getTranslation(id)
+      const promise = catalogGQL.getTranslation(id)
       translationsP.push(promise)
     }
 
@@ -51,10 +51,10 @@ const getCategoriesName = async (
   ctx: Context
 ) => {
   const {
-    clients: { catalog },
+    clients: { catalogGQL },
   } = ctx
 
-  return catalog.getCategories(false)
+  return catalogGQL.getCategories(false)
 }
 
 export const queries = {

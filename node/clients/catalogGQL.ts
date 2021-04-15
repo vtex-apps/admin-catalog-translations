@@ -29,7 +29,7 @@ const GET_TRANSLATION_QUERY = `
   }
 `
 
-export class Catalog extends AppGraphQLClient {
+export class CatalogGQL extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
     super(CATALOG_GRAPHQL_APP, ctx, opts)
   }
