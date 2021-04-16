@@ -1,4 +1,4 @@
-export const productTranslations = async (
+const productTranslations = async (
   _root: unknown,
   args: { locale: string; categoryId: string },
   ctx: Context
@@ -14,4 +14,8 @@ export const productTranslations = async (
   const productIdCollection = catalog.getAllProducts(categoryId)
 
   return productIdCollection
+}
+
+export const queries = {
+  productTranslations,
 }
