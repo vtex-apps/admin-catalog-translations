@@ -1,0 +1,8 @@
+query GetSpecification($fieldId: ID){
+    field(id: $fieldId) @context(provider: "vtex.catalog-graphql"){
+    name
+  	description
+    fieldTypeId
+    fieldTypeName
+    }
+}
