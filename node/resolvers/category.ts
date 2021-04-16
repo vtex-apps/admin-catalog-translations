@@ -35,7 +35,7 @@ const categoryTranslations = async (
     const translationsP = []
 
     for (const { id } of ids) {
-      const promise = catalogGQL.getTranslation(id)
+      const promise = catalogGQL.getCategoryTranslation(id)
       translationsP.push(promise)
     }
 

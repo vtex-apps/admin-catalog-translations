@@ -76,7 +76,7 @@ export class CatalogGQL extends AppGraphQLClient {
       },
     })
 
-  public getTranslation = (id: string) =>
+  public getCategoryTranslation = (id: string) =>
     this.graphql.query<TranslationResponse, { id: string }>({
       query: GET_TRANSLATION_QUERY,
       variables: {
