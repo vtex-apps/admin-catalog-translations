@@ -2,18 +2,20 @@ import { statusToError } from '../utils'
 
 export const Category = {
   locale: (
-    _root: ResolvedPromise<TranslationResponse>,
+    _root: ResolvedPromise<CategoryTranslationResponse>,
     _args: unknown,
     ctx: Context
   ) => {
     return ctx.state.locale
   },
-  name: (root: ResolvedPromise<TranslationResponse>) => root.data.category.name,
-  title: (root: ResolvedPromise<TranslationResponse>) =>
+  name: (root: ResolvedPromise<CategoryTranslationResponse>) =>
+    root.data.category.name,
+  title: (root: ResolvedPromise<CategoryTranslationResponse>) =>
     root.data.category.title,
-  description: (root: ResolvedPromise<TranslationResponse>) =>
+  description: (root: ResolvedPromise<CategoryTranslationResponse>) =>
     root.data.category.description,
-  id: (root: ResolvedPromise<TranslationResponse>) => root.data.category.id,
+  id: (root: ResolvedPromise<CategoryTranslationResponse>) =>
+    root.data.category.id,
 }
 
 const categoryTranslations = async (

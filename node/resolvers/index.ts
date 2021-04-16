@@ -1,5 +1,5 @@
 import { Category, queries as categoryQueries } from './category'
-import { queries as productQueries } from './product'
+import { Product, queries as productQueries } from './product'
 
 export const queries = {
   ...categoryQueries,
@@ -8,4 +8,5 @@ export const queries = {
 
 export const resolvers = {
   Category,
+  Product,
 }

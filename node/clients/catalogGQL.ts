@@ -18,13 +18,25 @@ const CATEGORIES_QUERY = `
   }
 `
 
-const GET_TRANSLATION_QUERY = `
+const GET_CATEGORY_TRANSLATION_QUERY = `
   query getTranslation($id:ID!) {
     category(id: $id) {
       id
       name
       title
       description
+    }
+  }
+`
+
+const GET_PRODUCT_TRANSLATION_QUERY = `
+  query getProductTranslation($identifier: ProductUniqueIdentifier) {
+    product(identifier: $identifier) {
+      id
+      name
+      description
+      shortDescription
+      title
     }
   }
 `
@@ -77,10 +89,24 @@ export class CatalogGQL extends AppGraphQLClient {
     })
 
   public getCategoryTranslation = (id: string) =>
-    this.graphql.query<TranslationResponse, { id: string }>({
-      query: GET_TRANSLATION_QUERY,
+    this.graphql.query<CategoryTranslationResponse, { id: string }>({
+      query: GET_CATEGORY_TRANSLATION_QUERY,
       variables: {
         id,
+      },
+    })
+
+  public getProductTranslation = (id: string) =>
+    this.graphql.query<
+      ProductTranslationResponse,
+      { identifier: { value: string; field: 'id' } }
+    >({
+      query: GET_PRODUCT_TRANSLATION_QUERY,
+      variables: {
+        identifier: {
+          field: 'id',
+          value: id,
+        },
       },
     })
 }

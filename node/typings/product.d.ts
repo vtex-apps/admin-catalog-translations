@@ -8,3 +8,13 @@ interface GetProductAndSkuIds {
     to: number
   }
 }
+
+interface ProductTranslationResponse {
+  product: {
+    id: string
+    name: string
+    description: string
+    shortDescription: string
+    title: string
+  }
+}

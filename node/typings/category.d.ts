@@ -7,7 +7,7 @@ interface CategoryResponse {
   }
 }
 
-interface TranslationResponse {
+interface CategoryTranslationResponse {
   category: {
     id: string
     name: string
