@@ -49,3 +49,16 @@ interface ProductInputTranslation {
   title: string
   linkId: string
 }
+
+interface SpecificationsData {
+  args: Specifications
+}
+interface Specifications extends FieldInputTranslation {
+  id: string
+}
+interface FieldInputTranslation {
+  name: string
+  description: string
+  fieldTypeId: string
+  fieldTypeName: string
+}
