@@ -22,6 +22,7 @@ export default new Service<Clients, State, ParamsContext>({
     options: {
       default: {
         retries: 2,
+        timeout: 2 * 60000,
       },
     },
   },

@@ -18,6 +18,13 @@ export const Product = {
     root.data.product.title,
 }
 
+// const sleep = () =>
+//   new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve('done')
+//     }, 40)
+//   })
+
 const productTranslations = async (
   _root: unknown,
   args: { locale: string; categoryId: string },
@@ -35,11 +42,18 @@ const productTranslations = async (
 
   const productTranslationPromises = []
 
+  let counter = 0
+
   for (const productId of productIdCollection) {
+    if (counter === 2000) {
+      break
+    }
     const translationPromise = catalogGQL.getProductTranslation(productId)
     productTranslationPromises.push(translationPromise)
+    counter++
+    // eslint-disable-next-line no-await-in-loop
+    // await sleep()
   }
-
   return productTranslationPromises
 }
 
