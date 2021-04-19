@@ -11,6 +11,8 @@ import { ButtonGroup, Button, Spinner } from 'vtex.styleguide'
 import accountLocalesQuery from '../graphql/accountLocales.gql'
 import { filterLocales } from '../utils'
 
+import '../style.global.css'
+
 interface BindingContextInterface {
   xVtexTenant: string
   isXVtexTenant: boolean
@@ -76,10 +78,10 @@ const LocaleSelector: FC = () => {
   return loading ? (
     <Spinner />
   ) : (
-    <div>
+    <div className="button-group-container">
       <ButtonGroup
         buttons={bindings.map(({ id: bindingId, defaultLocale }) => (
-          <div key={bindingId}>
+          <div className="ma1" key={bindingId}>
             <Button
               isActiveOfGroup={defaultLocale === selectedLocale}
               variation={
