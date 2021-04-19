@@ -53,3 +53,14 @@ interface ProductInputTranslation {
 interface CategoriesNameAndId {
   getCategoriesName: Array<{ id: string; name: string }>
 }
+
+interface ProductTranslations {
+  productTranslations: {
+    id: string
+    name: string
+    description: string
+    shortDescription: string
+    title: string
+    locale: string
+  }
+}

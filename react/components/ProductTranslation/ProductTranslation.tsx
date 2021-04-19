@@ -8,7 +8,7 @@ import {
   ModalDialog,
   AutocompleteInput,
 } from 'vtex.styleguide'
-import { useQuery } from 'react-apollo'
+import { useLazyQuery, useQuery } from 'react-apollo'
 
 import { useLocaleSelector } from '../LocaleSelector'
 import getProductQuery from '../../graphql/getProduct.gql'
@@ -17,6 +17,7 @@ import ErrorHandler from '../ErrorHandler'
 import useCatalogQuery from '../../hooks/useCatalogQuery'
 import GET_CATEGORIES_NAME from '../../graphql/getCategoriesName.gql'
 import { filterSearchCategories } from '../../utils'
+import GET_PRODUCT_TRANSLATION from '../../graphql/getProductTranslations.gql'
 
 const AUTOCOMPLETE_LIST_SIZE = 6
 
@@ -48,12 +49,28 @@ const ProductTranslation: FC = () => {
 
   const { selectedLocale, isXVtexTenant } = useLocaleSelector()
 
-  const { data: categoryInfo, loading: loadingCategoryInfo, error } = useQuery<
-    CategoriesNameAndId
-  >(GET_CATEGORIES_NAME)
+  const [fetchProductTranslations, { data, error }] = useLazyQuery<
+    ProductTranslations,
+    { locale: string; categoryId: string }
+  >(GET_PRODUCT_TRANSLATION, {
+    context: {
+      headers: {
+        'x-vtex-locale': `${selectedLocale}`,
+      },
+    },
+  })
 
   // eslint-disable-next-line no-console
-  console.log({ error })
+  console.log({ data, error })
+
+  const {
+    data: categoryInfo,
+    loading: loadingCategoryInfo,
+    error: categoryError,
+  } = useQuery<CategoriesNameAndId>(GET_CATEGORIES_NAME)
+
+  // eslint-disable-next-line no-console
+  console.log({ categoryError })
 
   const listOfOptions = filterSearchCategories({
     categoryList: categoryInfo?.getCategoriesName ?? [],
@@ -70,6 +87,18 @@ const ProductTranslation: FC = () => {
       variables: { identifier: { field: 'id', value: entryId } },
     })
   }
+
+  const downloadProducts = () => {
+    if (!selectedCategory.value) {
+      // eslint-disable-next-line no-console
+      console.log('Select category')
+      return
+    }
+    fetchProductTranslations({
+      variables: { locale: selectedLocale, categoryId: selectedCategory.value },
+    })
+  }
+
   const { id, ...productInfo } = entryInfo?.product || ({} as Product)
 
   const hasCategorySelected = !!selectedCategory.label
@@ -138,7 +167,7 @@ const ProductTranslation: FC = () => {
         confirmation={{
           label: 'Export Products',
           // eslint-disable-next-line no-console
-          onClick: () => console.log('export'),
+          onClick: downloadProducts,
           disabled: true,
         }}
         onClose={() => {
