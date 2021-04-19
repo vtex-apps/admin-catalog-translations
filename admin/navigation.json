@@ -18,6 +18,10 @@
     {
       "labelId": "catalog-translation.navigation.brand",
       "path": "/admin/catalog-translation/brand"
+    },
+    {
+      "labelId": "catalog-translation.navigation.specifications",
+      "path": "/admin/catalog-translation/specifications"
     }
   ]
 }
