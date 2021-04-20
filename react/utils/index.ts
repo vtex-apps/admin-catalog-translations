@@ -52,3 +52,23 @@ export function hasChanges<S>(formValues: S, orignalValues: S): boolean {
   }
   return false
 }
+
+interface DropDownProps {
+  label: string
+  value: string
+}
+
+export const convertToDropDownOptions = (
+  bindings: Binding[]
+): DropDownProps[] => {
+  const formattedOptions: DropDownProps[] = []
+
+  for (const binding of bindings) {
+    formattedOptions.push({
+      label: binding.defaultLocale,
+      value: binding.defaultLocale,
+    })
+  }
+
+  return formattedOptions
+}
