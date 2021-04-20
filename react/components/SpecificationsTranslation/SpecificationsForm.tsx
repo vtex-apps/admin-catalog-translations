@@ -9,22 +9,26 @@ import useFormTranslation from '../../hooks/useFormTranslation'
 import ActionButtons from '../ActionButtons'
 
 interface SpecificationsFormProps {
-    specificationInfo: FieldInputTranslation
-    specificationId: string
-    updateMemoSpecifications: (
-      value: React.SetStateAction<{
-        [Identifier: string]: SpecificationsData
-      }>
-    ) => void
+  specificationInfo: FieldInputTranslation
+  specificationId: string
+  updateMemoSpecifications: (
+    value: React.SetStateAction<{
+      [Identifier: string]: SpecificationsData
+    }>
+  ) => void
 }
 
-const SpecificationsForm: FC<SpecificationsFormProps> = ({specificationInfo, specificationId, updateMemoSpecifications }) => {
+const SpecificationsForm: FC<SpecificationsFormProps> = ({
+  specificationInfo,
+  specificationId,
+  updateMemoSpecifications,
+}) => {
   const {
-    formState, 
-    canEdit, 
-    handleInputChange, 
+    formState,
+    canEdit,
+    handleInputChange,
     changed,
-    handleToggleEdit
+    handleToggleEdit,
   } = useFormTranslation(specificationInfo)
 
   const { isXVtexTenant, selectedLocale } = useLocaleSelector()
@@ -50,7 +54,8 @@ const SpecificationsForm: FC<SpecificationsFormProps> = ({specificationInfo, spe
           args,
         },
       })
-      const { translateSpecification: translateSpecificationResult } = data ?? {}
+      const { translateSpecification: translateSpecificationResult } =
+        data ?? {}
       if (translateSpecificationResult) {
         openAlert('success', 'Specifications')
       }
@@ -62,7 +67,7 @@ const SpecificationsForm: FC<SpecificationsFormProps> = ({specificationInfo, spe
     }
   }
 
-return (
+  return (
     <div>
       <form onSubmit={handleSubmit}>
         <div className="mb5">

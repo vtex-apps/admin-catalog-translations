@@ -17,11 +17,9 @@ const SpecificationsTranslation: FC = () => {
     fetchEntry,
     setMemoEntries,
     errorMessage,
-  }  = useCatalogQuery<SpecificationsData, { fieldId: number }>(getSpecificationById)
-
-
-  console.log(entryInfo);
-  
+  } = useCatalogQuery<SpecificationsData, { fieldId: number }>(
+    getSpecificationById
+  )
   const { selectedLocale } = useLocaleSelector()
 
   const handleSubmitSpecification = (e: SyntheticEvent) => {
@@ -31,11 +29,11 @@ const SpecificationsTranslation: FC = () => {
     }
     setMemoEntries({})
     fetchEntry({
-      variables: { fieldId: Number(entryId) }
+      variables: { fieldId: Number(entryId) },
     })
   }
-  const { fieldId, ...specificationInfo } = entryInfo?.field || ({} as Specifications)
-
+  const { fieldId, ...specificationInfo } =
+    entryInfo?.field || ({} as Specifications)
 
   return (
     <main>
@@ -51,7 +49,10 @@ const SpecificationsTranslation: FC = () => {
         />
       </div>
       {fieldId || isLoadingOrRefetching || errorMessage ? (
-        <PageBlock variation="full" title={`Specification info- ${selectedLocale}`}>
+        <PageBlock
+          variation="full"
+          title={`Specification info- ${selectedLocale}`}
+        >
           {errorMessage ? (
             <ErrorHandler
               errorMessage={errorMessage}
@@ -62,9 +63,9 @@ const SpecificationsTranslation: FC = () => {
             <Spinner />
           ) : (
             <SpecificationsForm
-            specificationInfo={specificationInfo}
-            specificationId={entryId}
-            updateMemoSpecifications={setMemoEntries}
+              specificationInfo={specificationInfo}
+              specificationId={entryId}
+              updateMemoSpecifications={setMemoEntries}
             />
           )}
         </PageBlock>

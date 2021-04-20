@@ -5,13 +5,15 @@ import CatalogTranslationWrapper from './components/CatalogTranslationWrapper'
 import SpecificationsTranslation from './components/SpecificationsTranslation/SpecificationsTranslation'
 
 const SpecificationsTranslationWrapped: FC = () => {
-    return (
-        <CatalogTranslationWrapper
-      titleComponent={<FormattedMessage id="catalog-translation.specifications.header" />}
+  return (
+    <CatalogTranslationWrapper
+      titleComponent={
+        <FormattedMessage id="catalog-translation.specifications.header" />
+      }
     >
-        <SpecificationsTranslation />
+      <SpecificationsTranslation />
     </CatalogTranslationWrapper>
-    )
+  )
 }
 
 export default SpecificationsTranslationWrapped
