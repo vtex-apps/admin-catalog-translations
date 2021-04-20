@@ -51,10 +51,10 @@ interface ProductInputTranslation {
 }
 
 interface SpecificationsData {
-  args: Specifications
+  field: Specifications
 }
 interface Specifications extends FieldInputTranslation {
-  id: string
+  fieldId: string
 }
 interface FieldInputTranslation {
   name: string
