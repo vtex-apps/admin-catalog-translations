@@ -90,15 +90,6 @@ const SpecificationsForm: FC<SpecificationsFormProps> = ({
             required
           />
         </div>
-        <div className="mb5">
-          <Input
-            label="Field type"
-            value={formState.fieldTypeName}
-            name="fieldTypeName"
-            disabled={isXVtexTenant || !canEdit}
-            onChange={handleInputChange}
-          />
-        </div>
         {isXVtexTenant ? null : (
           <ActionButtons
             toggleEdit={handleToggleEdit}
