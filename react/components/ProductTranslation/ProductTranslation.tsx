@@ -1,4 +1,4 @@
-import React, { FC, SyntheticEvent, useEffect, useState } from 'react'
+import React, { FC, SyntheticEvent, useEffect, useState, useRef } from 'react'
 import {
   InputSearch,
   PageBlock,
@@ -7,6 +7,7 @@ import {
   IconDownload,
   ModalDialog,
   AutocompleteInput,
+  Alert,
 } from 'vtex.styleguide'
 import { useLazyQuery, useQuery } from 'react-apollo'
 
@@ -33,6 +34,7 @@ const ProductTranslation: FC = () => {
     {} as AutocompleteValue
   )
   const [downloading, setDownloading] = useState(false)
+  const [showMissingCatId, setShowMissingCatId] = useState(false)
 
   const {
     entryInfo,
@@ -94,8 +96,7 @@ const ProductTranslation: FC = () => {
 
   const downloadProducts = () => {
     if (!selectedCategory.value) {
-      // eslint-disable-next-line no-console
-      console.log('Select category')
+      setShowMissingCatId(true)
       return
     }
     setDownloading(true)
@@ -122,6 +123,17 @@ const ProductTranslation: FC = () => {
       handleClose()
     }
   }, [productTranslations])
+
+  const alertRef = useRef<any>()
+
+  useEffect(() => {
+    clearTimeout(alertRef.current)
+    if (showMissingCatId) {
+      alertRef.current = setTimeout(() => {
+        setShowMissingCatId(false)
+      }, 5000)
+    }
+  }, [showMissingCatId])
 
   const { id, ...productInfo } = entryInfo?.product || ({} as Product)
 
@@ -188,12 +200,20 @@ const ProductTranslation: FC = () => {
         }}
         confirmation={{
           label: 'Export Products',
-          // eslint-disable-next-line no-console
           onClick: downloadProducts,
           disabled: true,
         }}
         onClose={handleClose}
       >
+        {showMissingCatId ? (
+          <div className="relative">
+            <div className="w-100 absolute z-max overflow-hidden top-0 left-0">
+              <Alert type="warning" onClose={() => setShowMissingCatId(false)}>
+                Please select a Category Id
+              </Alert>
+            </div>
+          </div>
+        ) : null}
         <div style={{ minHeight: '420px' }}>
           <h3>Export Product Data for {selectedLocale}</h3>
           {loadingCategoryInfo ? (
