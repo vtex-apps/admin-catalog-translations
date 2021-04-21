@@ -18,12 +18,7 @@ export const Product = {
     root.data.product.title,
 }
 
-// const sleep = () =>
-//   new Promise((resolve) => {
-//     setTimeout(() => {
-//       resolve('done')
-//     }, 40)
-//   })
+const PRODUCT_LIMIT = 1600
 
 const productTranslations = async (
   _root: unknown,
@@ -45,14 +40,13 @@ const productTranslations = async (
   let counter = 0
 
   for (const productId of productIdCollection) {
-    if (counter === 2000) {
+    // Getting a 429 when products list > 2k. Setting threshold a little below it to ensure it works
+    if (counter === PRODUCT_LIMIT) {
       break
     }
     const translationPromise = catalogGQL.getProductTranslation(productId)
     productTranslationPromises.push(translationPromise)
     counter++
-    // eslint-disable-next-line no-await-in-loop
-    // await sleep()
   }
   return productTranslationPromises
 }
