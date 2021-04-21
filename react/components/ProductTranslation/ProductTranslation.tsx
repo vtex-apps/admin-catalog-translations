@@ -242,6 +242,9 @@ const ProductTranslation: FC = () => {
                   loading: listOfOptions.length > AUTOCOMPLETE_LIST_SIZE,
                 }}
               />
+              <p className="i f7">
+                Currently, the app allows to export only 1.600 products
+              </p>
               {hasError ? (
                 <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
                   There was an error exporting products. Please try again in a
