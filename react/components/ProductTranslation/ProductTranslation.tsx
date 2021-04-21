@@ -1,4 +1,4 @@
-import React, { FC, SyntheticEvent, useState } from 'react'
+import React, { FC, SyntheticEvent, useEffect, useState } from 'react'
 import {
   InputSearch,
   PageBlock,
@@ -16,7 +16,7 @@ import ProductForm from './ProductForm'
 import ErrorHandler from '../ErrorHandler'
 import useCatalogQuery from '../../hooks/useCatalogQuery'
 import GET_CATEGORIES_NAME from '../../graphql/getCategoriesName.gql'
-import { filterSearchCategories } from '../../utils'
+import { filterSearchCategories, parseJSONToXLS } from '../../utils'
 import GET_PRODUCT_TRANSLATION from '../../graphql/getProductTranslations.gql'
 
 const AUTOCOMPLETE_LIST_SIZE = 6
@@ -32,6 +32,7 @@ const ProductTranslation: FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<AutocompleteValue>(
     {} as AutocompleteValue
   )
+  const [downloading, setDownloading] = useState(false)
 
   const {
     entryInfo,
@@ -49,19 +50,22 @@ const ProductTranslation: FC = () => {
 
   const { selectedLocale, isXVtexTenant } = useLocaleSelector()
 
-  const [fetchProductTranslations, { data, error }] = useLazyQuery<
-    ProductTranslations,
-    { locale: string; categoryId: string }
-  >(GET_PRODUCT_TRANSLATION, {
-    context: {
-      headers: {
-        'x-vtex-locale': `${selectedLocale}`,
+  const [
+    fetchProductTranslations,
+    { data: productTranslations, error },
+  ] = useLazyQuery<ProductTranslations, { locale: string; categoryId: string }>(
+    GET_PRODUCT_TRANSLATION,
+    {
+      context: {
+        headers: {
+          'x-vtex-locale': `${selectedLocale}`,
+        },
       },
-    },
-  })
+    }
+  )
 
   // eslint-disable-next-line no-console
-  console.log({ data, error })
+  console.log({ error })
 
   const {
     data: categoryInfo,
@@ -94,10 +98,30 @@ const ProductTranslation: FC = () => {
       console.log('Select category')
       return
     }
+    setDownloading(true)
     fetchProductTranslations({
       variables: { locale: selectedLocale, categoryId: selectedCategory.value },
     })
   }
+
+  const handleClose = () => {
+    setSelectedCategory({} as AutocompleteValue)
+    setIsExportOpen(false)
+    setSearchTerm('')
+  }
+
+  useEffect(() => {
+    // eslint-disable-next-line vtex/prefer-early-return
+    if (productTranslations) {
+      parseJSONToXLS(productTranslations.productTranslations, {
+        fileName: 'product-data',
+        sheetName: 'product_data',
+      })
+
+      setDownloading(false)
+      handleClose()
+    }
+  }, [productTranslations])
 
   const { id, ...productInfo } = entryInfo?.product || ({} as Product)
 
@@ -157,12 +181,10 @@ const ProductTranslation: FC = () => {
       </main>
       <ModalDialog
         isOpen={isExportOpen}
+        loading={downloading}
         cancelation={{
           label: 'Cancel',
-          onClick: () => {
-            setIsExportOpen(false)
-            setSearchTerm('')
-          },
+          onClick: handleClose,
         }}
         confirmation={{
           label: 'Export Products',
@@ -170,10 +192,7 @@ const ProductTranslation: FC = () => {
           onClick: downloadProducts,
           disabled: true,
         }}
-        onClose={() => {
-          setIsExportOpen(false)
-          setSearchTerm('')
-        }}
+        onClose={handleClose}
       >
         <div style={{ minHeight: '420px' }}>
           <h3>Export Product Data for {selectedLocale}</h3>

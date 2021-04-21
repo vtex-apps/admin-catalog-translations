@@ -55,12 +55,12 @@ interface CategoriesNameAndId {
 }
 
 interface ProductTranslations {
-  productTranslations: {
+  productTranslations: Array<{
     id: string
     name: string
     description: string
     shortDescription: string
     title: string
     locale: string
-  }
+  }>
 }
