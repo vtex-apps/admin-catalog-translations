@@ -35,6 +35,7 @@ const ProductTranslation: FC = () => {
   )
   const [downloading, setDownloading] = useState(false)
   const [showMissingCatId, setShowMissingCatId] = useState(false)
+  const [hasError, setHasError] = useState(false)
 
   const {
     entryInfo,
@@ -54,7 +55,7 @@ const ProductTranslation: FC = () => {
 
   const [
     fetchProductTranslations,
-    { data: productTranslations, error },
+    { data: productTranslations, error: prodTranslationError },
   ] = useLazyQuery<ProductTranslations, { locale: string; categoryId: string }>(
     GET_PRODUCT_TRANSLATION,
     {
@@ -66,17 +67,11 @@ const ProductTranslation: FC = () => {
     }
   )
 
-  // eslint-disable-next-line no-console
-  console.log({ error })
-
   const {
     data: categoryInfo,
     loading: loadingCategoryInfo,
     error: categoryError,
   } = useQuery<CategoriesNameAndId>(GET_CATEGORIES_NAME)
-
-  // eslint-disable-next-line no-console
-  console.log({ categoryError })
 
   const listOfOptions = filterSearchCategories({
     categoryList: categoryInfo?.getCategoriesName ?? [],
@@ -109,6 +104,7 @@ const ProductTranslation: FC = () => {
     setSelectedCategory({} as AutocompleteValue)
     setIsExportOpen(false)
     setSearchTerm('')
+    setHasError(false)
   }
 
   useEffect(() => {
@@ -135,9 +131,15 @@ const ProductTranslation: FC = () => {
     }
   }, [showMissingCatId])
 
-  const { id, ...productInfo } = entryInfo?.product || ({} as Product)
+  useEffect(() => {
+    // eslint-disable-next-line vtex/prefer-early-return
+    if (prodTranslationError || categoryError) {
+      setDownloading(false)
+      setHasError(true)
+    }
+  }, [prodTranslationError, categoryError])
 
-  const hasCategorySelected = !!selectedCategory.label
+  const { id, ...productInfo } = entryInfo?.product || ({} as Product)
 
   return (
     <>
@@ -240,12 +242,11 @@ const ProductTranslation: FC = () => {
                   loading: listOfOptions.length > AUTOCOMPLETE_LIST_SIZE,
                 }}
               />
-              {hasCategorySelected ? (
-                <div>
-                  <p>
-                    {`Download product information from category ${selectedCategory.label}`}
-                  </p>
-                </div>
+              {hasError ? (
+                <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
+                  There was an error exporting products. Please try again in a
+                  few minutes.
+                </p>
               ) : null}
             </div>
           )}
