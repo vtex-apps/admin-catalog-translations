@@ -1,5 +1,3 @@
-import { statusToError } from '../utils'
-
 export const Category = {
   locale: (
     _root: ResolvedPromise<CategoryTranslationResponse>,
@@ -29,24 +27,22 @@ const categoryTranslations = async (
     clients: { catalogGQL },
   } = ctx
 
-  const { active } = args
+  const { active, locale } = args
 
-  ctx.state.locale = args.locale
+  ctx.state.locale = locale
 
-  try {
-    const ids = await catalogGQL.getCategories(active)
+  const ids = await catalogGQL.getCategories(active)
 
-    const translationsP = []
+  const translationsP = []
 
-    for (const { id } of ids) {
-      const promise = catalogGQL.getCategoryTranslation(id)
-      translationsP.push(promise)
-    }
-
-    return translationsP
-  } catch (error) {
-    return statusToError(error)
+  for (const { id } of ids) {
+    const promise = catalogGQL.getCategoryTranslation(id, locale)
+    translationsP.push(promise)
   }
+
+  const translations = await Promise.all(translationsP)
+
+  return translations
 }
 
 const getCategoriesName = async (
