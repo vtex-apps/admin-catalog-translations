@@ -109,7 +109,7 @@ const ProductTranslation: FC = () => {
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
-    if (productTranslations) {
+    if (productTranslations && downloading) {
       parseJSONToXLS(productTranslations.productTranslations, {
         fileName: `product-data-${selectedLocale}`,
         sheetName: 'product_data',
@@ -118,7 +118,7 @@ const ProductTranslation: FC = () => {
       setDownloading(false)
       handleClose()
     }
-  }, [productTranslations, selectedLocale])
+  }, [productTranslations, selectedLocale, downloading])
 
   const alertRef = useRef<any>()
 
