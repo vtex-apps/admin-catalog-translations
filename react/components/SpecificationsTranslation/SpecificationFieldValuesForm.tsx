@@ -3,25 +3,24 @@ import { Input, Textarea, Button } from 'vtex.styleguide'
 import { useMutation } from 'react-apollo'
 
 import { useLocaleSelector } from '../LocaleSelector'
-import translateSpecificationMutation from '../../graphql/translateSpecification.gql'
+import translateSpecificationMutation from '../../graphql/translateSpecificationValues.gql'
 import { useAlert } from '../../providers/AlertProvider'
 import useFormTranslation from '../../hooks/useFormTranslation'
 import ActionButtons from '../ActionButtons'
-import SpecificationFieldValues from './SpecificationFieldValuesTranslation'
 
-interface SpecificationsFormProps {
-  specificationInfo: FieldInputTranslation
-  specificationId: string
+interface SpecificationFieldValuesFormProps {
+  specificationValuesInfo: FieldValueInputTranslation[]
+  specificationValuesID: string
   updateMemoSpecifications: (
     value: React.SetStateAction<{
-      [Identifier: string]: SpecificationsData
+      [Identifier: string]: SpecificationFieldValuesData
     }>
   ) => void
 }
 
-const SpecificationsForm: FC<SpecificationsFormProps> = ({
-  specificationInfo,
-  specificationId,
+const SpecificationsForm: FC<SpecificationFieldValuesFormProps> = ({
+  specificationValuesInfo,
+  specificationValuesID,
   updateMemoSpecifications,
 }) => {
   const {
@@ -30,23 +29,25 @@ const SpecificationsForm: FC<SpecificationsFormProps> = ({
     handleInputChange,
     changed,
     handleToggleEdit,
-  } = useFormTranslation(specificationInfo)
+  } = useFormTranslation(specificationValuesInfo)
 
   const { isXVtexTenant, selectedLocale } = useLocaleSelector()
   const [translateSpecification, { loading }] = useMutation<
     { translateSpecification: boolean },
-    { args: Specifications; locale: string }
+    { args: SpecificationFieldValues; locale: string }
   >(translateSpecificationMutation)
 
   const { openAlert } = useAlert()
+
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
     if (loading) {
       return
     }
-    const args = {
+    const target = e.target as HTMLTextAreaElement
+    /* const args = {
       ...formState,
-      ...{ fieldId: specificationId },
+      ...{ fieldId: specificationValuesID },
     }
     try {
       const { data, errors } = await translateSpecification({
@@ -58,45 +59,36 @@ const SpecificationsForm: FC<SpecificationsFormProps> = ({
       const { translateSpecification: translateSpecificationResult } =
         data ?? {}
       if (translateSpecificationResult) {
-        openAlert('success', 'Specifications')
+        openAlert('success', 'Specification Field Values')
       }
       if (errors?.length) {
-        throw new TypeError('Error translation Specifications')
+        throw new TypeError('Error translation Specification Field Values')
       }
     } catch (err) {
-      openAlert('error', 'Specifications')
-    }
+      openAlert('error', 'Specification Field Values')
+    } */
   }
-  const isTextField = !(
-    formState.fieldTypeName === 'Radio' ||
-    formState.fieldTypeName === 'Numero' ||
-    formState.fieldTypeName === 'Combo' ||
-    formState.fieldTypeName === 'Checkbox'
-  )
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <div className="mb5">
-          <Input
-            label="Name"
-            value={formState.name}
-            name="name"
-            disabled={isXVtexTenant || !canEdit}
-            onChange={handleInputChange}
-          />
+          {formState.map((fieldItem) => {
+            return (
+              <div className="mb5" key={fieldItem.fieldValueId}>
+                <Textarea
+                  resize="none"
+                  label="Name"
+                  id={fieldItem.fieldValueId}
+                  value={fieldItem.value}
+                  name="name"
+                  disabled={isXVtexTenant || !canEdit}
+                />
+              </div>
+            )
+          })}
         </div>
-        <div className="mb5">
-          <Textarea
-            resize="none"
-            label="Description"
-            value={formState.description}
-            name="description"
-            disabled={isXVtexTenant || !canEdit}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
+
         {isXVtexTenant ? null : (
           <ActionButtons
             toggleEdit={handleToggleEdit}
@@ -106,9 +98,6 @@ const SpecificationsForm: FC<SpecificationsFormProps> = ({
           />
         )}
       </form>
-      {isTextField ? null : (
-        <SpecificationFieldValues searchedId={specificationId} />
-      )}
     </div>
   )
 }
