@@ -6,5 +6,6 @@ query getAllCategories($locale: String!, $active: Boolean) {
     title
     description
     locale
+    linkId
   }
 }
