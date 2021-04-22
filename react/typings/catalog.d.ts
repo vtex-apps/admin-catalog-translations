@@ -62,3 +62,15 @@ interface FieldInputTranslation {
   fieldTypeId: string
   fieldTypeName: string
 }
+interface SpecificationFieldValuesData {
+  fieldValues: SpecificationFieldValues[]
+}
+
+interface SpecificationFieldValues extends FieldValueInputTranslation {
+  fieldId: string
+}
+
+interface FieldValueInputTranslation {
+  fieldValueId: number
+  value: string
+}
