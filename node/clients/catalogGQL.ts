@@ -38,6 +38,7 @@ const GET_PRODUCT_TRANSLATION_QUERY = `
       description
       shortDescription
       title
+      linkId
     }
   }
 `

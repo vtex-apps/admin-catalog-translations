@@ -16,6 +16,8 @@ export const Product = {
     root.data.product.shortDescription,
   title: (root: ResolvedPromise<ProductTranslationResponse>) =>
     root.data.product.title,
+  linkId: (root: ResolvedPromise<ProductTranslationResponse>) =>
+    root.data.product.linkId,
 }
 
 const PRODUCT_LIMIT = 1600

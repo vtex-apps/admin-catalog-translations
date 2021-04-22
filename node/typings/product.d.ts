@@ -16,5 +16,6 @@ interface ProductTranslationResponse {
     description: string
     shortDescription: string
     title: string
+    linkId: string
   }
 }
