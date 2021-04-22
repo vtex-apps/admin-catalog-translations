@@ -105,17 +105,24 @@ export class CatalogGQL extends AppGraphQLClient {
     )
   }
 
-  public getProductTranslation = (id: string) =>
+  public getProductTranslation = (id: string, locale: string) =>
     this.graphql.query<
       ProductTranslationResponse,
       { identifier: { value: string; field: 'id' } }
-    >({
-      query: GET_PRODUCT_TRANSLATION_QUERY,
-      variables: {
-        identifier: {
-          field: 'id',
-          value: id,
+    >(
+      {
+        query: GET_PRODUCT_TRANSLATION_QUERY,
+        variables: {
+          identifier: {
+            field: 'id',
+            value: id,
+          },
         },
       },
-    })
+      {
+        headers: {
+          'x-vtex-locale': `${locale}`,
+        },
+      }
+    )
 }

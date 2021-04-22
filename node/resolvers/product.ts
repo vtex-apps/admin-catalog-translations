@@ -44,7 +44,10 @@ const productTranslations = async (
     if (counter === PRODUCT_LIMIT) {
       break
     }
-    const translationPromise = catalogGQL.getProductTranslation(productId)
+    const translationPromise = catalogGQL.getProductTranslation(
+      productId,
+      locale
+    )
     productTranslationPromises.push(translationPromise)
     counter++
   }
