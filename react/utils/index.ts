@@ -57,7 +57,7 @@ export function parseJSONToXLS(
   const workSheet = XLSX.utils.json_to_sheet(data)
   const workBook = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(workBook, workSheet, sheetName)
-  const exportFileName = `${fileName}.xls`
+  const exportFileName = `${fileName}.xlsx`
   XLSX.writeFile(workBook, exportFileName)
 }
 

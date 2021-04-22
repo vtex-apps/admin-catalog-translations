@@ -73,16 +73,16 @@ const CategoryTranslation: FC = () => {
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
-    if (data) {
+    if (data && downloading) {
       parseJSONToXLS(data.categoryTranslations, {
-        fileName: 'category-data',
+        fileName: `category-data-${selectedLocale}`,
         sheetName: 'category_data',
       })
 
       setDownloading(false)
       setisExportOpen(false)
     }
-  }, [data])
+  }, [data, selectedLocale, downloading])
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
