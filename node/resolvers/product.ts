@@ -53,7 +53,10 @@ const productTranslations = async (
     productTranslationPromises.push(translationPromise)
     counter++
   }
-  return productTranslationPromises
+
+  const translations = await Promise.all(productTranslationPromises)
+
+  return translations
 }
 
 export const queries = {
