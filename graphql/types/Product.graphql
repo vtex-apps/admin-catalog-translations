@@ -5,4 +5,5 @@ type Product {
   shortDescription: String
   title: String
   locale: String
+  linkId: String
 }
