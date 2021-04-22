@@ -13,6 +13,7 @@ interface CategoryTranslationResponse {
     name: string
     title: string
     description: string
+    linkId: string
   }
 }
 

@@ -16,6 +16,8 @@ export const Category = {
     root.data.category.description,
   id: (root: ResolvedPromise<CategoryTranslationResponse>) =>
     root.data.category.id,
+  linkId: (root: ResolvedPromise<CategoryTranslationResponse>) =>
+    root.data.category.linkId,
 }
 
 const categoryTranslations = async (

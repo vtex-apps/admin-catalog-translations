@@ -25,6 +25,7 @@ const GET_CATEGORY_TRANSLATION_QUERY = `
       name
       title
       description
+      linkId
     }
   }
 `
