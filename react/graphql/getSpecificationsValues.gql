@@ -1,6 +1,6 @@
-query GetSpecificationsValues($fieldId: ID){
-    fieldValues(fieldId: $fieldId) @context(provider: "vtex.catalog-graphql"){
+query GetSpecificationsValues($fieldId: ID) {
+  fieldValues(fieldId: $fieldId) @context(provider: "vtex.catalog-graphql") {
     fieldValueId
     value
-    }
+  }
 }
