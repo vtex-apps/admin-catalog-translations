@@ -243,7 +243,8 @@ const ProductTranslation: FC = () => {
                 }}
               />
               <p className="i f7">
-                Currently, the app allows to export only 1.600 products
+                Currently, the app allows to export 1.600 products every 3
+                minutes
               </p>
               {hasError ? (
                 <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
