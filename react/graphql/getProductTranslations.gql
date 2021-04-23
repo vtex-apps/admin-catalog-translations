@@ -1,0 +1,12 @@
+query getProductTranslations($locale: String!, $categoryId: String!) {
+  productTranslations(locale: $locale, categoryId: $categoryId)
+    @context(provider: "vtex.admin-catalog-translation") {
+    id
+    name
+    description
+    shortDescription
+    title
+    linkId
+    locale
+  }
+}

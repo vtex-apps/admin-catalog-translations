@@ -1,85 +1,89 @@
-import { AppGraphQLClient, InstanceOptions, IOContext } from '@vtex/api'
+import {
+  InstanceOptions,
+  IOContext,
+  JanusClient,
+  RequestConfig,
+} from '@vtex/api'
 
-import { statusToError } from '../utils'
+import {
+  statusToError,
+  interations,
+  getInterationPairs,
+  extractProductId,
+  MAX_PRODUCTS_PER_CATEGORY,
+} from '../utils'
 
-const CATALOG_GRAPHQL_APP = 'vtex.catalog-graphql@1.x'
-
-const CATEGORIES_QUERY = `
-  query GetCategoriesId ($active: Boolean, $page: Int!) {
-    categories(term:"*", page: $page, pageSize: 50, active: $active) {
-      items {
-        id
-      }
-      paging {
-        pages
-      }
-    }
-  }
-`
-
-const GET_TRANSLATION_QUERY = `
-  query getTranslation($id:ID!) {
-    category(id: $id) {
-      id
-      name
-      title
-      description
-    }
-  }
-`
-
-export class Catalog extends AppGraphQLClient {
+export class Catalog extends JanusClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
-    super(CATALOG_GRAPHQL_APP, ctx, opts)
+    super(ctx, {
+      ...opts,
+      headers: {
+        ...opts?.headers,
+        ...(ctx.adminUserAuthToken
+          ? { VtexIdclientAutCookie: ctx.adminUserAuthToken }
+          : null),
+      },
+    })
   }
 
-  public getCategoriesId = async (active = true) => {
+  public getAllProducts = async (categoryId: string) => {
+    const { range, ...products } = await this.getProductIdsByCategory(
+      categoryId,
+      1,
+      MAX_PRODUCTS_PER_CATEGORY
+    )
+    const { total } = range
+    const remainingInterations = interations(total)
+    const productPerCategorypromises = []
+
+    // /GetProductAndSkuIds returns max 50 responses. We loop over the remaining interations to get all products
+    for (let i = 1; i <= remainingInterations; i++) {
+      const [from, to] = getInterationPairs(i)
+      const productPerIdPromise = this.getProductIdsByCategory(
+        categoryId,
+        from,
+        to
+      )
+      productPerCategorypromises.push(productPerIdPromise)
+    }
+
+    const productPerCategoryCollection = await Promise.all(
+      productPerCategorypromises
+    )
+
+    const finalProducts = []
+
+    // we plug together the first response and all the others. Then we extract only the product ids from responses
+    for (const product of [products, ...productPerCategoryCollection]) {
+      const productIds = extractProductId(product.data)
+      finalProducts.push(...productIds)
+    }
+    return finalProducts
+  }
+
+  private getProductIdsByCategory = (
+    categoryId: string,
+    _from: number,
+    _to: number
+  ) => {
+    return this.get<GetProductAndSkuIds>(this.routes.getProductAndSkuIds(), {
+      params: { categoryId, _from, _to },
+    })
+  }
+
+  protected get = <T>(url: string, config: RequestConfig = {}) => {
     try {
-      const response = await this.getCategoriesIdPerPage({ active, page: 1 })
-      const {
-        items,
-        paging: { pages },
-      } = (response.data as CategoryIdsResponse).categories
-      const collectItems = items
-      const responsePromises = []
-
-      for (let i = 2; i <= pages; i++) {
-        const promise = this.getCategoriesIdPerPage({ active, page: i })
-        responsePromises.push(promise)
-      }
-
-      const resolvedPromises = await Promise.all(responsePromises)
-
-      const flattenResponse = resolvedPromises.reduce((acc, curr) => {
-        return [...acc, ...(curr.data as CategoryIdsResponse).categories.items]
-      }, collectItems)
-
-      return flattenResponse
-    } catch (error) {
-      return statusToError(error)
+      return this.http.get<T>(url, config)
+    } catch (e) {
+      return statusToError(e)
     }
   }
 
-  private getCategoriesIdPerPage = ({
-    active = true,
-    page,
-  }: {
-    active: boolean
-    page: number
-  }) =>
-    this.graphql.query<CategoryIdsResponse, { active: boolean; page: number }>({
-      query: CATEGORIES_QUERY,
-      variables: {
-        active,
-        page,
-      },
-    })
+  private get routes() {
+    const basePath = '/api/catalog_system'
 
-  public getTranslation = (id: string) =>
-    this.graphql.query<TranslationResponse, { id: string }>({
-      query: GET_TRANSLATION_QUERY,
-      variables: {
-        id,
-      },
-    })
+    return {
+      getProductAndSkuIds: () => `${basePath}/pvt/products/GetProductAndSkuIds`,
+    }
+  }
 }

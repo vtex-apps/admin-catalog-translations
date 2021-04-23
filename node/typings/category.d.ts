@@ -1,18 +1,19 @@
-interface CategoryIdsResponse {
+interface CategoryResponse {
   categories: {
-    items: Array<{ id: string }>
+    items: Array<{ id: string; name: string }>
     paging: {
       pages: number
     }
   }
 }
 
-interface TranslationResponse {
+interface CategoryTranslationResponse {
   category: {
     id: string
     name: string
     title: string
     description: string
+    linkId: string
   }
 }
 

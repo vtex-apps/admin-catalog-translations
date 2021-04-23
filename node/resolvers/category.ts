@@ -1,19 +1,21 @@
-import { statusToError } from '../utils'
-
 export const Category = {
   locale: (
-    _root: ResolvedPromise<TranslationResponse>,
+    _root: ResolvedPromise<CategoryTranslationResponse>,
     _args: unknown,
     ctx: Context
   ) => {
     return ctx.state.locale
   },
-  name: (root: ResolvedPromise<TranslationResponse>) => root.data.category.name,
-  title: (root: ResolvedPromise<TranslationResponse>) =>
+  name: (root: ResolvedPromise<CategoryTranslationResponse>) =>
+    root.data.category.name,
+  title: (root: ResolvedPromise<CategoryTranslationResponse>) =>
     root.data.category.title,
-  description: (root: ResolvedPromise<TranslationResponse>) =>
+  description: (root: ResolvedPromise<CategoryTranslationResponse>) =>
     root.data.category.description,
-  id: (root: ResolvedPromise<TranslationResponse>) => root.data.category.id,
+  id: (root: ResolvedPromise<CategoryTranslationResponse>) =>
+    root.data.category.id,
+  linkId: (root: ResolvedPromise<CategoryTranslationResponse>) =>
+    root.data.category.linkId,
 }
 
 const categoryTranslations = async (
@@ -22,27 +24,40 @@ const categoryTranslations = async (
   ctx: Context
 ) => {
   const {
-    clients: { catalog },
+    clients: { catalogGQL },
   } = ctx
 
-  ctx.state.locale = args.locale
+  const { active, locale } = args
 
-  try {
-    const ids = await catalog.getCategoriesId()
+  ctx.state.locale = locale
 
-    const translationsP = []
+  const ids = await catalogGQL.getCategories(active)
 
-    for (const { id } of ids) {
-      const promise = catalog.getTranslation(id)
-      translationsP.push(promise)
-    }
+  const translationsP = []
 
-    return translationsP
-  } catch (error) {
-    return statusToError(error)
+  for (const { id } of ids) {
+    const promise = catalogGQL.getCategoryTranslation(id, locale)
+    translationsP.push(promise)
   }
+
+  const translations = await Promise.all(translationsP)
+
+  return translations
+}
+
+const getCategoriesName = async (
+  _root: unknown,
+  _args: unknown,
+  ctx: Context
+) => {
+  const {
+    clients: { catalogGQL },
+  } = ctx
+
+  return catalogGQL.getCategories(false)
 }
 
 export const queries = {
   categoryTranslations,
+  getCategoriesName,
 }

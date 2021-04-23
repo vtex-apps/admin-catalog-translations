@@ -1,0 +1,9 @@
+type Product {
+  id: String!
+  name: String
+  description: String
+  shortDescription: String
+  title: String
+  locale: String
+  linkId: String
+}
