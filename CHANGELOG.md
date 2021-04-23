@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.1.0] - 2021-04-23
+
 ### Added
 - Export all `Categories` translations in batch
 - Export `Products` for a given category in batch - Limit of 1.600 products
