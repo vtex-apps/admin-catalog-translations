@@ -71,6 +71,6 @@ interface SpecificationFieldValues extends FieldValueInputTranslation {
 }
 
 interface FieldValueInputTranslation {
-  fieldValueId: number
+  fieldValueId: string
   value: string
 }

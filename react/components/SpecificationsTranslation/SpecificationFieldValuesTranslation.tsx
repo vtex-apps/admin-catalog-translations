@@ -1,5 +1,5 @@
 import React, { FC, SyntheticEvent, useState } from 'react'
-import { InputSearch, PageBlock, Spinner, Button } from 'vtex.styleguide'
+import { InputSearch, PageBlock, Spinner, Dropdown } from 'vtex.styleguide'
 
 import useCatalogQuery from '../../hooks/useCatalogQuery'
 import { useLocaleSelector } from '../LocaleSelector'
@@ -27,8 +27,11 @@ const SpecificationFieldValues: FC<SpecificationFieldValuesProps> = ({
     getSpecificationFieldValuesById
   )
   const { selectedLocale } = useLocaleSelector()
-  const [selectedFieldValue, setSelectedFIeldValue] = useState('')
-  const [selectedFieldValueId, setSelectedFIeldValueId] = useState('')
+  const [selectedFieldValue, setSelectedFieldValue] = useState('')
+  const [selectedFieldValueId, setSelectedFieldValueId] = useState('')
+  const [selectedField, setSelectedField] = useState<
+    FieldValueInputTranslation
+  >({} as FieldValueInputTranslation)
 
   const handleSubmitSpecification = (e: SyntheticEvent) => {
     e.preventDefault()
@@ -43,15 +46,18 @@ const SpecificationFieldValues: FC<SpecificationFieldValuesProps> = ({
   const findSelectedFieldValueId = () => {
     entryInfo?.fieldValues.map((fieldItem) => {
       if (fieldItem.value === selectedFieldValue) {
-        setSelectedFIeldValueId(toString(fieldItem.fieldValueId))
+        setSelectedFieldValueId(fieldItem.fieldValueId)
       }
+    })
+    setSelectedField({
+      fieldValueId: selectedFieldValueId,
+      value: selectedFieldValue,
     })
   }
   const handleSelectionChange = async (e: SyntheticEvent) => {
-    const target = e.target as HTMLTextAreaElement
-    setSelectedFIeldValue(target.value)
+    const target = e.target as HTMLSelectElement
+    setSelectedFieldValue(target.value)
     findSelectedFieldValueId()
-    entryInfo?.fieldValues
   }
 
   return (
@@ -82,17 +88,23 @@ const SpecificationFieldValues: FC<SpecificationFieldValuesProps> = ({
             <Spinner />
           ) : (
             <div className="mb5">
-              <select onChange={handleSelectionChange}>
+              <select
+                onChange={handleSelectionChange}
+                value={selectedFieldValue}
+              >
                 {entryInfo?.fieldValues.map((fieldItem) => {
                   return (
-                    <option key={fieldItem.fieldValueId}>
+                    <option
+                      value={fieldItem.value}
+                      key={fieldItem.fieldValueId}
+                    >
                       {fieldItem.value}
                     </option>
                   )
                 })}
               </select>
               <SpecificationFieldValuesForm
-                specificationValuesInfo={selectedFieldValue}
+                specificationValuesInfo={selectedField}
                 specificationValuesID={selectedFieldValueId}
                 updateMemoSpecifications={setMemoEntries}
               />
