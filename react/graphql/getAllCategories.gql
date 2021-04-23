@@ -1,0 +1,10 @@
+query getAllCategories($locale: String!, $active: Boolean) {
+  categoryTranslations(locale: $locale, active: $active)
+    @context(provider: "vtex.admin-catalog-translation") {
+    id
+    name
+    title
+    description
+    locale
+  }
+}

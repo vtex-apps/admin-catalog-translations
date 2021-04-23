@@ -1,5 +1,5 @@
 import React, { FC, SyntheticEvent } from 'react'
-import { Input, Textarea, Button } from 'vtex.styleguide'
+import { Input, Textarea } from 'vtex.styleguide'
 import { useMutation } from 'react-apollo'
 
 import { useLocaleSelector } from '../LocaleSelector'

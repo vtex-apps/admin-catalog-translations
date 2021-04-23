@@ -1,0 +1,13 @@
+{
+  "name": "vtex.admin-catalog-translation",
+  "version": "0.0.2",
+  "main": "index.ts",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@vtex/api": "6.41.0"
+  },
+  "devDependencies": {
+    "@vtex/tsconfig": "^0.5.6",
+    "typescript": "3.9.7"
+  }
+}
