@@ -1,5 +1,5 @@
 import React, { FC, SyntheticEvent } from 'react'
-import { Input, Textarea, Button } from 'vtex.styleguide'
+import { Input } from 'vtex.styleguide'
 import { useMutation } from 'react-apollo'
 
 import { useLocaleSelector } from '../LocaleSelector'
@@ -9,7 +9,7 @@ import useFormTranslation from '../../hooks/useFormTranslation'
 import ActionButtons from '../ActionButtons'
 
 interface SpecificationFieldValuesFormProps {
-  specificationValuesInfo: FieldValueInputTranslation[]
+  specificationValuesInfo: FieldValueInputTranslation
   specificationValuesID: string
   updateMemoSpecifications: (
     value: React.SetStateAction<{
@@ -44,8 +44,7 @@ const SpecificationsForm: FC<SpecificationFieldValuesFormProps> = ({
     if (loading) {
       return
     }
-    const target = e.target as HTMLTextAreaElement
-    /* const args = {
+    const args = {
       ...formState,
       ...{ fieldId: specificationValuesID },
     }
@@ -66,27 +65,20 @@ const SpecificationsForm: FC<SpecificationFieldValuesFormProps> = ({
       }
     } catch (err) {
       openAlert('error', 'Specification Field Values')
-    } */
+    }
   }
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <div className="mb5">
-          {formState.map((fieldItem) => {
-            return (
-              <div className="mb5" key={fieldItem.fieldValueId}>
-                <Textarea
-                  resize="none"
-                  label="Name"
-                  id={fieldItem.fieldValueId}
-                  value={fieldItem.value}
-                  name="name"
-                  disabled={isXVtexTenant || !canEdit}
-                />
-              </div>
-            )
-          })}
+          <Input
+            label="Name"
+            name="name"
+            value={formState.value}
+            disabled={isXVtexTenant || !canEdit}
+            onChange={handleInputChange}
+          />
         </div>
 
         {isXVtexTenant ? null : (

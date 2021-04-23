@@ -1,4 +1,4 @@
-import React, { FC, SyntheticEvent } from 'react'
+import React, { FC, SyntheticEvent, useState } from 'react'
 import { InputSearch, PageBlock, Spinner, Button } from 'vtex.styleguide'
 
 import useCatalogQuery from '../../hooks/useCatalogQuery'
@@ -27,6 +27,8 @@ const SpecificationFieldValues: FC<SpecificationFieldValuesProps> = ({
     getSpecificationFieldValuesById
   )
   const { selectedLocale } = useLocaleSelector()
+  const [selectedFieldValue, setSelectedFIeldValue] = useState('')
+  const [selectedFieldValueId, setSelectedFIeldValueId] = useState('')
 
   const handleSubmitSpecification = (e: SyntheticEvent) => {
     e.preventDefault()
@@ -37,6 +39,19 @@ const SpecificationFieldValues: FC<SpecificationFieldValuesProps> = ({
     fetchEntry({
       variables: { fieldId: Number(entryId) },
     })
+  }
+  const findSelectedFieldValueId = () => {
+    entryInfo?.fieldValues.map((fieldItem) => {
+      if (fieldItem.value === selectedFieldValue) {
+        setSelectedFIeldValueId(toString(fieldItem.fieldValueId))
+      }
+    })
+  }
+  const handleSelectionChange = async (e: SyntheticEvent) => {
+    const target = e.target as HTMLTextAreaElement
+    setSelectedFIeldValue(target.value)
+    findSelectedFieldValueId()
+    entryInfo?.fieldValues
   }
 
   return (
@@ -66,11 +81,22 @@ const SpecificationFieldValues: FC<SpecificationFieldValuesProps> = ({
           ) : isLoadingOrRefetching ? (
             <Spinner />
           ) : (
-            <SpecificationFieldValuesForm
-              specificationValuesInfo={entryInfo?.fieldValues}
-              specificationValuesID={entryId}
-              updateMemoSpecifications={setMemoEntries}
-            />
+            <div className="mb5">
+              <select onChange={handleSelectionChange}>
+                {entryInfo?.fieldValues.map((fieldItem) => {
+                  return (
+                    <option key={fieldItem.fieldValueId}>
+                      {fieldItem.value}
+                    </option>
+                  )
+                })}
+              </select>
+              <SpecificationFieldValuesForm
+                specificationValuesInfo={selectedFieldValue}
+                specificationValuesID={selectedFieldValueId}
+                updateMemoSpecifications={setMemoEntries}
+              />
+            </div>
           )}
         </PageBlock>
       ) : null}
