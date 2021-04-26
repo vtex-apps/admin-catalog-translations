@@ -1,0 +1,16 @@
+{
+  "name": "vtex.admin-catalog-translation",
+  "version": "0.1.0",
+  "main": "index.ts",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@vtex/api": "6.41.0"
+  },
+  "devDependencies": {
+    "@vtex/tsconfig": "^0.5.6",
+    "typescript": "3.9.7",
+    "vtex.catalog-graphql": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.catalog-graphql@1.96.0/public/@types/vtex.catalog-graphql",
+    "vtex.styleguide": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.styleguide@9.138.0/public/@types/vtex.styleguide",
+    "vtex.tenant-graphql": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.tenant-graphql@0.1.2/public/@types/vtex.tenant-graphql"
+  }
+}

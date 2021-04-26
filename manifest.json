@@ -1,7 +1,7 @@
 {
   "name": "admin-catalog-translation",
   "vendor": "vtex",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "title": "Catalog Translation",
   "description": "",
   "mustUpdateAt": "2022-08-28",
@@ -17,7 +17,21 @@
     "react": "3.x",
     "admin": "0.x",
     "messages": "1.x",
-    "docs": "0.x"
+    "docs": "0.x",
+    "node": "6.x",
+    "graphql": "1.x"
   },
+  "policies": [
+    {
+      "name": "vtex.catalog-graphql:resolve-graphql"
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "portal.vtexcommercestable.com.br",
+        "path": "/api/catalog_system/*"
+      }
+    }
+  ],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }
