@@ -5,8 +5,10 @@
   "catalog-translation.category.header": "Category Translation",
   "catalog-translation.brand.header": "Brand Translation",
   "catalog-translation.sku.header": "SKU Translation",
+  "catalog-translation.specifications.header": "Specifications Translation",
   "catalog-translation.navigation.category": "Category",
   "catalog-translation.navigation.product": "Product",
   "catalog-translation.navigation.sku": "SKU",
-  "catalog-translation.navigation.brand": "Brands"
+  "catalog-translation.navigation.brand": "Brands",
+  "catalog-translation.navigation.specifications": "Specifications"
 }

@@ -1,0 +1,5 @@
+mutation translateSpecificationValues($args:FieldValueInputTranslation, $locale:Locale
+){
+  translateFieldValues(fieldValues:$args,locale:$locale)
+    @context(provider: "vtex.catalog-graphql")
+}
