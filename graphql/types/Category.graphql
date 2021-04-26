@@ -1,0 +1,13 @@
+type Category {
+  id: String
+  name: String
+  title: String
+  description: String
+  linkId: String
+  locale: String
+}
+
+type CategoryName {
+  id: String
+  name: String
+}

@@ -16,6 +16,8 @@ There are two different pages for `Category` and `Product` translations. Both au
 From this binding list, the first one is always the `X-Vtex-Tenant` or the default language, for this option the details cannot be translated, to modify these values, the changes should be made inside your store's catalog.  
 For all the others, it's possible to edit the content by category and by product. 
 
+It's also possible to export all current translations for `Categories` and `Products`. Inside a binding different than the `X-Vtex-Tenant`, a button called `export` allows user to download the translations for that binding. Curently, it's only possible to export 1.600 products for a given category every 3 minutes.
+
 ---
 ## Usage
 

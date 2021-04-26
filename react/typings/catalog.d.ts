@@ -49,3 +49,30 @@ interface ProductInputTranslation {
   title: string
   linkId: string
 }
+
+interface SpecificationsData {
+  field: Specifications
+}
+interface Specifications extends FieldInputTranslation {
+  fieldId: string
+}
+interface FieldInputTranslation {
+  name: string
+  description: string
+  fieldTypeId: string
+  fieldTypeName: string
+}
+interface CategoriesNameAndId {
+  getCategoriesName: Array<{ id: string; name: string }>
+}
+
+interface ProductTranslations {
+  productTranslations: Array<{
+    id: string
+    name: string
+    description: string
+    shortDescription: string
+    title: string
+    locale: string
+  }>
+}

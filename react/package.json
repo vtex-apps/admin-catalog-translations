@@ -1,6 +1,6 @@
 {
   "name": "vtex.admin-example",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,11 +15,16 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-intl": "^2.7.2",
-    "typescript": "3.9.7"
+    "typescript": "3.9.7",
+    "vtex.catalog-graphql": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.catalog-graphql@1.96.0/public/@types/vtex.catalog-graphql",
+    "vtex.render-runtime": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.128.2/public/@types/vtex.render-runtime",
+    "vtex.styleguide": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.styleguide@9.138.0/public/@types/vtex.styleguide",
+    "vtex.tenant-graphql": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.tenant-graphql@0.1.2/public/@types/vtex.tenant-graphql"
   },
   "dependencies": {
     "@types/faker": "^4.1.5",
     "faker": "^4.1.0",
-    "react-apollo": "^3.1.5"
+    "react-apollo": "^3.1.5",
+    "xlsx": "^0.16.9"
   }
 }

@@ -1,3 +1,5 @@
+import XLSX from 'xlsx'
+
 /**
  * Returns all the unique binding locales, excluding the first one provided by the api (admin)
  *
@@ -71,4 +73,41 @@ export const convertToDropDownOptions = (
   }
 
   return formattedOptions
+}
+/**
+ * Parse json to XLS and prompt a download window for user
+ *
+ * @param {object} data JSON to be parsed to xls
+ * @param {object} options
+ * @param {options.fileName} string
+ * @param {options.sheetName} string
+ */
+
+export function parseJSONToXLS(
+  data: unknown[],
+  { fileName, sheetName }: { fileName: string; sheetName: string }
+) {
+  const workSheet = XLSX.utils.json_to_sheet(data)
+  const workBook = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(workBook, workSheet, sheetName)
+  const exportFileName = `${fileName}.xlsx`
+  XLSX.writeFile(workBook, exportFileName)
+}
+
+interface FilterSearchCategoriesArgs {
+  categoryList: Array<{ id: string; name: string }>
+  term: string
+}
+
+export const filterSearchCategories = ({
+  categoryList,
+  term,
+}: FilterSearchCategoriesArgs): Array<{ label: string; value: string }> => {
+  return (
+    categoryList
+      .map(({ id, name }) => ({ label: `${id} - ${name}`, value: id }))
+      .filter(({ label }) =>
+        label.toLowerCase().includes(term.toLowerCase())
+      ) ?? []
+  )
 }
