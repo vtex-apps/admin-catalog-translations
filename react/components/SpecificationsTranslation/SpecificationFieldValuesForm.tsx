@@ -33,7 +33,7 @@ const SpecificationsForm: FC<SpecificationFieldValuesFormProps> = ({
 
   const { isXVtexTenant, selectedLocale } = useLocaleSelector()
   const [translateSpecification, { loading }] = useMutation<
-    { translateSpecification: boolean },
+    { translateFieldValues: boolean },
     { args: SpecificationFieldValues; locale: string }
   >(translateSpecificationMutation)
 
@@ -55,8 +55,7 @@ const SpecificationsForm: FC<SpecificationFieldValuesFormProps> = ({
           args,
         },
       })
-      const { translateSpecification: translateSpecificationResult } =
-        data ?? {}
+      const { translateFieldValues: translateSpecificationResult } = data ?? {}
       if (translateSpecificationResult) {
         openAlert('success', 'Specification Field Values')
       }

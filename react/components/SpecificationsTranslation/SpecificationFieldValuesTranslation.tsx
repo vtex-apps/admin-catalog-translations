@@ -26,12 +26,23 @@ const SpecificationFieldValues: FC<SpecificationFieldValuesProps> = ({
   } = useCatalogQuery<SpecificationFieldValuesData, { fieldId: number }>(
     getSpecificationFieldValuesById
   )
+  const formattedOptions = [{}]
   const { selectedLocale } = useLocaleSelector()
-  const [selectedFieldValue, setSelectedFieldValue] = useState('')
-  const [selectedFieldValueId, setSelectedFieldValueId] = useState('')
-  const [selectedField, setSelectedField] = useState<
+  const [selectedFieldValue, setSelectedFiedValue] = useState('')
+  const [selectedFieldValueFormated, setSelectedFieldFormatted] = useState<
     FieldValueInputTranslation
   >({} as FieldValueInputTranslation)
+
+  const convertFieldValuestoDropDown = () => {
+    entryInfo?.fieldValues.map((field) => {
+      formattedOptions.push({
+        label: field.value,
+        value: field.value,
+        key: field.fieldValueId,
+      })
+    })
+  }
+  convertFieldValuestoDropDown()
 
   const handleSubmitSpecification = (e: SyntheticEvent) => {
     e.preventDefault()
@@ -43,21 +54,13 @@ const SpecificationFieldValues: FC<SpecificationFieldValuesProps> = ({
       variables: { fieldId: Number(entryId) },
     })
   }
-  const findSelectedFieldValueId = () => {
-    entryInfo?.fieldValues.map((fieldItem) => {
-      if (fieldItem.value === selectedFieldValue) {
-        setSelectedFieldValueId(fieldItem.fieldValueId)
-      }
-    })
-    setSelectedField({
-      fieldValueId: selectedFieldValueId,
-      value: selectedFieldValue,
-    })
-  }
-  const handleSelectionChange = async (e: SyntheticEvent) => {
-    const target = e.target as HTMLSelectElement
-    setSelectedFieldValue(target.value)
-    findSelectedFieldValueId()
+
+  const handleLocaleSelection = (fieldSelected: string) => {
+    const selectedFieldFormatted = entryInfo?.fieldValues.filter(
+      (field) => field.value === fieldSelected
+    )
+    setSelectedFiedValue(fieldSelected)
+    setSelectedFieldFormatted(selectedFieldFormatted[0])
   }
 
   return (
@@ -88,24 +91,18 @@ const SpecificationFieldValues: FC<SpecificationFieldValuesProps> = ({
             <Spinner />
           ) : (
             <div className="mb5">
-              <select
-                onChange={handleSelectionChange}
+              <Dropdown
+                label="Field Values"
+                placeholder="Select a field"
                 value={selectedFieldValue}
-              >
-                {entryInfo?.fieldValues.map((fieldItem) => {
-                  return (
-                    <option
-                      value={fieldItem.value}
-                      key={fieldItem.fieldValueId}
-                    >
-                      {fieldItem.value}
-                    </option>
-                  )
-                })}
-              </select>
+                options={formattedOptions}
+                onChange={(_: unknown, value: string) =>
+                  handleLocaleSelection(value)
+                }
+              />
               <SpecificationFieldValuesForm
-                specificationValuesInfo={selectedField}
-                specificationValuesID={selectedFieldValueId}
+                specificationValuesInfo={selectedFieldValueFormated}
+                specificationValuesID={searchedId}
                 updateMemoSpecifications={setMemoEntries}
               />
             </div>
