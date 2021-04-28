@@ -76,3 +76,22 @@ interface ProductTranslations {
     locale: string
   }>
 }
+
+interface CollectionsData {
+  collection: Collections
+}
+interface Collections extends CollectionsName {
+  id: string
+}
+interface CollectionsName {
+  name: string
+}
+interface SaveArgsV2 {
+  to: string
+  messages: {
+    srcLang: boolean
+    srcMessage: string
+    context: string
+    targetMessage: string
+  }
+}

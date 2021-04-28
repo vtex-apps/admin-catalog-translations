@@ -1,5 +1,6 @@
 query GetCollection($fieldId: ID!) {
   collection(id: $fieldId) {
+    id
     name
   }
 }

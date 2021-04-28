@@ -1,0 +1,3 @@
+mutation translateCollections($saveArgs: SaveArgsV2!) {
+  saveV2(args: $saveArgs) @context(provider: "vtex.catalog-graphql")
+}
