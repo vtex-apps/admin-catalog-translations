@@ -76,7 +76,7 @@ const LocaleSelector: FC = () => {
   return loading ? (
     <Spinner />
   ) : (
-    <div className="w-100 w5-ns">
+    <div className="w-100 w4-ns">
       <Dropdown
         label="Available Language"
         placeholder="Select a language"

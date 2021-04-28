@@ -156,19 +156,6 @@ const ProductTranslation: FC = () => {
               onClear={handleCleanSearch}
             />
           </div>
-          {isXVtexTenant ? null : (
-            <div className="mv7 self-end ml7">
-              <ButtonWithIcon
-                name="export-product"
-                type="button"
-                icon={<IconDownload />}
-                variation="primary"
-                onClick={() => setIsExportOpen(true)}
-              >
-                Export
-              </ButtonWithIcon>
-            </div>
-          )}
         </div>
         {id || isLoadingOrRefetching || errorMessage ? (
           <PageBlock

@@ -107,19 +107,6 @@ const CategoryTranslation: FC = () => {
               onClear={handleCleanSearch}
             />
           </div>
-          {isXVtexTenant ? null : (
-            <div className="mv7 self-end ml7">
-              <ButtonWithIcon
-                name="export-category"
-                type="button"
-                icon={<IconDownload />}
-                variation="primary"
-                onClick={() => setisExportOpen(true)}
-              >
-                Export
-              </ButtonWithIcon>
-            </div>
-          )}
         </div>
         {id || isLoadingOrRefetching || errorMessage ? (
           <PageBlock
