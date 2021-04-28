@@ -7,10 +7,12 @@ import LocaleSelector from './LocaleSelector'
 
 interface CatalogTranslationWrapperProps {
   titleComponent: ReactElement
+  hasExport?: boolean
 }
 
 const CatalogTranslationWrapper: FC<CatalogTranslationWrapperProps> = ({
   titleComponent,
+  hasExport,
   children,
 }) => {
   const [isExportOpen, setIsExportOpen] = useState(false)
@@ -24,7 +26,7 @@ const CatalogTranslationWrapper: FC<CatalogTranslationWrapperProps> = ({
       <Layout pageHeader={<PageHeader title={titleComponent} />}>
         <div className="flex items-end">
           <LocaleSelector />
-          <ExportButton openExport={handleOpenExport} />
+          {hasExport ? <ExportButton openExport={handleOpenExport} /> : null}
         </div>
         {React.Children.map(children, (child) =>
           React.isValidElement(child)
