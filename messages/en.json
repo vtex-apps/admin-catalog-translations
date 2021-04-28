@@ -10,5 +10,6 @@
   "catalog-translation.navigation.product": "Product",
   "catalog-translation.navigation.sku": "SKU",
   "catalog-translation.navigation.brand": "Brands",
-  "catalog-translation.navigation.specifications": "Specifications"
+  "catalog-translation.navigation.specifications": "Specifications",
+  "catalog-translation.navigation.collections": "Collections"
 }

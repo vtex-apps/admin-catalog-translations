@@ -22,6 +22,10 @@
     {
       "labelId": "catalog-translation.navigation.specifications",
       "path": "/admin/catalog-translation/specifications"
+    },
+    {
+      "labelId": "catalog-translation.navigation.collections",
+      "path": "/admin/catalog-translation/collections"
     }
   ]
 }
