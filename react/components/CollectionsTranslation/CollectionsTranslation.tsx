@@ -31,7 +31,15 @@ const CollectionsTranslation: FC = () => {
     })
   }
   const { id, ...collectionInfo } = entryInfo?.collection || ({} as Collections)
-
+  const collectionsSaveType = {
+    to: selectedLocale,
+    messages: {
+      srcLang: false,
+      srcMessage: collectionInfo.name,
+      context: entryId,
+      targetMessage: collectionInfo.name,
+    },
+  }
   return (
     <main>
       <div style={{ maxWidth: '340px' }} className="mv7">
@@ -62,6 +70,7 @@ const CollectionsTranslation: FC = () => {
             <CollectionsForm
               collectionInfo={collectionInfo}
               collectionId={entryId}
+              collectionSaveData={collectionsSaveType}
               updateMemoCollections={setMemoEntries}
             />
           )}

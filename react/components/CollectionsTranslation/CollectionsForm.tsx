@@ -11,6 +11,7 @@ import translateCollectionMutation from '../../graphql/translateCollections.gql'
 interface CollectionsFormProps {
   collectionInfo: CollectionsName
   collectionId: string
+  collectionSaveData: SaveArgsV2
   updateMemoCollections: (
     value: React.SetStateAction<{
       [Identifier: string]: CollectionsData
@@ -21,26 +22,20 @@ interface CollectionsFormProps {
 const CollectionsForm: FC<CollectionsFormProps> = ({
   collectionInfo,
   collectionId,
+  collectionSaveData,
   updateMemoCollections,
 }) => {
   const { isXVtexTenant, selectedLocale } = useLocaleSelector()
   const { openAlert } = useAlert()
-  const mutationArgs = {
-    to: selectedLocale,
-    messages: {
-      srcLang: isXVtexTenant,
-      srcMessage: collectionInfo.name,
-      context: collectionId,
-      targetMessage: 'texto del form?',
-    },
-  }
+  collectionSaveData.messages.srcLang = isXVtexTenant
+  collectionSaveData.to = selectedLocale
   const {
     formState,
     canEdit,
     handleInputChange,
     changed,
     handleToggleEdit,
-  } = useFormTranslation(mutationArgs)
+  } = useFormTranslation(collectionSaveData)
 
   const [translateCollection, { loading }] = useMutation<
     { translateCollection: boolean },
@@ -80,7 +75,7 @@ const CollectionsForm: FC<CollectionsFormProps> = ({
         <div className="mb5">
           <Input
             label="Name"
-            value={formState.messages.srcMessage}
+            value={formState.messages.targetMessage}
             name="name"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
