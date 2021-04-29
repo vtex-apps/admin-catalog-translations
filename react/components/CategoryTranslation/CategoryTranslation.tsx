@@ -1,4 +1,4 @@
-import React, { FC, SyntheticEvent, useEffect, useState } from 'react'
+import React, { SyntheticEvent, useEffect, useState } from 'react'
 import {
   PageBlock,
   Spinner,
