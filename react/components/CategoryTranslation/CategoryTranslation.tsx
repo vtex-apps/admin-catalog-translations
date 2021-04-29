@@ -20,15 +20,10 @@ interface CategoryTranslations {
   categoryTranslations: Category[]
 }
 
-interface Props {
-  isExportOpen?: boolean
-  handleOpenExport?: (open: boolean) => void
-}
-
 const CategoryTranslation = ({
   isExportOpen = false,
   handleOpenExport = () => {},
-}: Props) => {
+}: ComponentProps) => {
   const [onlyActive, setOnlyActive] = useState(true)
   const [downloading, setDownloading] = useState(false)
   const [hasError, setHasError] = useState(false)

@@ -31,15 +31,10 @@ interface AutocompleteValue {
   value: string
 }
 
-interface Props {
-  isExportOpen?: boolean
-  handleOpenExport?: (open: boolean) => void
-}
-
 const ProductTranslation = ({
   isExportOpen = false,
   handleOpenExport = () => {},
-}: Props) => {
+}: ComponentProps) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<AutocompleteValue>(
     {} as AutocompleteValue

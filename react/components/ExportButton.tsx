@@ -4,7 +4,7 @@ import { ButtonWithIcon, IconDownload } from 'vtex.styleguide'
 import { useLocaleSelector } from './LocaleSelector'
 
 interface Props {
-  openExport: (open: boolean) => void
+  openExport: HandleOpen
 }
 
 const ExportButton = ({ openExport }: Props) => {
