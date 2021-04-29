@@ -17,8 +17,8 @@ const CatalogTranslationWrapper: FC<CatalogTranslationWrapperProps> = ({
 }) => {
   const [isExportOpen, setIsExportOpen] = useState(false)
 
-  const handleOpenExport = () => {
-    setIsExportOpen(true)
+  const handleOpenExport = (open: boolean) => {
+    setIsExportOpen(open)
   }
 
   return (
@@ -30,7 +30,7 @@ const CatalogTranslationWrapper: FC<CatalogTranslationWrapperProps> = ({
         </div>
         {React.Children.map(children, (child) =>
           React.isValidElement(child)
-            ? React.cloneElement(child, { isExportOpen })
+            ? React.cloneElement(child, { isExportOpen, handleOpenExport })
             : null
         )}
       </Layout>

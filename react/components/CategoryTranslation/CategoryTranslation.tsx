@@ -3,8 +3,6 @@ import {
   PageBlock,
   Spinner,
   InputSearch,
-  ButtonWithIcon,
-  IconDownload,
   ModalDialog,
   Checkbox,
 } from 'vtex.styleguide'
@@ -22,12 +20,18 @@ interface CategoryTranslations {
   categoryTranslations: Category[]
 }
 
-const CategoryTranslation: FC = () => {
-  const [isExportOpen, setisExportOpen] = useState(false)
+interface Props {
+  isExportOpen?: boolean
+  handleOpenExport?: (open: boolean) => void
+}
+
+const CategoryTranslation = ({
+  isExportOpen = false,
+  handleOpenExport = () => {},
+}: Props) => {
   const [onlyActive, setOnlyActive] = useState(true)
   const [downloading, setDownloading] = useState(false)
   const [hasError, setHasError] = useState(false)
-
   const {
     entryInfo,
     isLoadingOrRefetching,
@@ -39,7 +43,7 @@ const CategoryTranslation: FC = () => {
     errorMessage,
   } = useCatalogQuery<CategoriesData, { id: number }>(getCategory)
 
-  const { selectedLocale, isXVtexTenant } = useLocaleSelector()
+  const { selectedLocale } = useLocaleSelector()
 
   const [fetchCategories, { data, error }] = useLazyQuery<
     CategoryTranslations,
@@ -80,9 +84,9 @@ const CategoryTranslation: FC = () => {
       })
 
       setDownloading(false)
-      setisExportOpen(false)
+      handleOpenExport(false)
     }
-  }, [data, selectedLocale, downloading])
+  }, [data, selectedLocale, downloading, handleOpenExport])
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
@@ -136,7 +140,7 @@ const CategoryTranslation: FC = () => {
         cancelation={{
           label: 'Cancel',
           onClick: () => {
-            setisExportOpen(false)
+            handleOpenExport(false)
             setHasError(false)
           },
         }}
@@ -146,7 +150,7 @@ const CategoryTranslation: FC = () => {
         }}
         isOpen={isExportOpen}
         onClose={() => {
-          setisExportOpen(false)
+          handleOpenExport(false)
           setHasError(false)
         }}
       >

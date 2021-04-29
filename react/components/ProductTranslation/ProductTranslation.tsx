@@ -1,10 +1,14 @@
-import React, { FC, SyntheticEvent, useEffect, useState, useRef } from 'react'
+import React, {
+  useCallback,
+  SyntheticEvent,
+  useEffect,
+  useState,
+  useRef,
+} from 'react'
 import {
   InputSearch,
   PageBlock,
   Spinner,
-  ButtonWithIcon,
-  IconDownload,
   ModalDialog,
   AutocompleteInput,
   Alert,
@@ -27,8 +31,15 @@ interface AutocompleteValue {
   value: string
 }
 
-const ProductTranslation: FC = () => {
-  const [isExportOpen, setIsExportOpen] = useState(false)
+interface Props {
+  isExportOpen?: boolean
+  handleOpenExport?: (open: boolean) => void
+}
+
+const ProductTranslation = ({
+  isExportOpen = false,
+  handleOpenExport = () => {},
+}: Props) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<AutocompleteValue>(
     {} as AutocompleteValue
@@ -51,7 +62,7 @@ const ProductTranslation: FC = () => {
     { identifier: { value: string; field: 'id' } }
   >(getProductQuery)
 
-  const { selectedLocale, isXVtexTenant } = useLocaleSelector()
+  const { selectedLocale } = useLocaleSelector()
 
   const [
     fetchProductTranslations,
@@ -100,12 +111,12 @@ const ProductTranslation: FC = () => {
     })
   }
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setSelectedCategory({} as AutocompleteValue)
-    setIsExportOpen(false)
+    handleOpenExport(false)
     setSearchTerm('')
     setHasError(false)
-  }
+  }, [handleOpenExport])
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
@@ -118,7 +129,13 @@ const ProductTranslation: FC = () => {
       setDownloading(false)
       handleClose()
     }
-  }, [productTranslations, selectedLocale, downloading, selectedCategory])
+  }, [
+    productTranslations,
+    selectedLocale,
+    downloading,
+    selectedCategory,
+    handleClose,
+  ])
 
   const alertRef = useRef<any>()
 
