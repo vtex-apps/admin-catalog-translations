@@ -18,7 +18,7 @@ const CollectionsTranslation: FC = () => {
     setMemoEntries,
     errorMessage,
   } = useCatalogQuery<CollectionsData, { fieldId: number }>(getCollectionById)
-  const { selectedLocale } = useLocaleSelector()
+  const { selectedLocale, xVtexTenant } = useLocaleSelector()
 
   const handleSubmitSpecification = (e: SyntheticEvent) => {
     e.preventDefault()
@@ -34,7 +34,7 @@ const CollectionsTranslation: FC = () => {
   const collectionsSaveType = {
     to: selectedLocale,
     messages: {
-      srcLang: false,
+      srcLang: xVtexTenant,
       srcMessage: collectionInfo.name,
       context: entryId,
       targetMessage: collectionInfo.name,
@@ -69,7 +69,6 @@ const CollectionsTranslation: FC = () => {
           ) : (
             <CollectionsForm
               collectionInfo={collectionInfo}
-              collectionId={entryId}
               collectionSaveData={collectionsSaveType}
               updateMemoCollections={setMemoEntries}
             />

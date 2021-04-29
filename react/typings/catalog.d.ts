@@ -89,7 +89,7 @@ interface CollectionsName {
 interface SaveArgsV2 {
   to: string
   messages: {
-    srcLang: boolean
+    srcLang: string
     srcMessage: string
     context: string
     targetMessage: string

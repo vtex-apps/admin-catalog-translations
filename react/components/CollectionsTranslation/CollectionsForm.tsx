@@ -10,7 +10,6 @@ import translateCollectionMutation from '../../graphql/translateCollections.gql'
 
 interface CollectionsFormProps {
   collectionInfo: CollectionsName
-  collectionId: string
   collectionSaveData: SaveArgsV2
   updateMemoCollections: (
     value: React.SetStateAction<{
@@ -21,25 +20,22 @@ interface CollectionsFormProps {
 
 const CollectionsForm: FC<CollectionsFormProps> = ({
   collectionInfo,
-  collectionId,
   collectionSaveData,
   updateMemoCollections,
 }) => {
   const { isXVtexTenant, selectedLocale } = useLocaleSelector()
   const { openAlert } = useAlert()
-  collectionSaveData.messages.srcLang = isXVtexTenant
-  collectionSaveData.to = selectedLocale
   const {
     formState,
     canEdit,
     handleInputChange,
     changed,
     handleToggleEdit,
-  } = useFormTranslation(collectionSaveData)
+  } = useFormTranslation<CollectionsName>(collectionInfo)
 
   const [translateCollection, { loading }] = useMutation<
     { translateCollection: boolean },
-    { args: SaveArgsV2 }
+    { saveArgs: SaveArgsV2 }
   >(translateCollectionMutation)
 
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -47,18 +43,21 @@ const CollectionsForm: FC<CollectionsFormProps> = ({
     if (loading) {
       return
     }
-    const args = {
-      ...formState,
+    const saveArgs: SaveArgsV2 = {
+      messages: {
+        ...collectionSaveData.messages,
+        targetMessage: formState.name,
+      },
+      to: selectedLocale,
     }
     try {
       const { data, errors } = await translateCollection({
         variables: {
-          args,
+          saveArgs,
         },
       })
       const { translateCollection: translateCollectionResult } = data ?? {}
       if (translateCollectionResult) {
-        // update cache value (local state)
         openAlert('success', 'Collections')
       }
       if (errors?.length) {
@@ -75,7 +74,7 @@ const CollectionsForm: FC<CollectionsFormProps> = ({
         <div className="mb5">
           <Input
             label="Name"
-            value={formState.messages.targetMessage}
+            value={formState.name}
             name="name"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
