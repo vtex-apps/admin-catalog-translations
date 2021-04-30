@@ -34,7 +34,7 @@ const SpecificationsForm: FC<SpecificationFieldValuesFormProps> = ({
   const { isXVtexTenant, selectedLocale } = useLocaleSelector()
   const [translateSpecification, { loading }] = useMutation<
     { translateFieldValues: boolean },
-    { args: SpecificationFieldValues; locale: string }
+    { fieldValues: FieldValueArgsMutation; locale: string }
   >(translateSpecificationMutation)
 
   const { openAlert } = useAlert()
@@ -44,15 +44,18 @@ const SpecificationsForm: FC<SpecificationFieldValuesFormProps> = ({
     if (loading) {
       return
     }
-    const args = {
-      ...formState,
+    const fieldValues: FieldValueArgsMutation = {
       ...{ fieldId: specificationValuesID },
+      fieldValuesNames: {
+        id: formState.fieldValueId,
+        name: formState.value,
+      },
     }
     try {
       const { data, errors } = await translateSpecification({
         variables: {
           locale: selectedLocale,
-          args,
+          fieldValues,
         },
       })
       const { translateFieldValues: translateSpecificationResult } = data ?? {}
@@ -73,7 +76,7 @@ const SpecificationsForm: FC<SpecificationFieldValuesFormProps> = ({
         <div className="mb5">
           <Input
             label="Name"
-            name="name"
+            name="value"
             value={formState.value}
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}

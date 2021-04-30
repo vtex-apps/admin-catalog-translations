@@ -74,6 +74,14 @@ interface FieldValueInputTranslation {
   fieldValueId: string
   value: string
 }
+
+interface FieldValueArgsMutation {
+  fieldId: string
+  fieldValuesNames: {
+    id: string
+    name: string
+  }
+}
 interface CategoriesNameAndId {
   getCategoriesName: Array<{ id: string; name: string }>
 }
