@@ -1,3 +1,7 @@
+import { VBase } from '@vtex/api'
+
+import { CatalogGQL } from '../clients/catalogGQL'
+
 export const Product = {
   locale: (
     _root: ResolvedPromise<ProductTranslationResponse>,
@@ -20,7 +24,38 @@ export const Product = {
     root.data.product.linkId,
 }
 
-const PRODUCT_LIMIT = 1600
+const CALLS_PER_MINUTE = 1600
+const ONE_MINUTE = 60 * 1000
+
+const pacer = () =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve('done')
+    }, ONE_MINUTE / CALLS_PER_MINUTE)
+  })
+
+const saveTranslation = async (
+  productIds: string[],
+  locale: string,
+  { catalogGQLClient, _vbase }: { catalogGQLClient: CatalogGQL; _vbase: VBase }
+): Promise<void> => {
+  // eslint-disable-next-line no-console
+  console.log(_vbase)
+  const productTranslationPromises = []
+  for (const productId of productIds) {
+    const translationPromise = catalogGQLClient.getProductTranslation(
+      productId,
+      locale
+    )
+    productTranslationPromises.push(translationPromise)
+    // eslint-disable-next-line no-await-in-loop
+    await pacer()
+  }
+
+  const resolvedP = await Promise.all(productTranslationPromises)
+  // eslint-disable-next-line no-console
+  console.log(resolvedP.length)
+}
 
 const productTranslations = async (
   _root: unknown,
@@ -28,7 +63,7 @@ const productTranslations = async (
   ctx: Context
 ) => {
   const {
-    clients: { catalog, catalogGQL },
+    clients: { catalog, catalogGQL, vbase },
   } = ctx
 
   const { locale, categoryId } = args
@@ -37,26 +72,12 @@ const productTranslations = async (
 
   const productIdCollection = await catalog.getAllProducts(categoryId)
 
-  const productTranslationPromises = []
+  saveTranslation(productIdCollection, locale, {
+    catalogGQLClient: catalogGQL,
+    _vbase: vbase,
+  })
 
-  let counter = 0
-
-  for (const productId of productIdCollection) {
-    // Getting a 429 when products list > 2k. Setting threshold a little below it to ensure it works
-    if (counter === PRODUCT_LIMIT) {
-      break
-    }
-    const translationPromise = catalogGQL.getProductTranslation(
-      productId,
-      locale
-    )
-    productTranslationPromises.push(translationPromise)
-    counter++
-  }
-
-  const translations = await Promise.all(productTranslationPromises)
-
-  return translations
+  return true
 }
 
 export const queries = {
