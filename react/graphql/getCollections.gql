@@ -1,5 +1,5 @@
 query GetCollection($fieldId: ID!) {
-  collection(id: $fieldId) {
+  collection(id: $fieldId) @context(provider: "vtex.catalog-graphql") {
     id
     name
   }

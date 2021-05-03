@@ -58,6 +58,10 @@ const CollectionsForm: FC<CollectionsFormProps> = ({
       })
       const { translateCollection: translateCollectionResult } = data ?? {}
       if (translateCollectionResult) {
+        /* updateMemoCollections((state) => ({
+          ...state,
+          ...{ [selectedLocale]: { collection: varCollectionData} },
+        })) */
         openAlert('success', 'Collections')
       }
       if (errors?.length) {
@@ -78,6 +82,7 @@ const CollectionsForm: FC<CollectionsFormProps> = ({
             name="name"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
+            required
           />
         </div>
         {isXVtexTenant ? null : (
