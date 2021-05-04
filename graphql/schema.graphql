@@ -1,5 +1,8 @@
 type Query {
   categoryTranslations(locale: String!, active: Boolean): [Category]
   getCategoriesName: [CategoryName]
-  productTranslations(locale: String!, categoryId: String!): Boolean
+  productTranslations(
+    locale: String!
+    categoryId: String!
+  ): ProductTranslationRequest
 }

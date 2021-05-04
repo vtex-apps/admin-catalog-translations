@@ -55,6 +55,7 @@ const saveTranslation = async (
     const updateTranslation = {
       ...translationRequest,
       translations,
+      completedAt: new Date(),
     }
 
     await vbase.saveJSON<ProductTranslationRequest>(
@@ -113,7 +114,6 @@ const productTranslations = async (
 
   const requestInfo = {
     requestId,
-    translations: null,
     requestedBy: email,
     categoryId,
     locale,
