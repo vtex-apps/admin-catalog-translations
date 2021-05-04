@@ -92,8 +92,6 @@ const productTranslations = async (
 
   const { locale, categoryId } = args
 
-  ctx.state.locale = locale
-
   const productIdCollection = await catalog.getAllProducts(categoryId)
 
   const allTranslationRequest = await vbase.getJSON<string[]>(
@@ -103,7 +101,7 @@ const productTranslations = async (
   )
 
   const updateRequests = allTranslationRequest
-    ? [...allTranslationRequest, requestId]
+    ? [requestId, ...allTranslationRequest]
     : [requestId]
 
   await vbase.saveJSON<string[]>(
@@ -137,6 +135,36 @@ const productTranslations = async (
   return requestInfo
 }
 
+const translationRequests = (_root: unknown, _args: unknown, ctx: Context) =>
+  ctx.clients.vbase.getJSON(BUCKET_NAME, ALL_TRANSLATIONS_FILES, true)
+
+const translationRequestInfo = (
+  _root: unknown,
+  args: { requestId: string },
+  ctx: Context
+) => ctx.clients.vbase.getJSON(BUCKET_NAME, args.requestId)
+
+const downloadProductTranslation = async (
+  _root: unknown,
+  args: { requestId: string },
+  ctx: Context
+) => {
+  const {
+    clients: { vbase },
+  } = ctx
+
+  const { translations, locale } = await vbase.getJSON<
+    ProductTranslationRequest
+  >(BUCKET_NAME, args.requestId, true)
+
+  ctx.state.locale = locale
+
+  return translations
+}
+
 export const queries = {
   productTranslations,
+  translationRequests,
+  translationRequestInfo,
+  downloadProductTranslation,
 }
