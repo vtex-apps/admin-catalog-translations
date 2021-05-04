@@ -1,6 +1,11 @@
 import { AuthenticationError, ForbiddenError, UserInputError } from '@vtex/api'
 import type { AxiosError } from 'axios'
 
+const CALLS_PER_MINUTE = 1600
+const ONE_MINUTE = 60 * 1000
+export const BUCKET_NAME = 'product-translation'
+export const ALL_TRANSLATIONS_FILES = 'all-translations'
+
 export const statusToError = (e: AxiosError) => {
   if (!e.response) {
     throw e
@@ -45,3 +50,10 @@ export const getInterationPairs = (currentStep: number): number[] => [
 export const extractProductId = (productResponse: Record<string, number[]>) => {
   return Object.keys(productResponse)
 }
+
+export const pacer = () =>
+  new Promise((resolve) => {
+    setTimeout(() => {
+      resolve('done')
+    }, ONE_MINUTE / CALLS_PER_MINUTE)
+  })

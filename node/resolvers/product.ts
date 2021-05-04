@@ -1,6 +1,7 @@
 import { VBase } from '@vtex/api'
 
 import { CatalogGQL } from '../clients/catalogGQL'
+import { pacer, BUCKET_NAME, ALL_TRANSLATIONS_FILES } from '../utils'
 
 export const Product = {
   locale: (
@@ -24,37 +25,54 @@ export const Product = {
     root.data.product.linkId,
 }
 
-const CALLS_PER_MINUTE = 1600
-const ONE_MINUTE = 60 * 1000
-
-const pacer = () =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      resolve('done')
-    }, ONE_MINUTE / CALLS_PER_MINUTE)
-  })
-
 const saveTranslation = async (
-  productIds: string[],
-  locale: string,
-  { catalogGQLClient, _vbase }: { catalogGQLClient: CatalogGQL; _vbase: VBase }
+  {
+    productIds,
+    locale,
+    requestId,
+  }: { productIds: string[]; locale: string; requestId: string },
+  { catalogGQLClient, vbase }: { catalogGQLClient: CatalogGQL; vbase: VBase }
 ): Promise<void> => {
-  // eslint-disable-next-line no-console
-  console.log(_vbase)
+  const translationRequest = await vbase.getJSON<ProductTranslationRequest>(
+    BUCKET_NAME,
+    requestId,
+    true
+  )
   const productTranslationPromises = []
-  for (const productId of productIds) {
-    const translationPromise = catalogGQLClient.getProductTranslation(
-      productId,
-      locale
-    )
-    productTranslationPromises.push(translationPromise)
-    // eslint-disable-next-line no-await-in-loop
-    await pacer()
-  }
+  try {
+    for (const productId of productIds) {
+      const translationPromise = catalogGQLClient.getProductTranslation(
+        productId,
+        locale
+      )
+      productTranslationPromises.push(translationPromise)
+      // eslint-disable-next-line no-await-in-loop
+      await pacer()
+    }
 
-  const resolvedP = await Promise.all(productTranslationPromises)
-  // eslint-disable-next-line no-console
-  console.log(resolvedP.length)
+    const translations = await Promise.all(productTranslationPromises)
+
+    const updateTranslation = {
+      ...translationRequest,
+      translations,
+    }
+
+    await vbase.saveJSON<ProductTranslationRequest>(
+      BUCKET_NAME,
+      requestId,
+      updateTranslation
+    )
+  } catch {
+    const addError = {
+      ...translationRequest,
+      error: true,
+    }
+    await vbase.saveJSON<ProductTranslationRequest>(
+      BUCKET_NAME,
+      requestId,
+      addError
+    )
+  }
 }
 
 const productTranslations = async (
@@ -63,8 +81,13 @@ const productTranslations = async (
   ctx: Context
 ) => {
   const {
-    clients: { catalog, catalogGQL, vbase },
+    clients: { catalog, catalogGQL, vbase, licenseManager },
+    vtex: { adminUserAuthToken, requestId },
   } = ctx
+
+  const {
+    profile: { email },
+  } = await licenseManager.getTopbarData(adminUserAuthToken as string)
 
   const { locale, categoryId } = args
 
@@ -72,12 +95,46 @@ const productTranslations = async (
 
   const productIdCollection = await catalog.getAllProducts(categoryId)
 
-  saveTranslation(productIdCollection, locale, {
-    catalogGQLClient: catalogGQL,
-    _vbase: vbase,
-  })
+  const allTranslationRequest = await vbase.getJSON<string[]>(
+    BUCKET_NAME,
+    ALL_TRANSLATIONS_FILES,
+    true
+  )
 
-  return true
+  const updateRequests = allTranslationRequest
+    ? [...allTranslationRequest, requestId]
+    : [requestId]
+
+  await vbase.saveJSON<string[]>(
+    BUCKET_NAME,
+    ALL_TRANSLATIONS_FILES,
+    updateRequests
+  )
+
+  const requestInfo = {
+    requestId,
+    translations: null,
+    requestedBy: email,
+    categoryId,
+    locale,
+    createdAt: new Date(),
+  }
+
+  await vbase.saveJSON<ProductTranslationRequest>(
+    BUCKET_NAME,
+    requestId,
+    requestInfo
+  )
+
+  saveTranslation(
+    { productIds: productIdCollection, locale, requestId },
+    {
+      catalogGQLClient: catalogGQL,
+      vbase,
+    }
+  )
+
+  return requestInfo
 }
 
 export const queries = {
