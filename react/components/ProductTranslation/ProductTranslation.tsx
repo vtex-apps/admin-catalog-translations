@@ -8,6 +8,8 @@ import {
   ModalDialog,
   AutocompleteInput,
   Alert,
+  Tabs,
+  Tab,
 } from 'vtex.styleguide'
 import { useLazyQuery, useQuery } from 'react-apollo'
 
@@ -36,6 +38,7 @@ const ProductTranslation: FC = () => {
   const [downloading, setDownloading] = useState(false)
   const [showMissingCatId, setShowMissingCatId] = useState(false)
   const [hasError, setHasError] = useState(false)
+  const [tabSelected, setTabSelected] = useState<1 | 2>(1)
 
   const {
     entryInfo,
@@ -221,38 +224,53 @@ const ProductTranslation: FC = () => {
           {loadingCategoryInfo ? (
             <Spinner />
           ) : (
-            <div>
-              <h4>Select category</h4>
-              <AutocompleteInput
-                input={{
-                  placeholder: 'Enter category name or id',
-                  onChange: (term: string) => setSearchTerm(term),
-                  onClear: () => {
-                    setSearchTerm('')
-                    setSelectedCategory({} as AutocompleteValue)
-                  },
-                  value: searchTerm,
-                }}
-                options={{
-                  onSelect: (selectedItem: AutocompleteValue) =>
-                    setSelectedCategory(selectedItem),
-                  value: !searchTerm.length
-                    ? []
-                    : listOfOptions.slice(0, AUTOCOMPLETE_LIST_SIZE),
-                  loading: listOfOptions.length > AUTOCOMPLETE_LIST_SIZE,
-                }}
-              />
-              <p className="i f7">
-                Currently, the app allows to export 1.600 products every 3
-                minutes
-              </p>
-              {hasError ? (
-                <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
-                  There was an error exporting products. Please try again in a
-                  few minutes.
-                </p>
-              ) : null}
-            </div>
+            <Tabs>
+              <Tab
+                label="Export"
+                active={tabSelected === 1}
+                onClick={() => setTabSelected(1)}
+              >
+                <div>
+                  <h4>Select category</h4>
+                  <AutocompleteInput
+                    input={{
+                      placeholder: 'Enter category name or id',
+                      onChange: (term: string) => setSearchTerm(term),
+                      onClear: () => {
+                        setSearchTerm('')
+                        setSelectedCategory({} as AutocompleteValue)
+                      },
+                      value: searchTerm,
+                    }}
+                    options={{
+                      onSelect: (selectedItem: AutocompleteValue) =>
+                        setSelectedCategory(selectedItem),
+                      value: !searchTerm.length
+                        ? []
+                        : listOfOptions.slice(0, AUTOCOMPLETE_LIST_SIZE),
+                      loading: listOfOptions.length > AUTOCOMPLETE_LIST_SIZE,
+                    }}
+                  />
+                  <p className="i f7">
+                    Currently, the app allows to export 1.600 products every 3
+                    minutes
+                  </p>
+                  {hasError ? (
+                    <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
+                      There was an error exporting products. Please try again in
+                      a few minutes.
+                    </p>
+                  ) : null}
+                </div>
+              </Tab>
+              <Tab
+                label="See Files"
+                active={tabSelected === 2}
+                onClick={() => setTabSelected(2)}
+              >
+                <div>Tab two</div>
+              </Tab>
+            </Tabs>
           )}
         </div>
       </ModalDialog>
