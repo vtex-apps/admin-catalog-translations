@@ -1,0 +1,11 @@
+query getProdTransInfoReq($requestId: String!) {
+  productTranslationRequestInfo(requestId: $requestId) {
+    requestId
+    requestedBy
+    categoryId
+    error
+    createdAt
+    locale
+    completedAt
+  }
+}

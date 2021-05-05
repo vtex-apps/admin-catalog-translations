@@ -1,0 +1,4 @@
+query getProdTranslationRequests {
+  productTranslationRequests
+    @context(provider: "vtex.admin-catalog-translation")
+}

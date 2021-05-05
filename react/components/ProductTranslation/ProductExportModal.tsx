@@ -10,9 +10,11 @@ import {
 import { useLazyQuery, useQuery } from 'react-apollo'
 
 import { useLocaleSelector } from '../LocaleSelector'
-import GET_PRODUCT_TRANSLATION from '../../graphql/getProductTranslations.gql'
+import START_PRODUCT_TRANSLATION from '../../graphql/startProductTranslations.gql'
 import GET_CATEGORIES_NAME from '../../graphql/getCategoriesName.gql'
+import PROD_TRANSLATION_REQUESTS from '../../graphql/getProductTranslationRequests.gql'
 import { filterSearchCategories, parseJSONToXLS } from '../../utils'
+import ExportListItem from './ExportListItem'
 
 const AUTOCOMPLETE_LIST_SIZE = 6
 
@@ -55,7 +57,7 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
   ] = useLazyQuery<
     ProductTranslationRequest,
     { locale: string; categoryId: string }
-  >(GET_PRODUCT_TRANSLATION, {
+  >(START_PRODUCT_TRANSLATION, {
     context: {
       headers: {
         'x-vtex-locale': `${selectedLocale}`,
@@ -64,6 +66,14 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
   })
   // eslint-disable-next-line no-console
   console.log({ productTranslations })
+
+  const { data: translationRequests } = useQuery<ProdTranslationRequests>(
+    PROD_TRANSLATION_REQUESTS
+  )
+
+  // eslint-disable-next-line no-console
+  console.log({ translationRequests })
+
   const handleClose = useCallback(() => {
     setSelectedCategory({} as AutocompleteValue)
     setIsExportOpen(false)
@@ -193,7 +203,20 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
               active={tabSelected === 2}
               onClick={() => setTabSelected(2)}
             >
-              <div>Tab two</div>
+              <table className="w-100 mt7 tc">
+                <tr>
+                  <th>CategoryId</th>
+                  <th>Locale</th>
+                  <th>Requested by</th>
+                  <th>Requested At</th>
+                  <th>Download</th>
+                </tr>
+                {translationRequests?.productTranslationRequests.map(
+                  (requestId) => (
+                    <ExportListItem key={requestId} requestId={requestId} />
+                  )
+                )}
+              </table>
             </Tab>
           </Tabs>
         )}
