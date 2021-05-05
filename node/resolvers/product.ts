@@ -135,10 +135,13 @@ const productTranslations = async (
   return requestInfo
 }
 
-const translationRequests = (_root: unknown, _args: unknown, ctx: Context) =>
-  ctx.clients.vbase.getJSON(BUCKET_NAME, ALL_TRANSLATIONS_FILES, true)
+const productTranslationRequests = (
+  _root: unknown,
+  _args: unknown,
+  ctx: Context
+) => ctx.clients.vbase.getJSON(BUCKET_NAME, ALL_TRANSLATIONS_FILES, true)
 
-const translationRequestInfo = (
+const productTranslationRequestInfo = (
   _root: unknown,
   args: { requestId: string },
   ctx: Context
@@ -164,7 +167,7 @@ const downloadProductTranslation = async (
 
 export const queries = {
   productTranslations,
-  translationRequests,
-  translationRequestInfo,
+  productTranslationRequests,
+  productTranslationRequestInfo,
   downloadProductTranslation,
 }

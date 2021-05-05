@@ -5,7 +5,7 @@ type Query {
     locale: String!
     categoryId: String!
   ): ProductTranslationRequest
-  translationRequests: [String]
-  translationRequestInfo(requestId: String!): ProductTranslationRequest
+  productTranslationRequests: [String]
+  productTranslationRequestInfo(requestId: String!): ProductTranslationRequest
   downloadProductTranslation(requestId: String!): [Product]
 }
