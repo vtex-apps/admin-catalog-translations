@@ -52,17 +52,18 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
   const [
     fetchProductTranslations,
     { data: productTranslations, error: prodTranslationError },
-  ] = useLazyQuery<ProductTranslations, { locale: string; categoryId: string }>(
-    GET_PRODUCT_TRANSLATION,
-    {
-      context: {
-        headers: {
-          'x-vtex-locale': `${selectedLocale}`,
-        },
+  ] = useLazyQuery<
+    ProductTranslationRequest,
+    { locale: string; categoryId: string }
+  >(GET_PRODUCT_TRANSLATION, {
+    context: {
+      headers: {
+        'x-vtex-locale': `${selectedLocale}`,
       },
-    }
-  )
-
+    },
+  })
+  // eslint-disable-next-line no-console
+  console.log({ productTranslations })
   const handleClose = useCallback(() => {
     setSelectedCategory({} as AutocompleteValue)
     setIsExportOpen(false)
@@ -70,24 +71,24 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
     setHasError(false)
   }, [setIsExportOpen])
 
-  useEffect(() => {
-    // eslint-disable-next-line vtex/prefer-early-return
-    if (productTranslations && downloading) {
-      parseJSONToXLS(productTranslations.productTranslations, {
-        fileName: `category-${selectedCategory.value}-product-data-${selectedLocale}`,
-        sheetName: 'product_data',
-      })
+  // useEffect(() => {
+  //   // eslint-disable-next-line vtex/prefer-early-return
+  //   if (productTranslations && downloading) {
+  //     parseJSONToXLS(productTranslations.productTranslations, {
+  //       fileName: `category-${selectedCategory.value}-product-data-${selectedLocale}`,
+  //       sheetName: 'product_data',
+  //     })
 
-      setDownloading(false)
-      handleClose()
-    }
-  }, [
-    productTranslations,
-    selectedLocale,
-    downloading,
-    selectedCategory,
-    handleClose,
-  ])
+  //     setDownloading(false)
+  //     handleClose()
+  //   }
+  // }, [
+  //   productTranslations,
+  //   selectedLocale,
+  //   downloading,
+  //   selectedCategory,
+  //   handleClose,
+  // ])
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return

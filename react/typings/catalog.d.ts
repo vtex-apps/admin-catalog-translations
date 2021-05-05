@@ -66,13 +66,14 @@ interface CategoriesNameAndId {
   getCategoriesName: Array<{ id: string; name: string }>
 }
 
-interface ProductTranslations {
-  productTranslations: Array<{
-    id: string
-    name: string
-    description: string
-    shortDescription: string
-    title: string
+interface ProductTranslationRequest {
+  productTranslations: {
+    requestId: string
+    requestedBy: string
+    categoryId: string
+    error: boolean
+    createdAt: Date
     locale: string
-  }>
+    completedAt: Date
+  }
 }
