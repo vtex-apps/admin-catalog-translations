@@ -71,9 +71,9 @@ interface ProductTranslationRequestInfo {
   requestedBy: string
   categoryId: string
   error: boolean
-  createdAt: Date
+  createdAt: string
   locale: string
-  completedAt: Date
+  completedAt: string
 }
 
 interface ProductTranslationRequest {

@@ -78,3 +78,15 @@ export const filterSearchCategories = ({
       ) ?? []
   )
 }
+
+export const FIFTEEN_MINUTES = 1000 * 60 * 15
+
+export const hasPast15minutes = (date: string): boolean => {
+  return FIFTEEN_MINUTES < new Date().valueOf() - new Date(date).valueOf()
+}
+
+export const remainingTime = (date: string): number => {
+  const remaining =
+    FIFTEEN_MINUTES - new Date().valueOf() - new Date(date).valueOf()
+  return remaining > 0 ? remaining : 0
+}

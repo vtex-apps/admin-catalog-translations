@@ -67,9 +67,24 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
   // eslint-disable-next-line no-console
   console.log({ productTranslations })
 
-  const { data: translationRequests } = useQuery<ProdTranslationRequests>(
-    PROD_TRANSLATION_REQUESTS
-  )
+  const { data: translationRequests, updateQuery } = useQuery<
+    ProdTranslationRequests
+  >(PROD_TRANSLATION_REQUESTS)
+
+  useEffect(() => {
+    const { requestId } = productTranslations?.productTranslations ?? {}
+
+    if (requestId) {
+      updateQuery((prevResult) => {
+        return {
+          productTranslationRequests: [
+            requestId,
+            ...prevResult.productTranslationRequests,
+          ],
+        }
+      })
+    }
+  }, [productTranslations, updateQuery])
 
   // eslint-disable-next-line no-console
   console.log({ translationRequests })
@@ -204,18 +219,22 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
               onClick={() => setTabSelected(2)}
             >
               <table className="w-100 mt7 tc">
-                <tr>
-                  <th>CategoryId</th>
-                  <th>Locale</th>
-                  <th>Requested by</th>
-                  <th>Requested At</th>
-                  <th>Download</th>
-                </tr>
-                {translationRequests?.productTranslationRequests.map(
-                  (requestId) => (
-                    <ExportListItem key={requestId} requestId={requestId} />
-                  )
-                )}
+                <thead>
+                  <tr>
+                    <th>CategoryId</th>
+                    <th>Locale</th>
+                    <th>Requested by</th>
+                    <th>Requested At</th>
+                    <th>Download</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {translationRequests?.productTranslationRequests.map(
+                    (requestId) => (
+                      <ExportListItem key={requestId} requestId={requestId} />
+                    )
+                  )}
+                </tbody>
               </table>
             </Tab>
           </Tabs>
