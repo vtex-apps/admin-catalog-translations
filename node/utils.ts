@@ -59,4 +59,4 @@ export const pacer = () =>
   })
 
 export const calculateExportProcessTime = (size: number): number =>
-  size * (ONE_MINUTE / CALLS_PER_MINUTE)
+  Math.ceil(size * (ONE_MINUTE / CALLS_PER_MINUTE))
