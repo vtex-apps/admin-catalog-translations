@@ -87,6 +87,6 @@ export const hasPast15minutes = (date: string): boolean => {
 
 export const remainingTime = (date: string): number => {
   const remaining =
-    FIFTEEN_MINUTES - new Date().valueOf() - new Date(date).valueOf()
+    FIFTEEN_MINUTES - (new Date().valueOf() - new Date(date).valueOf())
   return remaining > 0 ? remaining : 0
 }

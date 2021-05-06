@@ -64,8 +64,6 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
       },
     },
   })
-  // eslint-disable-next-line no-console
-  console.log({ productTranslationInfo })
 
   const { data: translationRequests, updateQuery } = useQuery<
     ProdTranslationRequests
@@ -88,9 +86,6 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
       setTabSelected(2)
     }
   }, [productTranslationInfo, updateQuery])
-
-  // eslint-disable-next-line no-console
-  console.log({ translationRequests })
 
   const handleClose = useCallback(() => {
     setSelectedCategory({} as AutocompleteValue)
