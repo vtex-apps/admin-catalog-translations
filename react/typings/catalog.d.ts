@@ -87,3 +87,7 @@ interface ProdTranslationRequests {
 interface ProdTransInfoReq {
   productTranslationRequestInfo: ProductTranslationRequestInfo
 }
+
+interface ProductTranslationDownload {
+  downloadProductTranslation: Product[]
+}

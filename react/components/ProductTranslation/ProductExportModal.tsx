@@ -13,7 +13,7 @@ import { useLocaleSelector } from '../LocaleSelector'
 import START_PRODUCT_TRANSLATION from '../../graphql/startProductTranslations.gql'
 import GET_CATEGORIES_NAME from '../../graphql/getCategoriesName.gql'
 import PROD_TRANSLATION_REQUESTS from '../../graphql/getProductTranslationRequests.gql'
-import { filterSearchCategories, parseJSONToXLS } from '../../utils'
+import { filterSearchCategories } from '../../utils'
 import ExportListItem from './ExportListItem'
 
 const AUTOCOMPLETE_LIST_SIZE = 6
@@ -74,6 +74,7 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
   useEffect(() => {
     const { requestId } = productTranslationInfo?.productTranslations ?? {}
 
+    // eslint-disable-next-line vtex/prefer-early-return
     if (requestId) {
       updateQuery((prevResult) => {
         return {
@@ -83,6 +84,8 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
           ],
         }
       })
+      setDownloading(false)
+      setTabSelected(2)
     }
   }, [productTranslationInfo, updateQuery])
 
@@ -95,25 +98,6 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
     setSearchTerm('')
     setHasError(false)
   }, [setIsExportOpen])
-
-  // useEffect(() => {
-  //   // eslint-disable-next-line vtex/prefer-early-return
-  //   if (productTranslations && downloading) {
-  //     parseJSONToXLS(productTranslations.productTranslations, {
-  //       fileName: `category-${selectedCategory.value}-product-data-${selectedLocale}`,
-  //       sheetName: 'product_data',
-  //     })
-
-  //     setDownloading(false)
-  //     handleClose()
-  //   }
-  // }, [
-  //   productTranslations,
-  //   selectedLocale,
-  //   downloading,
-  //   selectedCategory,
-  //   handleClose,
-  // ])
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
@@ -201,10 +185,6 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
                     loading: listOfOptions.length > AUTOCOMPLETE_LIST_SIZE,
                   }}
                 />
-                <p className="i f7">
-                  Currently, the app allows to export 1.600 products every 3
-                  minutes
-                </p>
                 {hasError ? (
                   <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
                     There was an error exporting products. Please try again in a
