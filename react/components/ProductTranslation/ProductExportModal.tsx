@@ -194,6 +194,10 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
               active={tabSelected === 2}
               onClick={() => setTabSelected(2)}
             >
+              <p className="i f7 tr">
+                The process to translate can take a while. You can leave the
+                page and check it latter.
+              </p>
               <table className="w-100 mt7 tc">
                 <thead>
                   <tr>
