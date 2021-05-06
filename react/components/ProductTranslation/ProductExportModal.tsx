@@ -206,7 +206,7 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
                 </thead>
                 <tbody>
                   {translationRequests?.productTranslationRequests
-                    .slice(0, DOWNLOAD_LIST_SIZE)
+                    ?.slice(0, DOWNLOAD_LIST_SIZE)
                     .map((requestId) => (
                       <ExportListItem key={requestId} requestId={requestId} />
                     ))}
