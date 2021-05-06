@@ -10,6 +10,7 @@ import translateCollectionMutation from '../../graphql/translateCollections.gql'
 
 interface CollectionsFormProps {
   collectionInfo: CollectionsName
+  collectionId: string
   collectionSaveData: SaveArgsV2
   updateMemoCollections: (
     value: React.SetStateAction<{
@@ -20,6 +21,7 @@ interface CollectionsFormProps {
 
 const CollectionsForm: FC<CollectionsFormProps> = ({
   collectionInfo,
+  collectionId,
   collectionSaveData,
   updateMemoCollections,
 }) => {
@@ -37,7 +39,6 @@ const CollectionsForm: FC<CollectionsFormProps> = ({
     { translateCollection: boolean },
     { saveArgs: SaveArgsV2 }
   >(translateCollectionMutation)
-
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
     if (loading) {
@@ -56,12 +57,18 @@ const CollectionsForm: FC<CollectionsFormProps> = ({
           saveArgs,
         },
       })
-      const { translateCollection: translateCollectionResult } = data ?? {}
+      const translateCollectionResult = data ?? {}
+      const collectionData: CollectionsData = {
+        collection: {
+          id: collectionId,
+          name: collectionInfo.name,
+        },
+      }
       if (translateCollectionResult) {
-        /* updateMemoCollections((state) => ({
+        updateMemoCollections((state) => ({
           ...state,
-          ...{ [selectedLocale]: { collection: varCollectionData} },
-        })) */
+          ...{ [selectedLocale]: { collection: collectionData.collection } },
+        }))
         openAlert('success', 'Collections')
       }
       if (errors?.length) {

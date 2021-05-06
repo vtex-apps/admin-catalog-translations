@@ -69,6 +69,7 @@ const CollectionsTranslation: FC = () => {
           ) : (
             <CollectionsForm
               collectionInfo={collectionInfo}
+              collectionId={entryId}
               collectionSaveData={collectionsSaveType}
               updateMemoCollections={setMemoEntries}
             />
