@@ -29,4 +29,5 @@ interface ProductTranslationRequest {
   createdAt: Date
   locale: string
   completedAt?: Date
+  estimatedTime: number
 }

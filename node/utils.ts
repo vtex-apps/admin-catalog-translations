@@ -57,3 +57,6 @@ export const pacer = () =>
       resolve('done')
     }, ONE_MINUTE / CALLS_PER_MINUTE)
   })
+
+export const calculateExportProcessTime = (size: number): number =>
+  size * (ONE_MINUTE / CALLS_PER_MINUTE)

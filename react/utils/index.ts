@@ -79,14 +79,21 @@ export const filterSearchCategories = ({
   )
 }
 
-export const FIFTEEN_MINUTES = 1000 * 60 * 15
+const ESTIMATED_MARGIN = 5
 
-export const hasPast15minutes = (date: string): boolean => {
-  return FIFTEEN_MINUTES < new Date().valueOf() - new Date(date).valueOf()
+export const remainingTime = (date: string, estimatedTime: number): number => {
+  const remaining =
+    estimatedTime * ESTIMATED_MARGIN -
+    (new Date().valueOf() - new Date(date).valueOf())
+  return remaining > 0 ? remaining : 0
 }
 
-export const remainingTime = (date: string): number => {
-  const remaining =
-    FIFTEEN_MINUTES - (new Date().valueOf() - new Date(date).valueOf())
-  return remaining > 0 ? remaining : 0
+export const shouldHaveCompleted = (
+  date: string,
+  estimatedTime: number
+): boolean => {
+  return (
+    estimatedTime * ESTIMATED_MARGIN <
+    new Date().valueOf() - new Date(date).valueOf()
+  )
 }

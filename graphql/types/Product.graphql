@@ -16,4 +16,5 @@ type ProductTranslationRequest {
   createdAt: String!
   locale: String!
   completedAt: String
+  estimatedTime: Int
 }

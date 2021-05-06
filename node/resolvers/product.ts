@@ -1,7 +1,12 @@
 import { VBase } from '@vtex/api'
 
 import { CatalogGQL } from '../clients/catalogGQL'
-import { pacer, BUCKET_NAME, ALL_TRANSLATIONS_FILES } from '../utils'
+import {
+  pacer,
+  BUCKET_NAME,
+  ALL_TRANSLATIONS_FILES,
+  calculateExportProcessTime,
+} from '../utils'
 
 export const Product = {
   locale: (
@@ -110,12 +115,13 @@ const productTranslations = async (
     updateRequests
   )
 
-  const requestInfo = {
+  const requestInfo: ProductTranslationRequest = {
     requestId,
     requestedBy: email,
     categoryId,
     locale,
     createdAt: new Date(),
+    estimatedTime: calculateExportProcessTime(productIdCollection.length),
   }
 
   await vbase.saveJSON<ProductTranslationRequest>(

@@ -5,7 +5,7 @@ import { Progress, ButtonPlain } from 'vtex.styleguide'
 
 import PROD_INFO_REQUEST from '../../graphql/getProdTranslationInfoReq.gql'
 import DOWNLOAD_PRODUCT_TRANSLATION from '../../graphql/downloadProductTranslations.gql'
-import { hasPast15minutes, remainingTime, parseJSONToXLS } from '../../utils'
+import { shouldHaveCompleted, remainingTime, parseJSONToXLS } from '../../utils'
 
 interface Props {
   requestId: string
@@ -31,24 +31,31 @@ const ExportListItem = ({ requestId }: Props) => {
     DOWNLOAD_PRODUCT_TRANSLATION
   )
 
-  const { categoryId, locale, requestedBy, createdAt, completedAt, error } =
-    data?.productTranslationRequestInfo ?? {}
+  const {
+    categoryId,
+    locale,
+    requestedBy,
+    createdAt,
+    completedAt,
+    error,
+    estimatedTime,
+  } = data?.productTranslationRequestInfo ?? {}
 
   const tooLongRef = useRef<any>()
 
   useEffect(() => {
-    if (!completedAt && !error && createdAt) {
-      if (hasPast15minutes(createdAt)) {
+    if (!completedAt && !error && createdAt && estimatedTime) {
+      if (shouldHaveCompleted(createdAt, estimatedTime)) {
         stopPolling()
         setLongTimeAgo(true)
         return
       }
-      startPolling(10000)
+      startPolling(estimatedTime)
       clearTimeout(tooLongRef.current)
       tooLongRef.current = setTimeout(() => {
         setLongTimeAgo(true)
         stopPolling()
-      }, remainingTime(createdAt))
+      }, remainingTime(createdAt, estimatedTime))
     }
     if (completedAt || error) {
       stopPolling()
@@ -56,7 +63,7 @@ const ExportListItem = ({ requestId }: Props) => {
     }
 
     return () => stopPolling()
-  }, [completedAt, createdAt, error, startPolling, stopPolling])
+  }, [completedAt, createdAt, error, startPolling, stopPolling, estimatedTime])
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return

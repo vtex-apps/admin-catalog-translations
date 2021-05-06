@@ -74,6 +74,7 @@ interface ProductTranslationRequestInfo {
   createdAt: string
   locale: string
   completedAt: string
+  estimatedTime: number
 }
 
 interface ProductTranslationRequest {
