@@ -15,10 +15,13 @@ const ExportListItem = ({ requestId }: Props) => {
   const [longTimeAgo, setLongTimeAgo] = useState(false)
   const [downloading, setDownloading] = useState(false)
   const [errorDonwloading, setErrorDownloading] = useState(false)
-  const { data, error: errorFetching, startPolling, stopPolling } = useQuery<
-    ProdTransInfoReq,
-    { requestId: string }
-  >(PROD_INFO_REQUEST, {
+  const {
+    data,
+    error: errorFetching,
+    startPolling,
+    stopPolling,
+    refetch,
+  } = useQuery<ProdTransInfoReq, { requestId: string }>(PROD_INFO_REQUEST, {
     variables: {
       requestId,
     },
@@ -42,6 +45,12 @@ const ExportListItem = ({ requestId }: Props) => {
   } = data?.productTranslationRequestInfo ?? {}
 
   const tooLongRef = useRef<any>()
+
+  useEffect(() => {
+    if (!completedAt) {
+      refetch({ requestId })
+    }
+  }, [completedAt, refetch, requestId])
 
   useEffect(() => {
     if (!completedAt && !error && createdAt && estimatedTime) {
