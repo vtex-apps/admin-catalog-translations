@@ -52,8 +52,8 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
   })
 
   const [
-    fetchProductTranslations,
-    { data: productTranslations, error: prodTranslationError },
+    triggerProductTranslations,
+    { data: productTranslationInfo, error: prodTranslationError },
   ] = useLazyQuery<
     ProductTranslationRequest,
     { locale: string; categoryId: string }
@@ -65,14 +65,14 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
     },
   })
   // eslint-disable-next-line no-console
-  console.log({ productTranslations })
+  console.log({ productTranslationInfo })
 
   const { data: translationRequests, updateQuery } = useQuery<
     ProdTranslationRequests
   >(PROD_TRANSLATION_REQUESTS)
 
   useEffect(() => {
-    const { requestId } = productTranslations?.productTranslations ?? {}
+    const { requestId } = productTranslationInfo?.productTranslations ?? {}
 
     if (requestId) {
       updateQuery((prevResult) => {
@@ -84,7 +84,7 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
         }
       })
     }
-  }, [productTranslations, updateQuery])
+  }, [productTranslationInfo, updateQuery])
 
   // eslint-disable-next-line no-console
   console.log({ translationRequests })
@@ -123,13 +123,13 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
     }
   }, [prodTranslationError, categoryError])
 
-  const downloadProducts = () => {
+  const startDownloadProducts = () => {
     if (!selectedCategory.value) {
       setShowMissingCatId(true)
       return
     }
     setDownloading(true)
-    fetchProductTranslations({
+    triggerProductTranslations({
       variables: { locale: selectedLocale, categoryId: selectedCategory.value },
     })
   }
@@ -155,7 +155,7 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
       }}
       confirmation={{
         label: 'Export Products',
-        onClick: downloadProducts,
+        onClick: startDownloadProducts,
         disabled: true,
       }}
       onClose={handleClose}
