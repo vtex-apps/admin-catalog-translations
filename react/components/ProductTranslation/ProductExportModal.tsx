@@ -17,6 +17,7 @@ import { filterSearchCategories } from '../../utils'
 import ExportListItem from './ExportListItem'
 
 const AUTOCOMPLETE_LIST_SIZE = 6
+const DOWNLOAD_LIST_SIZE = 6
 
 interface AutocompleteValue {
   label: string
@@ -204,11 +205,11 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {translationRequests?.productTranslationRequests.map(
-                    (requestId) => (
+                  {translationRequests?.productTranslationRequests
+                    .slice(0, DOWNLOAD_LIST_SIZE)
+                    .map((requestId) => (
                       <ExportListItem key={requestId} requestId={requestId} />
-                    )
-                  )}
+                    ))}
                 </tbody>
               </table>
             </Tab>
