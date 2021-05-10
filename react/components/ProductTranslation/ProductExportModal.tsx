@@ -178,7 +178,9 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
                     value: !searchTerm.length
                       ? []
                       : listOfOptions.slice(0, AUTOCOMPLETE_LIST_SIZE),
-                    loading: listOfOptions.length > AUTOCOMPLETE_LIST_SIZE,
+                    loading:
+                      searchTerm.length > 0 &&
+                      listOfOptions.length > AUTOCOMPLETE_LIST_SIZE,
                   }}
                 />
                 {hasError ? (
