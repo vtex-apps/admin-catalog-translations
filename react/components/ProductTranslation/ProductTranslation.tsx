@@ -1,4 +1,4 @@
-import React, { FC, SyntheticEvent, useState } from 'react'
+import React, { SyntheticEvent } from 'react'
 import { InputSearch, PageBlock, Spinner } from 'vtex.styleguide'
 
 import { useLocaleSelector } from '../LocaleSelector'
@@ -8,9 +8,10 @@ import ErrorHandler from '../ErrorHandler'
 import useCatalogQuery from '../../hooks/useCatalogQuery'
 import ProductExportModal from './ProductExportModal'
 
-const ProductTranslation: FC = () => {
-  const [isExportOpen, setIsExportOpen] = useState(false)
-
+const ProductTranslation = ({
+  isExportOpen = false,
+  handleOpenExport = () => {},
+}: ComponentProps) => {
   const {
     entryInfo,
     isLoadingOrRefetching,
@@ -81,7 +82,7 @@ const ProductTranslation: FC = () => {
       </main>
       <ProductExportModal
         isExportOpen={isExportOpen}
-        setIsExportOpen={setIsExportOpen}
+        setIsExportOpen={handleOpenExport}
       />
     </>
   )
