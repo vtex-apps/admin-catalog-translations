@@ -11,12 +11,26 @@ export const filterLocales = (bindings: Binding[]): Binding[] => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [admin, ...otherBindings] = bindings
   const uniqueBindings: { [id: string]: boolean } = {}
-  const filteredBindings = []
+  const filteredBindings: Binding[] = []
+  const supportedLocales: string[] = []
 
   for (const binding of otherBindings) {
     if (!uniqueBindings[binding.defaultLocale]) {
       filteredBindings.push(binding)
+      supportedLocales.push(...binding.supportedLocales)
       uniqueBindings[binding.defaultLocale] = true
+    }
+  }
+
+  // to show also the supported locales in the app, we transform them into a binding type, with an empty supported locales array
+  for (const supportedLocale of supportedLocales) {
+    if (!uniqueBindings[supportedLocale]) {
+      filteredBindings.push({
+        id: supportedLocale,
+        defaultLocale: supportedLocale,
+        supportedLocales: [],
+      })
+      uniqueBindings[supportedLocale] = true
     }
   }
 
@@ -41,6 +55,25 @@ export function hasChanges<S>(formValues: S, orignalValues: S): boolean {
   return false
 }
 
+interface DropDownProps {
+  label: string
+  value: string
+}
+
+export const convertToDropDownOptions = (
+  bindings: Binding[]
+): DropDownProps[] => {
+  const formattedOptions: DropDownProps[] = []
+
+  for (const binding of bindings) {
+    formattedOptions.push({
+      label: binding.defaultLocale,
+      value: binding.defaultLocale,
+    })
+  }
+
+  return formattedOptions
+}
 /**
  * Parse json to XLS and prompt a download window for user
  *
