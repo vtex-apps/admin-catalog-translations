@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [0.2.0] - 2021-04-26
+### Added
+- Supported locales to the list of languages app can translate to.
+
+### Changed
+- Navigation interface - Locale selection as a dropdown menu.
 
 ## [0.1.0] - 2021-04-23
 

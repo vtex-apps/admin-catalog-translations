@@ -1,10 +1,8 @@
-import React, { FC, SyntheticEvent, useEffect, useState } from 'react'
+import React, { SyntheticEvent, useEffect, useState } from 'react'
 import {
   PageBlock,
   Spinner,
   InputSearch,
-  ButtonWithIcon,
-  IconDownload,
   ModalDialog,
   Checkbox,
 } from 'vtex.styleguide'
@@ -22,12 +20,13 @@ interface CategoryTranslations {
   categoryTranslations: Category[]
 }
 
-const CategoryTranslation: FC = () => {
-  const [isExportOpen, setisExportOpen] = useState(false)
+const CategoryTranslation = ({
+  isExportOpen = false,
+  handleOpenExport = () => {},
+}: ComponentProps) => {
   const [onlyActive, setOnlyActive] = useState(true)
   const [downloading, setDownloading] = useState(false)
   const [hasError, setHasError] = useState(false)
-
   const {
     entryInfo,
     isLoadingOrRefetching,
@@ -39,7 +38,7 @@ const CategoryTranslation: FC = () => {
     errorMessage,
   } = useCatalogQuery<CategoriesData, { id: number }>(getCategory)
 
-  const { selectedLocale, isXVtexTenant } = useLocaleSelector()
+  const { selectedLocale } = useLocaleSelector()
 
   const [fetchCategories, { data, error }] = useLazyQuery<
     CategoryTranslations,
@@ -80,9 +79,9 @@ const CategoryTranslation: FC = () => {
       })
 
       setDownloading(false)
-      setisExportOpen(false)
+      handleOpenExport(false)
     }
-  }, [data, selectedLocale, downloading])
+  }, [data, selectedLocale, downloading, handleOpenExport])
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
@@ -107,19 +106,6 @@ const CategoryTranslation: FC = () => {
               onClear={handleCleanSearch}
             />
           </div>
-          {isXVtexTenant ? null : (
-            <div className="mv7 self-end ml7">
-              <ButtonWithIcon
-                name="export-category"
-                type="button"
-                icon={<IconDownload />}
-                variation="primary"
-                onClick={() => setisExportOpen(true)}
-              >
-                Export
-              </ButtonWithIcon>
-            </div>
-          )}
         </div>
         {id || isLoadingOrRefetching || errorMessage ? (
           <PageBlock
@@ -149,7 +135,7 @@ const CategoryTranslation: FC = () => {
         cancelation={{
           label: 'Cancel',
           onClick: () => {
-            setisExportOpen(false)
+            handleOpenExport(false)
             setHasError(false)
           },
         }}
@@ -159,7 +145,7 @@ const CategoryTranslation: FC = () => {
         }}
         isOpen={isExportOpen}
         onClose={() => {
-          setisExportOpen(false)
+          handleOpenExport(false)
           setHasError(false)
         }}
       >

@@ -1,11 +1,5 @@
 import React, { FC, SyntheticEvent, useState } from 'react'
-import {
-  InputSearch,
-  PageBlock,
-  Spinner,
-  ButtonWithIcon,
-  IconDownload,
-} from 'vtex.styleguide'
+import { InputSearch, PageBlock, Spinner } from 'vtex.styleguide'
 
 import { useLocaleSelector } from '../LocaleSelector'
 import getProductQuery from '../../graphql/getProduct.gql'
@@ -31,7 +25,7 @@ const ProductTranslation: FC = () => {
     { identifier: { value: string; field: 'id' } }
   >(getProductQuery)
 
-  const { selectedLocale, isXVtexTenant } = useLocaleSelector()
+  const { selectedLocale } = useLocaleSelector()
 
   const handleSubmitProductId = (e: SyntheticEvent) => {
     e.preventDefault()
@@ -61,19 +55,6 @@ const ProductTranslation: FC = () => {
               onClear={handleCleanSearch}
             />
           </div>
-          {isXVtexTenant ? null : (
-            <div className="mv7 self-end ml7">
-              <ButtonWithIcon
-                name="export-product"
-                type="button"
-                icon={<IconDownload />}
-                variation="primary"
-                onClick={() => setIsExportOpen(true)}
-              >
-                Export
-              </ButtonWithIcon>
-            </div>
-          )}
         </div>
         {id || isLoadingOrRefetching || errorMessage ? (
           <PageBlock

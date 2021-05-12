@@ -10,6 +10,7 @@ const CategoryTranslationWrapped: FC = () => {
       titleComponent={
         <FormattedMessage id="catalog-translation.category.header" />
       }
+      hasExport
     >
       <CategoryTranslation />
     </CatalogTranslationWrapper>
