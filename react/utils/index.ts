@@ -111,3 +111,22 @@ export const filterSearchCategories = ({
       ) ?? []
   )
 }
+
+const ESTIMATED_MARGIN = 5
+
+export const remainingTime = (date: string, estimatedTime: number): number => {
+  const remaining =
+    estimatedTime * ESTIMATED_MARGIN -
+    (new Date().valueOf() - new Date(date).valueOf())
+  return remaining > 0 ? remaining : 0
+}
+
+export const shouldHaveCompleted = (
+  date: string,
+  estimatedTime: number
+): boolean => {
+  return (
+    estimatedTime * ESTIMATED_MARGIN <
+    new Date().valueOf() - new Date(date).valueOf()
+  )
+}
