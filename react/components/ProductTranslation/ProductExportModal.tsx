@@ -79,7 +79,7 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
         return {
           productTranslationRequests: [
             requestId,
-            ...prevResult.productTranslationRequests,
+            ...(prevResult.productTranslationRequests ?? []),
           ],
         }
       })
