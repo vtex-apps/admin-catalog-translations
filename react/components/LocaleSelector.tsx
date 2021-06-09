@@ -6,10 +6,10 @@ import React, {
   useState,
 } from 'react'
 import { useQuery } from 'react-apollo'
-import { ButtonGroup, Button, Spinner } from 'vtex.styleguide'
+import { Spinner, Dropdown } from 'vtex.styleguide'
 
 import accountLocalesQuery from '../graphql/accountLocales.gql'
-import { filterLocales } from '../utils'
+import { convertToDropDownOptions, filterLocales } from '../utils'
 
 interface BindingContextInterface {
   xVtexTenant: string
@@ -76,21 +76,13 @@ const LocaleSelector: FC = () => {
   return loading ? (
     <Spinner />
   ) : (
-    <div>
-      <ButtonGroup
-        buttons={bindings.map(({ id: bindingId, defaultLocale }) => (
-          <div key={bindingId}>
-            <Button
-              isActiveOfGroup={defaultLocale === selectedLocale}
-              variation={
-                defaultLocale === selectedLocale ? 'primary' : 'secondary'
-              }
-              onClick={() => handleLocaleSelection(defaultLocale)}
-            >
-              {defaultLocale}
-            </Button>
-          </div>
-        ))}
+    <div className="w-100 w4-ns">
+      <Dropdown
+        label="Available Language"
+        placeholder="Select a language"
+        value={selectedLocale}
+        options={convertToDropDownOptions(bindings)}
+        onChange={(_: unknown, value: string) => handleLocaleSelection(value)}
       />
     </div>
   )

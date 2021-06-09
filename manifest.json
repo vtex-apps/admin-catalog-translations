@@ -1,7 +1,7 @@
 {
   "name": "admin-catalog-translation",
   "vendor": "vtex",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "title": "Catalog Translation",
   "description": "",
   "mustUpdateAt": "2022-08-28",
@@ -31,6 +31,9 @@
         "host": "portal.vtexcommercestable.com.br",
         "path": "/api/catalog_system/*"
       }
+    },
+    {
+      "name": "vbase-read-write"
     }
   ],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"

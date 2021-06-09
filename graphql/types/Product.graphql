@@ -7,3 +7,14 @@ type Product {
   locale: String
   linkId: String
 }
+
+type ProductTranslationRequest {
+  requestId: String!
+  requestedBy: String!
+  categoryId: String!
+  error: Boolean
+  createdAt: String!
+  locale: String!
+  completedAt: String
+  estimatedTime: Int
+}
