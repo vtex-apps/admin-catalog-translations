@@ -13,7 +13,7 @@ import {
 import GET_CATEGORIES_NAME from '../graphql/getCategoriesName.gql'
 import { filterSearchCategories } from '../utils'
 import { useLocaleSelector } from './LocaleSelector'
-import ExportListItem from './ProductTranslation/ExportListItem'
+import ExportListItem from './ExportListItem'
 
 const AUTOCOMPLETE_LIST_SIZE = 6
 const DOWNLOAD_LIST_SIZE = 6
@@ -21,6 +21,12 @@ const DOWNLOAD_LIST_SIZE = 6
 interface AutocompleteValue {
   label: string
   value: string
+}
+
+interface Options {
+  variables: {
+    requestId: string
+  }
 }
 
 interface Props {
@@ -31,6 +37,10 @@ interface Props {
   errorTranslation?: ApolloError
   loadingTranslations: boolean
   hasNewRequest: boolean
+  download: (options: Options) => void
+  downloadJson: any
+  downloadError?: ApolloError
+  type: 'product'
 }
 
 export const ExportByCategoryIdModal = ({
@@ -41,6 +51,7 @@ export const ExportByCategoryIdModal = ({
   errorTranslation,
   loadingTranslations,
   hasNewRequest,
+  ...props
 }: Props) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [hasError, setHasError] = useState(false)
@@ -189,7 +200,11 @@ export const ExportByCategoryIdModal = ({
                   {translationRequests
                     .slice(0, DOWNLOAD_LIST_SIZE)
                     .map((requestId) => (
-                      <ExportListItem key={requestId} requestId={requestId} />
+                      <ExportListItem
+                        key={requestId}
+                        requestId={requestId}
+                        {...props}
+                      />
                     ))}
                 </tbody>
               </table>

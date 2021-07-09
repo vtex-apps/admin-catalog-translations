@@ -1,17 +1,32 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useLazyQuery, useQuery } from 'react-apollo'
+import { useQuery } from 'react-apollo'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import { Progress, ButtonPlain } from 'vtex.styleguide'
+import { ApolloError } from 'apollo-client'
 
-import PROD_INFO_REQUEST from '../../graphql/getProdTranslationInfoReq.gql'
-import DOWNLOAD_PRODUCT_TRANSLATION from '../../graphql/downloadProductTranslations.gql'
-import { shouldHaveCompleted, remainingTime, parseJSONToXLS } from '../../utils'
+import PROD_INFO_REQUEST from '../graphql/getProdTranslationInfoReq.gql'
+import { shouldHaveCompleted, remainingTime, parseJSONToXLS } from '../utils'
 
+interface Options {
+  variables: {
+    requestId: string
+  }
+}
 interface Props {
   requestId: string
+  download: (options: Options) => void
+  downloadJson: any
+  downloadError?: ApolloError
+  type: 'product'
 }
 
-const ExportListItem = ({ requestId }: Props) => {
+const ExportListItem = ({
+  requestId,
+  download,
+  downloadJson,
+  downloadError,
+  type,
+}: Props) => {
   const [longTimeAgo, setLongTimeAgo] = useState(false)
   const [downloading, setDownloading] = useState(false)
   const [errorDonwloading, setErrorDownloading] = useState(false)
@@ -26,13 +41,6 @@ const ExportListItem = ({ requestId }: Props) => {
       requestId,
     },
   })
-
-  const [
-    startDownload,
-    { data: downloadJson, error: downloadError },
-  ] = useLazyQuery<ProductTranslationDownload, { requestId: string }>(
-    DOWNLOAD_PRODUCT_TRANSLATION
-  )
 
   const {
     categoryId,
@@ -78,12 +86,12 @@ const ExportListItem = ({ requestId }: Props) => {
     // eslint-disable-next-line vtex/prefer-early-return
     if (downloadJson && downloading) {
       parseJSONToXLS(downloadJson.downloadProductTranslation, {
-        fileName: `category-${categoryId}-product-data-${locale}`,
+        fileName: `category-${categoryId}-${type}-data-${locale}`,
         sheetName: 'product_data',
       })
       setDownloading(false)
     }
-  }, [categoryId, downloadJson, downloading, locale])
+  }, [categoryId, downloadJson, downloading, locale, type])
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
@@ -123,7 +131,7 @@ const ExportListItem = ({ requestId }: Props) => {
             name="download-file"
             type="button"
             onClick={() => {
-              startDownload({
+              download({
                 variables: { requestId },
               })
               setDownloading(true)

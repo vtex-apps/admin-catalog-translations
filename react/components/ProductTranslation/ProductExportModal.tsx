@@ -5,6 +5,7 @@ import { useLocaleSelector } from '../LocaleSelector'
 import START_PRODUCT_TRANSLATION from '../../graphql/startProductTranslations.gql'
 import PROD_TRANSLATION_REQUESTS from '../../graphql/getProductTranslationRequests.gql'
 import ExportByCategoryIdModal from '../ExportByCatIdModal'
+import DOWNLOAD_PRODUCT_TRANSLATION from '../../graphql/downloadProductTranslations.gql'
 
 interface Props {
   isExportOpen: boolean
@@ -66,6 +67,11 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
     }
   }, [hasNewRequest])
 
+  const [download, { data: downloadJson, error: downloadError }] = useLazyQuery<
+    ProductTranslationDownload,
+    { requestId: string }
+  >(DOWNLOAD_PRODUCT_TRANSLATION)
+
   return (
     <ExportByCategoryIdModal
       isExportOpen={isExportOpen}
@@ -77,6 +83,10 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
       errorTranslation={prodTranslationError}
       loadingTranslations={loadingProdTranslation}
       hasNewRequest={hasNewRequest}
+      download={download}
+      downloadJson={downloadJson}
+      downloadError={downloadError}
+      type="product"
     />
   )
 }
