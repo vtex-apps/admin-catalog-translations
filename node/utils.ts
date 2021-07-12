@@ -5,6 +5,7 @@ const CALLS_PER_MINUTE = 1600
 const ONE_MINUTE = 60 * 1000
 export const BUCKET_NAME = 'product-translation'
 export const ALL_TRANSLATIONS_FILES = 'all-translations'
+export const ALL_SKU_TRANSLATIONS_FILES = 'all-sku-translations'
 
 export const statusToError = (e: AxiosError) => {
   if (!e.response) {
@@ -49,6 +50,10 @@ export const getInterationPairs = (currentStep: number): number[] => [
 
 export const extractProductId = (productResponse: Record<string, number[]>) => {
   return Object.keys(productResponse)
+}
+
+export const extractSkuId = (productResponse: Record<string, number[]>) => {
+  return Object.values(productResponse).flat()
 }
 
 export const pacer = () =>

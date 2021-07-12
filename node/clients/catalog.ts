@@ -11,6 +11,7 @@ import {
   getInterationPairs,
   extractProductId,
   MAX_PRODUCTS_PER_CATEGORY,
+  extractSkuId,
 } from '../utils'
 
 export class Catalog extends JanusClient {
@@ -59,6 +60,41 @@ export class Catalog extends JanusClient {
       finalProducts.push(...productIds)
     }
     return finalProducts
+  }
+
+  public getAllSKUs = async (categoryId: string) => {
+    const { range, ...products } = await this.getProductIdsByCategory(
+      categoryId,
+      1,
+      MAX_PRODUCTS_PER_CATEGORY
+    )
+    const { total } = range
+    const remainingInterations = interations(total)
+    const productPerCategorypromises = []
+
+    // /GetProductAndSkuIds returns max 50 responses. We loop over the remaining interations to get all products
+    for (let i = 1; i <= remainingInterations; i++) {
+      const [from, to] = getInterationPairs(i)
+      const productPerIdPromise = this.getProductIdsByCategory(
+        categoryId,
+        from,
+        to
+      )
+      productPerCategorypromises.push(productPerIdPromise)
+    }
+
+    const productPerCategoryCollection = await Promise.all(
+      productPerCategorypromises
+    )
+
+    const finalSKUs = []
+
+    // we plug together the first response and all the others. Then we extract only the product ids from responses
+    for (const product of [products, ...productPerCategoryCollection]) {
+      const skuIds = extractSkuId(product.data)
+      finalSKUs.push(...skuIds)
+    }
+    return finalSKUs
   }
 
   private getProductIdsByCategory = (
