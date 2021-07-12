@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useQuery } from 'react-apollo'
-import { FormattedDate, FormattedTime } from 'react-intl'
+import { FormattedDate, FormattedTime, FormattedMessage } from 'react-intl'
 import { Progress, ButtonPlain } from 'vtex.styleguide'
 import { ApolloError } from 'apollo-client'
 
@@ -125,7 +125,9 @@ const ExportListItem = ({
       </td>
       <td>
         {error || longTimeAgo || errorDonwloading ? (
-          <p className="c-danger i f7">Error creating file</p>
+          <p className="c-danger i f7">
+            <FormattedMessage id="catalog-translation.export.modal.download-list.error" />
+          </p>
         ) : completedAt ? (
           <ButtonPlain
             name="download-file"
@@ -137,7 +139,7 @@ const ExportListItem = ({
               setDownloading(true)
             }}
           >
-            Download
+            <FormattedMessage id="catalog-translation.export.modal.download-list.download-btn" />
           </ButtonPlain>
         ) : (
           <Progress type="steps" steps={['inProgress']} />

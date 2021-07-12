@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { useQuery } from 'react-apollo'
 import { ApolloError } from 'apollo-client'
 import {
@@ -58,6 +59,7 @@ export const ExportByCategoryIdModal = ({
   const [showMissingCatId, setShowMissingCatId] = useState(false)
   const { selectedLocale } = useLocaleSelector()
   const [tabSelected, setTabSelected] = useState<1 | 2>(1)
+  const intl = useIntl()
 
   const [selectedCategory, setSelectedCategory] = useState<AutocompleteValue>(
     {} as AutocompleteValue
@@ -111,11 +113,15 @@ export const ExportByCategoryIdModal = ({
       isOpen={isExportOpen}
       loading={loadingTranslations}
       cancelation={{
-        label: 'Cancel',
+        label: (
+          <FormattedMessage id="catalog-translation.export.modal.cancelation" />
+        ),
         onClick: handleClose,
       }}
       confirmation={{
-        label: 'Export Products',
+        label: (
+          <FormattedMessage id="catalog-translation.export.modal.confirmation" />
+        ),
         onClick: () => {
           if (!selectedCategory.value) {
             setShowMissingCatId(true)
@@ -130,27 +136,41 @@ export const ExportByCategoryIdModal = ({
         <div className="relative">
           <div className="w-100 absolute z-max overflow-hidden top-0 left-0">
             <Alert type="warning" onClose={() => setShowMissingCatId(false)}>
-              Please select a Category Id
+              <FormattedMessage id="catalog-translation.export.modal.missing-category-id" />
             </Alert>
           </div>
         </div>
       ) : null}
       <div style={{ minHeight: '420px' }}>
-        <h3>Export Product Data for {selectedLocale}</h3>
+        <h3>
+          <FormattedMessage
+            id="catalog-translation.export.modal.header"
+            values={{
+              selectedLocale,
+            }}
+          />
+        </h3>
         {loadingCategoryInfo ? (
           <Spinner />
         ) : (
           <Tabs>
             <Tab
-              label="Export"
+              label={
+                <FormattedMessage id="catalog-translation.export.modal.export-tab" />
+              }
               active={tabSelected === 1}
               onClick={() => setTabSelected(1)}
             >
               <div>
-                <h4>Select a category</h4>
+                <h4>
+                  <FormattedMessage id="catalog-translation.export.modal.search-header" />
+                </h4>
                 <AutocompleteInput
                   input={{
-                    placeholder: 'Enter category name or id',
+                    placeholder: intl.formatMessage({
+                      id:
+                        'catalog-translation.export.modal.category-search-placeholder',
+                    }),
                     onChange: (term: string) => setSearchTerm(term),
                     onClear: () => {
                       setSearchTerm('')
@@ -171,29 +191,39 @@ export const ExportByCategoryIdModal = ({
                 />
                 {hasError ? (
                   <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
-                    There was an error exporting products. Please try again in a
-                    few minutes.
+                    <FormattedMessage id="catalog-translation.export.modal.error-exporting" />
                   </p>
                 ) : null}
               </div>
             </Tab>
             <Tab
-              label="See Files"
+              label={
+                <FormattedMessage id="catalog-translation.export.modal.see-files-tab" />
+              }
               active={tabSelected === 2}
               onClick={() => setTabSelected(2)}
             >
               <p className="i f7 tr">
-                The process to translate can take a while. You can leave the
-                page and check it latter.
+                <FormattedMessage id="catalog-translation.export.modal.long-process.warning" />
               </p>
               <table className="w-100 mt7 tc">
                 <thead>
                   <tr>
-                    <th>CategoryId</th>
-                    <th>Locale</th>
-                    <th>Requested by</th>
-                    <th>Requested At</th>
-                    <th>Download</th>
+                    <th>
+                      <FormattedMessage id="catalog-translation.export.modal.table-header.catId" />
+                    </th>
+                    <th>
+                      <FormattedMessage id="catalog-translation.export.modal.table-header.locale" />
+                    </th>
+                    <th>
+                      <FormattedMessage id="catalog-translation.export.modal.table-header.requested.by" />
+                    </th>
+                    <th>
+                      <FormattedMessage id="catalog-translation.export.modal.table-header.requested.at" />
+                    </th>
+                    <th>
+                      <FormattedMessage id="catalog-translation.export.modal.table-header.download" />
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
