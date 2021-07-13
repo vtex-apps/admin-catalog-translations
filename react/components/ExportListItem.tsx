@@ -87,7 +87,7 @@ const ExportListItem = ({
     if (downloadJson && downloading) {
       parseJSONToXLS(downloadJson, {
         fileName: `category-${categoryId}-${type}-data-${locale}`,
-        sheetName: 'product_data',
+        sheetName: `${type}_data`,
       })
       setDownloading(false)
     }

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { FormattedMessage, useIntl } from 'react-intl'
+import { FormattedMessage, useIntl, defineMessages } from 'react-intl'
 import { useQuery } from 'react-apollo'
 import { ApolloError } from 'apollo-client'
 import {
@@ -52,6 +52,7 @@ export const ExportByCategoryIdModal = ({
   errorTranslation,
   loadingTranslations,
   hasNewRequest,
+  type,
   ...props
 }: Props) => {
   const [searchTerm, setSearchTerm] = useState('')
@@ -60,6 +61,24 @@ export const ExportByCategoryIdModal = ({
   const { selectedLocale } = useLocaleSelector()
   const [tabSelected, setTabSelected] = useState<1 | 2>(1)
   const intl = useIntl()
+
+  const headerEntityMessage = defineMessages({
+    product: {
+      id: 'catalog-translation.export.modal.header-product',
+    },
+    sku: {
+      id: 'catalog-translation.export.modal.header-sku',
+    },
+  })
+
+  const confirmationButtonLabel = defineMessages({
+    product: {
+      id: 'catalog-translation.export.modal.confirmation-products',
+    },
+    sku: {
+      id: 'catalog-translation.export.modal.confirmation-skus',
+    },
+  })
 
   const [selectedCategory, setSelectedCategory] = useState<AutocompleteValue>(
     {} as AutocompleteValue
@@ -119,9 +138,7 @@ export const ExportByCategoryIdModal = ({
         onClick: handleClose,
       }}
       confirmation={{
-        label: (
-          <FormattedMessage id="catalog-translation.export.modal.confirmation" />
-        ),
+        label: intl.formatMessage(confirmationButtonLabel[type]),
         onClick: () => {
           if (!selectedCategory.value) {
             setShowMissingCatId(true)
@@ -147,6 +164,7 @@ export const ExportByCategoryIdModal = ({
             id="catalog-translation.export.modal.header"
             values={{
               selectedLocale,
+              entry: intl.formatMessage(headerEntityMessage[type]),
             }}
           />
         </h3>
@@ -233,6 +251,7 @@ export const ExportByCategoryIdModal = ({
                       <ExportListItem
                         key={requestId}
                         requestId={requestId}
+                        type={type}
                         {...props}
                       />
                     ))}
