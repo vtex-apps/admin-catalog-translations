@@ -1,0 +1,8 @@
+query downloadSkuTranslations($requestId: String!) {
+  downloadSKUTranslation(requestId: $requestId)
+    @context(provider: "vtex.admin-catalog-translation") {
+    id
+    name
+    locale
+  }
+}
