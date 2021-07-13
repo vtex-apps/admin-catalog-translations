@@ -41,7 +41,7 @@ interface Props {
   download: (options: Options) => void
   downloadJson: any
   downloadError?: ApolloError
-  type: 'product'
+  type: 'product' | 'sku'
 }
 
 export const ExportByCategoryIdModal = ({
