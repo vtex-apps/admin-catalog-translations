@@ -1,0 +1,12 @@
+query downloadProductTranslations($requestId: String!) {
+  downloadProductTranslation(requestId: $requestId)
+    @context(provider: "vtex.admin-catalog-translation") {
+    id
+    name
+    description
+    shortDescription
+    title
+    locale
+    linkId
+  }
+}
