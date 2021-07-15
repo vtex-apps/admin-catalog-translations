@@ -60,8 +60,8 @@ const CollectionsForm: FC<CollectionsFormProps> = ({
       const translateCollectionResult = data ?? {}
       const collectionData: CollectionsData = {
         collection: {
+          ...formState,
           id: collectionId,
-          name: collectionInfo.name,
         },
       }
       if (translateCollectionResult) {
