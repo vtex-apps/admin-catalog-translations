@@ -1,0 +1,16 @@
+type SKUTranslationRequest {
+  requestId: String!
+  requestedBy: String!
+  categoryId: String!
+  error: Boolean
+  createdAt: String!
+  locale: String!
+  completedAt: String
+  estimatedTime: Int
+}
+
+type SKU {
+  id: String!
+  name: String
+  locale: String
+}

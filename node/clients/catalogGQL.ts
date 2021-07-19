@@ -43,6 +43,15 @@ const GET_PRODUCT_TRANSLATION_QUERY = `
   }
 `
 
+const GET_SKU_TRANSLATION_QUERY = `
+  query getSKUTranslation($identifier: SKUUniqueIdentifier) {
+    sku(identifier: $identifier) {
+      id
+      name
+    }
+  }
+`
+
 export class CatalogGQL extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
     super(CATALOG_GRAPHQL_APP, ctx, opts)
@@ -113,6 +122,27 @@ export class CatalogGQL extends AppGraphQLClient {
     >(
       {
         query: GET_PRODUCT_TRANSLATION_QUERY,
+        variables: {
+          identifier: {
+            field: 'id',
+            value: id,
+          },
+        },
+      },
+      {
+        headers: {
+          'x-vtex-locale': `${locale}`,
+        },
+      }
+    )
+
+  public getSKUTranslation = (id: string, locale: string) =>
+    this.graphql.query<
+      SKUTranslationsResponse,
+      { identifier: { value: string; field: 'id' } }
+    >(
+      {
+        query: GET_SKU_TRANSLATION_QUERY,
         variables: {
           identifier: {
             field: 'id',

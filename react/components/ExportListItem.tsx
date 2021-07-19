@@ -1,17 +1,32 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useLazyQuery, useQuery } from 'react-apollo'
-import { FormattedDate, FormattedTime } from 'react-intl'
+import { useQuery } from 'react-apollo'
+import { FormattedDate, FormattedTime, FormattedMessage } from 'react-intl'
 import { Progress, ButtonPlain } from 'vtex.styleguide'
+import { ApolloError } from 'apollo-client'
 
-import PROD_INFO_REQUEST from '../../graphql/getProdTranslationInfoReq.gql'
-import DOWNLOAD_PRODUCT_TRANSLATION from '../../graphql/downloadProductTranslations.gql'
-import { shouldHaveCompleted, remainingTime, parseJSONToXLS } from '../../utils'
+import PROD_INFO_REQUEST from '../graphql/getProdTranslationInfoReq.gql'
+import { shouldHaveCompleted, remainingTime, parseJSONToXLS } from '../utils'
 
+interface Options {
+  variables: {
+    requestId: string
+  }
+}
 interface Props {
   requestId: string
+  download: (options: Options) => void
+  downloadJson: any
+  downloadError?: ApolloError
+  type: 'product' | 'sku'
 }
 
-const ExportListItem = ({ requestId }: Props) => {
+const ExportListItem = ({
+  requestId,
+  download,
+  downloadJson,
+  downloadError,
+  type,
+}: Props) => {
   const [longTimeAgo, setLongTimeAgo] = useState(false)
   const [downloading, setDownloading] = useState(false)
   const [errorDonwloading, setErrorDownloading] = useState(false)
@@ -26,13 +41,6 @@ const ExportListItem = ({ requestId }: Props) => {
       requestId,
     },
   })
-
-  const [
-    startDownload,
-    { data: downloadJson, error: downloadError },
-  ] = useLazyQuery<ProductTranslationDownload, { requestId: string }>(
-    DOWNLOAD_PRODUCT_TRANSLATION
-  )
 
   const {
     categoryId,
@@ -77,13 +85,13 @@ const ExportListItem = ({ requestId }: Props) => {
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
     if (downloadJson && downloading) {
-      parseJSONToXLS(downloadJson.downloadProductTranslation, {
-        fileName: `category-${categoryId}-product-data-${locale}`,
-        sheetName: 'product_data',
+      parseJSONToXLS(downloadJson, {
+        fileName: `category-${categoryId}-${type}-data-${locale}`,
+        sheetName: `${type}_data`,
       })
       setDownloading(false)
     }
-  }, [categoryId, downloadJson, downloading, locale])
+  }, [categoryId, downloadJson, downloading, locale, type])
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
@@ -117,19 +125,21 @@ const ExportListItem = ({ requestId }: Props) => {
       </td>
       <td>
         {error || longTimeAgo || errorDonwloading ? (
-          <p className="c-danger i f7">Error creating file</p>
+          <p className="c-danger i f7">
+            <FormattedMessage id="catalog-translation.export.modal.download-list.error" />
+          </p>
         ) : completedAt ? (
           <ButtonPlain
             name="download-file"
             type="button"
             onClick={() => {
-              startDownload({
+              download({
                 variables: { requestId },
               })
               setDownloading(true)
             }}
           >
-            Download
+            <FormattedMessage id="catalog-translation.export.modal.download-list.download-btn" />
           </ButtonPlain>
         ) : (
           <Progress type="steps" steps={['inProgress']} />

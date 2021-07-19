@@ -1,4 +1,4 @@
-import React, { FC, SyntheticEvent } from 'react'
+import React, { SyntheticEvent } from 'react'
 import { InputSearch, PageBlock, Spinner } from 'vtex.styleguide'
 
 import useCatalogQuery from '../../hooks/useCatalogQuery'
@@ -6,8 +6,12 @@ import { useLocaleSelector } from '../LocaleSelector'
 import getSKUQuery from '../../graphql/getSKU.gql'
 import ErrorHandler from '../ErrorHandler'
 import SKUForm from './SKUForm'
+import SKUExportModal from './SKUExportModal'
 
-const SKUTranslation: FC = () => {
+const SKUTranslation = ({
+  isExportOpen = false,
+  handleOpenExport = () => {},
+}: ComponentProps) => {
   const {
     entryInfo,
     isLoadingOrRefetching,
@@ -36,38 +40,44 @@ const SKUTranslation: FC = () => {
   const { id, ...SKUInfo } = entryInfo?.sku || ({} as SKU)
 
   return (
-    <main>
-      <div style={{ maxWidth: '340px' }} className="mv7">
-        <InputSearch
-          value={entryId}
-          placeHolder="Search SKU..."
-          label="SKU ID"
-          size="regular"
-          onChange={handleEntryIdInput}
-          onSubmit={handleSubmitSKUId}
-          onClear={handleCleanSearch}
-        />
-      </div>
-      {id || isLoadingOrRefetching || errorMessage ? (
-        <PageBlock variation="full" title={`SKU info- ${selectedLocale}`}>
-          {errorMessage ? (
-            <ErrorHandler
-              errorMessage={errorMessage}
-              entryId={entryId}
-              entry="SKU"
-            />
-          ) : isLoadingOrRefetching ? (
-            <Spinner />
-          ) : (
-            <SKUForm
-              SKUInfo={SKUInfo}
-              SKUId={entryId}
-              updateMemoSKU={setMemoEntries}
-            />
-          )}
-        </PageBlock>
-      ) : null}
-    </main>
+    <>
+      <main>
+        <div style={{ maxWidth: '340px' }} className="mv7">
+          <InputSearch
+            value={entryId}
+            placeHolder="Search SKU..."
+            label="SKU ID"
+            size="regular"
+            onChange={handleEntryIdInput}
+            onSubmit={handleSubmitSKUId}
+            onClear={handleCleanSearch}
+          />
+        </div>
+        {id || isLoadingOrRefetching || errorMessage ? (
+          <PageBlock variation="full" title={`SKU info- ${selectedLocale}`}>
+            {errorMessage ? (
+              <ErrorHandler
+                errorMessage={errorMessage}
+                entryId={entryId}
+                entry="SKU"
+              />
+            ) : isLoadingOrRefetching ? (
+              <Spinner />
+            ) : (
+              <SKUForm
+                SKUInfo={SKUInfo}
+                SKUId={entryId}
+                updateMemoSKU={setMemoEntries}
+              />
+            )}
+          </PageBlock>
+        ) : null}
+      </main>
+      <SKUExportModal
+        isExportOpen={isExportOpen}
+        setIsExportOpen={handleOpenExport}
+      />
+    </>
   )
 }
 
