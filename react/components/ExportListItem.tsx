@@ -17,7 +17,7 @@ interface Props {
   download: (options: Options) => void
   downloadJson: any
   downloadError?: ApolloError
-  type: 'product'
+  type: 'product' | 'sku'
 }
 
 const ExportListItem = ({
@@ -85,9 +85,9 @@ const ExportListItem = ({
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
     if (downloadJson && downloading) {
-      parseJSONToXLS(downloadJson.downloadProductTranslation, {
+      parseJSONToXLS(downloadJson, {
         fileName: `category-${categoryId}-${type}-data-${locale}`,
-        sheetName: 'product_data',
+        sheetName: `${type}_data`,
       })
       setDownloading(false)
     }

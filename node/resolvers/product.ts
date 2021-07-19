@@ -8,6 +8,8 @@ import {
   calculateExportProcessTime,
 } from '../utils'
 
+const CALLS_PER_MINUTE = 1600
+
 export const Product = {
   locale: (
     _root: ResolvedPromise<ProductTranslationResponse>,
@@ -52,7 +54,7 @@ const saveTranslation = async (
       )
       productTranslationPromises.push(translationPromise)
       // eslint-disable-next-line no-await-in-loop
-      await pacer()
+      await pacer(CALLS_PER_MINUTE)
     }
 
     const translations = await Promise.all(productTranslationPromises)
@@ -121,7 +123,10 @@ const productTranslations = async (
     categoryId,
     locale,
     createdAt: new Date(),
-    estimatedTime: calculateExportProcessTime(productIdCollection.length),
+    estimatedTime: calculateExportProcessTime(
+      productIdCollection.length,
+      CALLS_PER_MINUTE
+    ),
   }
 
   await vbase.saveJSON<ProductTranslationRequest>(

@@ -66,7 +66,7 @@ interface CategoriesNameAndId {
   getCategoriesName: Array<{ id: string; name: string }>
 }
 
-interface ProductTranslationRequestInfo {
+interface TranslationRequestByCategoryId {
   requestId: string
   requestedBy: string
   categoryId: string
@@ -78,7 +78,7 @@ interface ProductTranslationRequestInfo {
 }
 
 interface ProductTranslationRequest {
-  productTranslations: ProductTranslationRequestInfo
+  productTranslations: TranslationRequestByCategoryId
 }
 
 interface ProdTranslationRequests {
@@ -86,9 +86,21 @@ interface ProdTranslationRequests {
 }
 
 interface ProdTransInfoReq {
-  productTranslationRequestInfo: ProductTranslationRequestInfo
+  productTranslationRequestInfo: TranslationRequestByCategoryId
 }
 
 interface ProductTranslationDownload {
   downloadProductTranslation: Product[]
+}
+
+interface SkuTranslationRequest {
+  skuTranslations: TranslationRequestByCategoryId
+}
+
+interface SkuTranslationRequests {
+  skuTranslationRequests: string[]
+}
+
+interface SkuTranslationDownload {
+  downloadSKUTranslation: SKU[]
 }
