@@ -1,3 +1,4 @@
+import { Translation } from 'vtex.messages'
 import XLSX from 'xlsx'
 
 /**
@@ -129,4 +130,14 @@ export const shouldHaveCompleted = (
     estimatedTime * ESTIMATED_MARGIN <
     new Date().valueOf() - new Date(date).valueOf()
   )
+}
+
+export const formatCollectionFromMessages = (
+  messages: Translation[],
+  context: string
+): Record<string, Collections> => {
+  return messages.reduce((col, message) => {
+    col[message.lang] = { name: message.translation, id: context }
+    return col
+  }, {} as Record<string, Collections>)
 }

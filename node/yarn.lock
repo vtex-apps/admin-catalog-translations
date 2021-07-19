@@ -1351,10 +1351,6 @@ vary@^1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
-"vtex.admin-catalog-translation@https://catalogcollectionstranslate--powerplanet.myvtex.com/_v/private/typings/linked/v1/vtex.admin-catalog-translation@1.0.0+build1626700569/public/@types/vtex.admin-catalog-translation":
-  version "1.0.0"
-  resolved "https://catalogcollectionstranslate--powerplanet.myvtex.com/_v/private/typings/linked/v1/vtex.admin-catalog-translation@1.0.0+build1626700569/public/@types/vtex.admin-catalog-translation#8d5b482eeea55dc9fb17ac79eeff314d9c4e27d9"
-
 "vtex.catalog-graphql@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.catalog-graphql@1.96.0/public/@types/vtex.catalog-graphql":
   version "1.96.0"
   resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.catalog-graphql@1.96.0/public/@types/vtex.catalog-graphql#20fd7dc4f24848cb3e227a3ae369fcfb71861008"

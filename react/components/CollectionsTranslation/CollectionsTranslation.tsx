@@ -1,4 +1,4 @@
-import React, { FC, SyntheticEvent } from 'react'
+import React, { SyntheticEvent, useMemo } from 'react'
 import { InputSearch, PageBlock, Spinner } from 'vtex.styleguide'
 import { useQuery } from 'react-apollo'
 import { MessageListV2, IndexedMessages } from 'vtex.messages'
@@ -9,8 +9,9 @@ import ErrorHandler from '../ErrorHandler'
 import getCollectionById from '../../graphql/getCollections.gql'
 import CollectionsForm from './CollectionsForm'
 import QUERY_MESSAGES from '../../graphql/messages.gql'
+import { formatCollectionFromMessages } from '../../utils'
 
-const CollectionsTranslation: FC = () => {
+const CollectionsTranslation = () => {
   const {
     entryInfo,
     isLoadingOrRefetching,
@@ -33,19 +34,14 @@ const CollectionsTranslation: FC = () => {
       variables: { fieldId: Number(entryId) },
     })
   }
-  const { id, ...collectionInfo } = entryInfo?.collection || ({} as Collections)
-  const collectionsSaveType = {
-    to: selectedLocale,
-    messages: {
-      srcLang: xVtexTenant,
-      srcMessage: collectionInfo.name,
-      context: entryId,
-      targetMessage: collectionInfo.name,
-    },
-  }
 
-  const { data, loading, error } = useQuery<
-    MessageListV2,
+  const {
+    data: messagesTranslations,
+    refetch,
+    loading: loadingMessages,
+    error: errorMessages,
+  } = useQuery<
+    { userTranslations: MessageListV2[] },
     { args: IndexedMessages }
   >(QUERY_MESSAGES, {
     ssr: false,
@@ -64,8 +60,34 @@ const CollectionsTranslation: FC = () => {
     },
   })
 
-  // eslint-disable-next-line no-console
-  console.log({ data, loading, error })
+  const translatedCollectionNames = useMemo(() => {
+    // eslint-disable-next-line vtex/prefer-early-return
+    if (messagesTranslations) {
+      const [userFormTranslation] = messagesTranslations.userTranslations
+      const { translations, context } = userFormTranslation
+      return formatCollectionFromMessages(translations, context ?? '')
+    }
+    return {}
+  }, [messagesTranslations])
+
+  const collectionInfo =
+    translatedCollectionNames[selectedLocale] ??
+    translatedCollectionNames[xVtexTenant] ??
+    {}
+
+  const handleUpdateMessage = (): void => {
+    refetch({
+      args: {
+        from: xVtexTenant,
+        messages: [
+          {
+            content: entryInfo?.collection.name,
+            context: entryId,
+          },
+        ],
+      },
+    })
+  }
 
   return (
     <main>
@@ -80,14 +102,18 @@ const CollectionsTranslation: FC = () => {
           onClear={handleCleanSearch}
         />
       </div>
-      {id || isLoadingOrRefetching || errorMessage ? (
+      {collectionInfo.name ||
+      isLoadingOrRefetching ||
+      loadingMessages ||
+      errorMessage ||
+      errorMessages ? (
         <PageBlock
           variation="full"
           title={`Collection info- ${selectedLocale}`}
         >
           {errorMessage ? (
             <ErrorHandler
-              errorMessage={errorMessage}
+              errorMessage={errorMessage || (errorMessages?.message ?? '')}
               entryId={entryId}
               entry="Collection"
             />
@@ -96,9 +122,8 @@ const CollectionsTranslation: FC = () => {
           ) : (
             <CollectionsForm
               collectionInfo={collectionInfo}
-              collectionId={entryId}
-              collectionSaveData={collectionsSaveType}
-              updateMemoCollections={setMemoEntries}
+              srcMessage={translatedCollectionNames[xVtexTenant]?.name ?? ''}
+              updateMemoCollections={handleUpdateMessage}
             />
           )}
         </PageBlock>

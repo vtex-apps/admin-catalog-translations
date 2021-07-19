@@ -1,6 +1,7 @@
-import React, { FC, SyntheticEvent } from 'react'
+import React, { SyntheticEvent } from 'react'
 import { Input } from 'vtex.styleguide'
 import { useMutation } from 'react-apollo'
+import { SaveArgsV2 } from 'vtex.messages'
 
 import { useLocaleSelector } from '../LocaleSelector'
 import { useAlert } from '../../providers/AlertProvider'
@@ -9,23 +10,17 @@ import ActionButtons from '../ActionButtons'
 import translateCollectionMutation from '../../graphql/translateCollections.gql'
 
 interface CollectionsFormProps {
-  collectionInfo: CollectionsName
-  collectionId: string
-  collectionSaveData: SaveArgsV2
-  updateMemoCollections: (
-    value: React.SetStateAction<{
-      [Identifier: string]: CollectionsData
-    }>
-  ) => void
+  collectionInfo: Collections
+  srcMessage: string
+  updateMemoCollections: () => void
 }
 
-const CollectionsForm: FC<CollectionsFormProps> = ({
+const CollectionsForm = ({
   collectionInfo,
-  collectionId,
-  collectionSaveData,
+  srcMessage,
   updateMemoCollections,
-}) => {
-  const { isXVtexTenant, selectedLocale } = useLocaleSelector()
+}: CollectionsFormProps) => {
+  const { isXVtexTenant, selectedLocale, xVtexTenant } = useLocaleSelector()
   const { openAlert } = useAlert()
   const {
     formState,
@@ -36,7 +31,7 @@ const CollectionsForm: FC<CollectionsFormProps> = ({
   } = useFormTranslation<CollectionsName>(collectionInfo)
 
   const [translateCollection, { loading }] = useMutation<
-    { translateCollection: boolean },
+    { saveV2: boolean },
     { saveArgs: SaveArgsV2 }
   >(translateCollectionMutation)
   const handleSubmit = async (e: SyntheticEvent) => {
@@ -45,10 +40,14 @@ const CollectionsForm: FC<CollectionsFormProps> = ({
       return
     }
     const saveArgs: SaveArgsV2 = {
-      messages: {
-        ...collectionSaveData.messages,
-        targetMessage: formState.name,
-      },
+      messages: [
+        {
+          srcLang: xVtexTenant,
+          context: collectionInfo.id,
+          srcMessage,
+          targetMessage: formState.name,
+        },
+      ],
       to: selectedLocale,
     }
     try {
@@ -57,19 +56,10 @@ const CollectionsForm: FC<CollectionsFormProps> = ({
           saveArgs,
         },
       })
-      const translateCollectionResult = data ?? {}
-      const collectionData: CollectionsData = {
-        collection: {
-          ...formState,
-          id: collectionId,
-        },
-      }
-      if (translateCollectionResult) {
-        updateMemoCollections((state) => ({
-          ...state,
-          ...{ [selectedLocale]: { collection: collectionData.collection } },
-        }))
+      const { saveV2: translateCollectionResponse } = data ?? {}
+      if (translateCollectionResponse) {
         openAlert('success', 'Collections')
+        updateMemoCollections()
       }
       if (errors?.length) {
         throw new TypeError('Error translation Collections')

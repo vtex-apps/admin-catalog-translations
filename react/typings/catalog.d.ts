@@ -102,12 +102,3 @@ interface Collections extends CollectionsName {
 interface CollectionsName {
   name: string
 }
-interface SaveArgsV2 {
-  to: string
-  messages: {
-    srcLang: string
-    srcMessage: string
-    context: string
-    targetMessage: string
-  }
-}
