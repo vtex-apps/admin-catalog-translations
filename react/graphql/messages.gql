@@ -1,0 +1,8 @@
+query messages($args: IndexedMessages!) {
+  userTranslations(args: $args) @context(provider: "vtex.messages") {
+    translations {
+      lang
+      translation
+    }
+  }
+}

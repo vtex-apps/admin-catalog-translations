@@ -1,11 +1,14 @@
 import React, { FC, SyntheticEvent } from 'react'
 import { InputSearch, PageBlock, Spinner } from 'vtex.styleguide'
+import { useQuery } from 'react-apollo'
+import { MessageListV2, IndexedMessages } from 'vtex.messages'
 
 import useCatalogQuery from '../../hooks/useCatalogQuery'
 import { useLocaleSelector } from '../LocaleSelector'
 import ErrorHandler from '../ErrorHandler'
 import getCollectionById from '../../graphql/getCollections.gql'
 import CollectionsForm from './CollectionsForm'
+import QUERY_MESSAGES from '../../graphql/messages.gql'
 
 const CollectionsTranslation: FC = () => {
   const {
@@ -40,6 +43,30 @@ const CollectionsTranslation: FC = () => {
       targetMessage: collectionInfo.name,
     },
   }
+
+  const { data, loading, error } = useQuery<
+    MessageListV2,
+    { args: IndexedMessages }
+  >(QUERY_MESSAGES, {
+    ssr: false,
+    skip: !entryId || !entryInfo?.collection.name,
+    fetchPolicy: 'no-cache',
+    variables: {
+      args: {
+        from: xVtexTenant,
+        messages: [
+          {
+            content: entryInfo?.collection.name,
+            context: entryId,
+          },
+        ],
+      },
+    },
+  })
+
+  // eslint-disable-next-line no-console
+  console.log({ data, loading, error })
+
   return (
     <main>
       <div style={{ maxWidth: '340px' }} className="mv7">
