@@ -84,7 +84,7 @@ const ProductExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
       loadingTranslations={loadingProdTranslation}
       hasNewRequest={hasNewRequest}
       download={download}
-      downloadJson={downloadJson}
+      downloadJson={downloadJson?.downloadProductTranslation}
       downloadError={downloadError}
       type="product"
     />

@@ -1,0 +1,3 @@
+query getSkuTranslationRequests {
+  skuTranslationRequests @context(provider: "vtex.admin-catalog-translation")
+}

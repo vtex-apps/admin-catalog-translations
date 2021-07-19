@@ -1,7 +1,6 @@
 import { AuthenticationError, ForbiddenError, UserInputError } from '@vtex/api'
 import type { AxiosError } from 'axios'
 
-const CALLS_PER_MINUTE = 1600
 const ONE_MINUTE = 60 * 1000
 export const BUCKET_NAME = 'product-translation'
 export const ALL_TRANSLATIONS_FILES = 'all-translations'
@@ -56,12 +55,14 @@ export const extractSkuId = (productResponse: Record<string, number[]>) => {
   return Object.values(productResponse).flat()
 }
 
-export const pacer = () =>
+export const pacer = (callsPerMinute: number) =>
   new Promise((resolve) => {
     setTimeout(() => {
       resolve('done')
-    }, ONE_MINUTE / CALLS_PER_MINUTE)
+    }, ONE_MINUTE / callsPerMinute)
   })
 
-export const calculateExportProcessTime = (size: number): number =>
-  Math.ceil(size * (ONE_MINUTE / CALLS_PER_MINUTE))
+export const calculateExportProcessTime = (
+  size: number,
+  callsPerMinute: number
+): number => Math.ceil(size * (ONE_MINUTE / callsPerMinute))

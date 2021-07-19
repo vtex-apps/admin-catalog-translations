@@ -1,4 +1,4 @@
-import { VBase } from '@vtex/api'
+import { Logger, VBase } from '@vtex/api'
 
 import { CatalogGQL } from '../clients/catalogGQL'
 import {
@@ -7,6 +7,8 @@ import {
   calculateExportProcessTime,
   pacer,
 } from '../utils'
+
+const CALLS_PER_MINUTE = 350
 
 export const SKU = {
   locale: (
@@ -24,7 +26,11 @@ const saveSkuTranslation = async (
     locale,
     requestId,
   }: { skuIds: number[]; locale: string; requestId: string },
-  { catalogGQLClient, vbase }: { catalogGQLClient: CatalogGQL; vbase: VBase }
+  {
+    catalogGQLClient,
+    vbase,
+    logger,
+  }: { catalogGQLClient: CatalogGQL; vbase: VBase; logger: Logger }
 ): Promise<void> => {
   const translationRequest = await vbase.getJSON<SKUTranslationRequest>(
     BUCKET_NAME,
@@ -41,7 +47,7 @@ const saveSkuTranslation = async (
       )
       skuTranslationPromises.push(translationPromise)
       // eslint-disable-next-line no-await-in-loop
-      await pacer()
+      await pacer(CALLS_PER_MINUTE)
     }
 
     const translations = await Promise.all(skuTranslationPromises)
@@ -57,7 +63,12 @@ const saveSkuTranslation = async (
       requestId,
       updateTranslation
     )
-  } catch {
+  } catch (e) {
+    logger.error({
+      message: 'Error getting Sku translations',
+      error: e,
+    })
+
     const addError = {
       ...translationRequest,
       error: true,
@@ -77,7 +88,7 @@ const skuTranslations = async (
 ) => {
   const {
     clients: { catalog, catalogGQL, vbase, licenseManager },
-    vtex: { adminUserAuthToken, requestId },
+    vtex: { adminUserAuthToken, requestId, logger },
   } = ctx
 
   const {
@@ -110,7 +121,10 @@ const skuTranslations = async (
     categoryId,
     locale,
     createdAt: new Date(),
-    estimatedTime: calculateExportProcessTime(skuIdColletion.length),
+    estimatedTime: calculateExportProcessTime(
+      skuIdColletion.length,
+      CALLS_PER_MINUTE
+    ),
   }
 
   await vbase.saveJSON<SKUTranslationRequest>(
@@ -128,6 +142,7 @@ const skuTranslations = async (
     {
       catalogGQLClient: catalogGQL,
       vbase,
+      logger,
     }
   )
 
