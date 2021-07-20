@@ -8,4 +8,8 @@ type Query {
   productTranslationRequests: [String]
   productTranslationRequestInfo(requestId: String!): ProductTranslationRequest
   downloadProductTranslation(requestId: String!): [Product]
+  skuTranslations(locale: String!, categoryId: String!): SKUTranslationRequest
+  skuTranslationRequests: [String]
+  skuTranslationRequestInfo(requestId: String!): SKUTranslationRequest
+  downloadSKUTranslation(requestId: String!): [SKU]
 }
