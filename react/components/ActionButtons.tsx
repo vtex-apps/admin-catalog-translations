@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import { Button } from 'vtex.styleguide'
+import { FormattedMessage } from 'react-intl'
 
 interface ActionButtonsProps {
   toggleEdit: () => void
@@ -17,7 +18,11 @@ const ActionButtons: FC<ActionButtonsProps> = ({
   <div>
     <span className="mr5">
       <Button type="button" variation="secondary" onClick={toggleEdit}>
-        {canEdit ? 'Cancel' : 'Edit'}
+        {canEdit ? (
+          <FormattedMessage id="catalog-translation.action-buttons.cancel" />
+        ) : (
+          <FormattedMessage id="catalog-translation.action-buttons.edit" />
+        )}
       </Button>
     </span>
     <span>
@@ -27,7 +32,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
         disabled={!changed}
         isLoading={loading}
       >
-        Save
+        <FormattedMessage id="catalog-translation.action-buttons.save" />
       </Button>
     </span>
   </div>

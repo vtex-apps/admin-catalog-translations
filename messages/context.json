@@ -1,4 +1,7 @@
 {
+  "catalog-translation.action-buttons.save": "Save",
+  "catalog-translation.action-buttons.cancel": "Cancel",
+  "catalog-translation.action-buttons.edit": "Edit",
   "catalog-translation.navigation.label": "Catalog Translation",
   "catalog-translation.product.header": "Product Translation",
   "catalog-translation.category.header": "Category Translation",

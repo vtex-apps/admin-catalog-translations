@@ -1,4 +1,7 @@
 {
+  "catalog-translation.action-buttons.save": "Guardar",
+  "catalog-translation.action-buttons.cancel": "Cancelar",
+  "catalog-translation.action-buttons.edit": "Editar",
   "catalog-translation.navigation.label": "Traducciones de catálogos",
   "catalog-translation.navigation.search.kws": "catalogos, traducciones",
   "catalog-translation.product.header": "Traducciones de Productos",
