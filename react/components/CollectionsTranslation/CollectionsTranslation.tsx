@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useMemo } from 'react'
+import React, { SyntheticEvent, useMemo, useState } from 'react'
 import { InputSearch, PageBlock, Spinner } from 'vtex.styleguide'
 import { useQuery } from 'react-apollo'
 import { MessageListV2, IndexedMessages } from 'vtex.messages'
@@ -24,6 +24,10 @@ const CollectionsTranslation = () => {
     errorMessage,
   } = useCatalogQuery<CollectionsData, { fieldId: number }>(getCollectionById)
   const { selectedLocale, xVtexTenant } = useLocaleSelector()
+  const [fetchMessages, setFetchMessages] = useState(false)
+  const [messagesTranslations, setMessagesTranslations] = useState(
+    {} as { userTranslations: MessageListV2[] }
+  )
   const intl = useIntl()
 
   const handleSubmitSpecification = (e: SyntheticEvent) => {
@@ -35,19 +39,19 @@ const CollectionsTranslation = () => {
     fetchEntry({
       variables: { fieldId: Number(entryId) },
     })
+    setFetchMessages(true)
   }
 
-  const {
-    data: messagesTranslations,
-    refetch,
-    loading: loadingMessages,
-    error: errorMessages,
-  } = useQuery<
+  const { refetch, loading: loadingMessages, error: errorMessages } = useQuery<
     { userTranslations: MessageListV2[] },
     { args: IndexedMessages }
   >(QUERY_MESSAGES, {
     ssr: false,
-    skip: !entryId || !entryInfo?.collection.name,
+    skip: !entryId || !entryInfo?.collection.name || !fetchMessages,
+    onCompleted: (data) => {
+      setMessagesTranslations(data)
+      setFetchMessages(false)
+    },
     fetchPolicy: 'no-cache',
     variables: {
       args: {
@@ -64,7 +68,7 @@ const CollectionsTranslation = () => {
 
   const translatedCollectionNames = useMemo(() => {
     // eslint-disable-next-line vtex/prefer-early-return
-    if (messagesTranslations && entryInfo) {
+    if (messagesTranslations.userTranslations && entryInfo) {
       const [userFormTranslation] = messagesTranslations.userTranslations
       const { translations, context, srcLang } = userFormTranslation
       return formatCollectionFromMessages({
@@ -82,8 +86,8 @@ const CollectionsTranslation = () => {
     translatedCollectionNames[xVtexTenant] ??
     {}
 
-  const handleUpdateMessage = (): void => {
-    refetch({
+  const handleUpdateMessage = async () => {
+    const { data } = await refetch({
       args: {
         from: xVtexTenant,
         messages: [
@@ -94,6 +98,7 @@ const CollectionsTranslation = () => {
         ],
       },
     })
+    setMessagesTranslations(data)
   }
 
   return (
