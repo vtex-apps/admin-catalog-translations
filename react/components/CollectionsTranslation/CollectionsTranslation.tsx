@@ -2,7 +2,7 @@ import React, { SyntheticEvent, useMemo } from 'react'
 import { InputSearch, PageBlock, Spinner } from 'vtex.styleguide'
 import { useQuery } from 'react-apollo'
 import { MessageListV2, IndexedMessages } from 'vtex.messages'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, useIntl } from 'react-intl'
 
 import useCatalogQuery from '../../hooks/useCatalogQuery'
 import { useLocaleSelector } from '../LocaleSelector'
@@ -24,6 +24,7 @@ const CollectionsTranslation = () => {
     errorMessage,
   } = useCatalogQuery<CollectionsData, { fieldId: number }>(getCollectionById)
   const { selectedLocale, xVtexTenant } = useLocaleSelector()
+  const intl = useIntl()
 
   const handleSubmitSpecification = (e: SyntheticEvent) => {
     e.preventDefault()
@@ -122,7 +123,9 @@ const CollectionsTranslation = () => {
             <ErrorHandler
               errorMessage={errorMessage || (errorMessages?.message ?? '')}
               entryId={entryId}
-              entry="Collection"
+              entry={intl.formatMessage({
+                id: 'catalog-translation.entry-type.collection',
+              })}
             />
           ) : isLoadingOrRefetching || loadingMessages ? (
             <Spinner />
