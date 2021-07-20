@@ -7,7 +7,7 @@ import { useLocaleSelector } from '../LocaleSelector'
 import { useAlert } from '../../providers/AlertProvider'
 import useFormTranslation from '../../hooks/useFormTranslation'
 import ActionButtons from '../ActionButtons'
-import translateCollectionMutation from '../../graphql/translateCollections.gql'
+import TRANSLATE_MESSAGES from '../../graphql/translateMessages.gql'
 
 interface CollectionsFormProps {
   collectionInfo: Collections
@@ -33,7 +33,7 @@ const CollectionsForm = ({
   const [translateCollection, { loading }] = useMutation<
     { saveV2: boolean },
     { saveArgs: SaveArgsV2 }
-  >(translateCollectionMutation)
+  >(TRANSLATE_MESSAGES)
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault()
     if (loading) {

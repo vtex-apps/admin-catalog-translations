@@ -1,3 +1,0 @@
-mutation translateCollections($saveArgs: SaveArgsV2!) {
-  saveV2(args: $saveArgs)
-}

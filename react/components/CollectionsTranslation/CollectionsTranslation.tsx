@@ -117,7 +117,7 @@ const CollectionsTranslation = () => {
               entryId={entryId}
               entry="Collection"
             />
-          ) : isLoadingOrRefetching ? (
+          ) : isLoadingOrRefetching || loadingMessages ? (
             <Spinner />
           ) : (
             <CollectionsForm
