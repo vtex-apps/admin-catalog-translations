@@ -64,13 +64,18 @@ const CollectionsTranslation = () => {
 
   const translatedCollectionNames = useMemo(() => {
     // eslint-disable-next-line vtex/prefer-early-return
-    if (messagesTranslations) {
+    if (messagesTranslations && entryInfo) {
       const [userFormTranslation] = messagesTranslations.userTranslations
-      const { translations, context } = userFormTranslation
-      return formatCollectionFromMessages(translations, context ?? '')
+      const { translations, context, srcLang } = userFormTranslation
+      return formatCollectionFromMessages({
+        translations,
+        context: context ?? '',
+        srcLang,
+        originalMessage: entryInfo.collection.name,
+      })
     }
     return {}
-  }, [messagesTranslations])
+  }, [messagesTranslations, entryInfo])
 
   const collectionInfo =
     translatedCollectionNames[selectedLocale] ??

@@ -132,12 +132,27 @@ export const shouldHaveCompleted = (
   )
 }
 
-export const formatCollectionFromMessages = (
-  messages: Translation[],
+interface FormatCollectionFromMessagesArgs {
+  translations: Translation[]
   context: string
-): Record<string, Collections> => {
-  return messages.reduce((col, message) => {
-    col[message.lang] = { name: message.translation, id: context }
+  srcLang: string
+  originalMessage: string
+}
+
+export const formatCollectionFromMessages = ({
+  translations,
+  context,
+  srcLang,
+  originalMessage,
+}: FormatCollectionFromMessagesArgs): Record<string, Collections> => {
+  if (!translations.length) {
+    return {
+      [srcLang]: { name: originalMessage, id: context },
+    }
+  }
+
+  return translations.reduce((col, translation) => {
+    col[translation.lang] = { name: translation.translation, id: context }
     return col
   }, {} as Record<string, Collections>)
 }
