@@ -2,6 +2,7 @@ import React, { SyntheticEvent } from 'react'
 import { Input } from 'vtex.styleguide'
 import { useMutation } from 'react-apollo'
 import { SaveArgsV2 } from 'vtex.messages'
+import { FormattedMessage } from 'react-intl'
 
 import { useLocaleSelector } from '../LocaleSelector'
 import { useAlert } from '../../providers/AlertProvider'
@@ -74,7 +75,9 @@ const CollectionsForm = ({
       <form onSubmit={handleSubmit}>
         <div className="mb5">
           <Input
-            label="Name"
+            label={
+              <FormattedMessage id="catalog-translation.form-fields.name" />
+            }
             value={formState.name}
             name="name"
             disabled={isXVtexTenant || !canEdit}

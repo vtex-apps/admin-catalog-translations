@@ -2,6 +2,7 @@ import React, { SyntheticEvent, useMemo } from 'react'
 import { InputSearch, PageBlock, Spinner } from 'vtex.styleguide'
 import { useQuery } from 'react-apollo'
 import { MessageListV2, IndexedMessages } from 'vtex.messages'
+import { FormattedMessage } from 'react-intl'
 
 import useCatalogQuery from '../../hooks/useCatalogQuery'
 import { useLocaleSelector } from '../LocaleSelector'
@@ -94,8 +95,9 @@ const CollectionsTranslation = () => {
       <div style={{ maxWidth: '340px' }} className="mv7">
         <InputSearch
           value={entryId}
-          placeHolder="Search Collection..."
-          label="Collection ID"
+          label={
+            <FormattedMessage id="catalog-translation.collections.search-label" />
+          }
           size="regular"
           onChange={handleEntryIdInput}
           onSubmit={handleSubmitSpecification}
@@ -109,7 +111,12 @@ const CollectionsTranslation = () => {
       errorMessages ? (
         <PageBlock
           variation="full"
-          title={`Collection info- ${selectedLocale}`}
+          title={
+            <FormattedMessage
+              id="catalog-translation.collections.block-header"
+              values={{ selectedLocale }}
+            />
+          }
         >
           {errorMessage ? (
             <ErrorHandler
