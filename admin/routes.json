@@ -18,5 +18,9 @@
   "admin.app.catalog-translation-specifications": {
     "component": "SpecificationsTranslation",
     "path": "/admin/app/catalog-translation/specifications"
+  },
+  "admin.app.catalog-translation-collections": {
+    "component": "CollectionsTranslation",
+    "path": "/admin/app/catalog-translation/collections"
   }
 }

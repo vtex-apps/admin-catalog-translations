@@ -1,5 +1,6 @@
 import React, { FC } from 'react'
 import { EmptyState } from 'vtex.styleguide'
+import { FormattedMessage } from 'react-intl'
 
 type ErrorHandlerProps = {
   errorMessage: string
@@ -14,8 +15,23 @@ const ErrorHandler: FC<ErrorHandlerProps> = ({
 }) => (
   <div>
     {errorMessage.indexOf('code 404') !== -1 ? (
-      <EmptyState title={`${entry} not found`}>
-        <p>{`The ${entry} ID ${entryId} could not be found`}</p>
+      <EmptyState
+        title={
+          <FormattedMessage
+            id="catalog-translation.errors.not-found-header"
+            values={{ entry }}
+          />
+        }
+      >
+        <p>
+          <FormattedMessage
+            id="catalog-translation.errors.not-found-message"
+            values={{
+              entry,
+              entryId,
+            }}
+          />
+        </p>
       </EmptyState>
     ) : (
       <EmptyState title={`Error getting ${entry} information`}>

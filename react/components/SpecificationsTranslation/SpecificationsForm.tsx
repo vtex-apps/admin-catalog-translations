@@ -77,6 +77,7 @@ const SpecificationsForm: FC<SpecificationsFormProps> = ({
             name="name"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
+            required
           />
         </div>
         <div className="mb5">

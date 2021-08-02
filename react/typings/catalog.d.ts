@@ -93,6 +93,15 @@ interface ProductTranslationDownload {
   downloadProductTranslation: Product[]
 }
 
+interface CollectionsData {
+  collection: Collections
+}
+interface Collections extends CollectionsName {
+  id: string
+}
+interface CollectionsName {
+  name: string
+}
 interface SkuTranslationRequest {
   skuTranslations: TranslationRequestByCategoryId
 }
