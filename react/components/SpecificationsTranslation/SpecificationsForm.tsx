@@ -21,7 +21,6 @@ interface SpecificationsFormProps {
 const SpecificationsForm: FC<SpecificationsFormProps> = ({
   specificationInfo,
   specificationId,
-  updateMemoSpecifications,
 }) => {
   const {
     formState,
@@ -75,17 +74,6 @@ const SpecificationsForm: FC<SpecificationsFormProps> = ({
             label="Name"
             value={formState.name}
             name="name"
-            disabled={isXVtexTenant || !canEdit}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div className="mb5">
-          <Textarea
-            resize="none"
-            label="Description"
-            value={formState.description}
-            name="description"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
             required
