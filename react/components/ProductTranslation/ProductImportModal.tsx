@@ -1,5 +1,12 @@
 import React, { useState } from 'react'
-import { ModalDialog, ButtonPlain, Dropzone } from 'vtex.styleguide'
+import {
+  ModalDialog,
+  ButtonPlain,
+  Dropzone,
+  Modal,
+  Pagination,
+  Table,
+} from 'vtex.styleguide'
 
 import { sanitizeImportJSON, parseXLSToJSON } from '../../utils'
 
@@ -12,54 +19,112 @@ const categoryHeaders: Array<keyof Product | 'locale'> = [
   'locale',
 ]
 
+const tableSchema = {
+  properties: {
+    line: {
+      title: 'Line',
+    },
+    missingFields: {
+      title: 'Missing Fields',
+      // eslint-disable-next-line react/display-name
+      cellRenderer: ({ cellData }: { cellData: string[] }) => (
+        <p>{cellData.join(', ')}</p>
+      ),
+    },
+  },
+}
+
 const ProductImportModal = ({
   isImportOpen = false,
   handleOpenImport = () => {},
 }: ComponentProps) => {
-  const [error, setError] = useState('')
+  const [errorParsingFile, setErrorParsingFile] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [errorModal, setErrorModal] = useState(false)
+  const [warningModal, setWarningModal] = useState(false)
+  const [validtionErrors, setValidationErrors] = useState<Message[]>([])
+  const [validtionWarnings, setValidationWarnings] = useState<Message[]>([])
+  const [originalFile, setOriginalFile] = useState<Array<{}>>([])
 
   const handleFile = async (files: FileList) => {
+    if (loading) {
+      return
+    }
+
+    setLoading(true)
+
     try {
-      const fileReader = await parseXLSToJSON(files[0], {
+      const fileParsed = await parseXLSToJSON(files[0], {
         sheetName: 'product_data',
       })
 
+      setOriginalFile(fileParsed)
+
       const [translations, { errors, warnings }] = sanitizeImportJSON<Product>({
-        data: fileReader,
+        data: fileParsed,
         entryHeaders: categoryHeaders,
         requiredHeaders: ['id', 'locale'],
       })
 
+      if (errors.length) {
+        setValidationErrors(errors)
+      }
+
+      if (warnings.length) {
+        setValidationWarnings(warnings)
+      }
+
       // eslint-disable-next-line no-console
       console.log({ translations, errors, warnings })
     } catch (e) {
-      setError(e)
+      setErrorParsingFile(e)
+    } finally {
+      setLoading(false)
     }
   }
 
+  const cleanErrors = () => {
+    setValidationErrors([])
+    setErrorParsingFile('')
+    setValidationWarnings([])
+    setOriginalFile([])
+  }
+
   const handleReset = () => {
-    setError('')
+    if (loading) {
+      return
+    }
+
+    cleanErrors()
   }
 
   // eslint-disable-next-line no-console
-  console.log({ error })
+  console.log({ errorParsingFile })
 
   return (
     <ModalDialog
-      loading={false}
+      loading={loading}
       cancelation={{
         label: 'Cancel',
         onClick: () => {
           handleOpenImport(false)
+          cleanErrors()
         },
       }}
       confirmation={{
         label: 'Send Translations',
-        onClick: () => {},
+        onClick: () => {
+          if (errorParsingFile) {
+            return
+          }
+          // eslint-disable-next-line no-console
+          console.log('submit translations')
+        },
       }}
       isOpen={isImportOpen}
       onClose={() => {
         handleOpenImport(false)
+        cleanErrors()
       }}
     >
       <div>
@@ -84,7 +149,61 @@ const ProductImportModal = ({
             </span>
           </div>
         </Dropzone>
+        {errorParsingFile ? (
+          <p className="c-danger i f7">{errorParsingFile}</p>
+        ) : null}
       </div>
+      <ul>
+        {originalFile.length ? (
+          <li>{originalFile?.length} total entries</li>
+        ) : null}
+        {validtionWarnings.length ? (
+          <li>
+            <ButtonPlain onClick={() => setWarningModal(true)}>
+              {validtionWarnings.length} warnings.
+            </ButtonPlain>
+          </li>
+        ) : null}
+        {validtionErrors.length ? (
+          <li>
+            <ButtonPlain variation="danger" onClick={() => setErrorModal(true)}>
+              {validtionErrors.length} errors. The entries will be ignored.
+            </ButtonPlain>
+          </li>
+        ) : null}
+      </ul>
+      <Modal isOpen={warningModal} onClose={() => setWarningModal(false)}>
+        <Pagination
+          currentItemFrom={1}
+          currentItemTo={10}
+          textOf="of"
+          totalItems={validtionWarnings.length}
+        >
+          <div>Warning Modal</div>
+          <Table
+            fullWidth
+            items={validtionWarnings.slice(0, 10)}
+            density="high"
+            schema={tableSchema}
+          />
+        </Pagination>
+      </Modal>
+      <Modal isOpen={errorModal} onClose={() => setErrorModal(false)}>
+        <Pagination
+          currentItemFrom={1}
+          currentItemTo={10}
+          textOf="of"
+          totalItems={validtionErrors.length}
+        >
+          <div>Error Modal</div>
+          <Table
+            fullWidth
+            items={validtionErrors.slice(0, 10)}
+            density="high"
+            schema={tableSchema}
+          />
+        </Pagination>
+      </Modal>
     </ModalDialog>
   )
 }
