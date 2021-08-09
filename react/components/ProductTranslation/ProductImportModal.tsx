@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { ModalDialog, ButtonPlain, Dropzone } from 'vtex.styleguide'
 
-import { sanitizeImportJSON, parseXLSToJSON } from '../../utils'
+import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../../utils'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
 
 const categoryHeaders: Array<keyof Product | 'locale'> = [
@@ -12,6 +12,8 @@ const categoryHeaders: Array<keyof Product | 'locale'> = [
   'shortDescription',
   'locale',
 ]
+
+const PRODUCT_DATA = 'product_data'
 
 const ProductImportModal = ({
   isImportOpen = false,
@@ -34,7 +36,7 @@ const ProductImportModal = ({
 
     try {
       const fileParsed = await parseXLSToJSON(files[0], {
-        sheetName: 'product_data',
+        sheetName: PRODUCT_DATA,
       })
 
       setOriginalFile(fileParsed)
@@ -77,8 +79,19 @@ const ProductImportModal = ({
     cleanErrors()
   }
 
-  // eslint-disable-next-line no-console
-  console.log({ errorParsingFile })
+  const createModel = () => {
+    const headersObject = categoryHeaders.reduce<
+      Record<typeof categoryHeaders[number], string>
+    >((obj, header) => {
+      obj[header] = ''
+      return obj
+    }, {} as Record<typeof categoryHeaders[number], string>)
+
+    parseJSONToXLS([headersObject], {
+      fileName: 'product_translate_model',
+      sheetName: PRODUCT_DATA,
+    })
+  }
 
   return (
     <ModalDialog
@@ -108,26 +121,21 @@ const ProductImportModal = ({
     >
       <div>
         <h3>Import Category Translations</h3>
-        <ButtonPlain
-          onClick={() => {
-            // eslint-disable-next-line no-console
-            console.log('Download model')
-          }}
-        >
-          Download xlsx model
-        </ButtonPlain>
-        <Dropzone
-          accept=".xlsx"
-          onDropAccepted={handleFile}
-          onFileReset={handleReset}
-        >
-          <div className="pt7">
-            <span className="f4">Drop here your XLSX or </span>
-            <span className="f4 c-link" style={{ cursor: 'pointer' }}>
-              choose a file
-            </span>
-          </div>
-        </Dropzone>
+        <ButtonPlain onClick={createModel}>Download xlsx model</ButtonPlain>
+        <div className="mt2">
+          <Dropzone
+            accept=".xlsx"
+            onDropAccepted={handleFile}
+            onFileReset={handleReset}
+          >
+            <div className="pt7">
+              <span className="f4">Drop here your XLSX or </span>
+              <span className="f4 c-link" style={{ cursor: 'pointer' }}>
+                choose a file
+              </span>
+            </div>
+          </Dropzone>
+        </div>
         {errorParsingFile ? (
           <p className="c-danger i f7">{errorParsingFile}</p>
         ) : null}
