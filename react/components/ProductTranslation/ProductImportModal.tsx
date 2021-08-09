@@ -77,7 +77,8 @@ const ProductImportModal = ({
     if (loading) {
       return
     }
-
+    setOriginalFile([])
+    setTranslationsAdj([])
     cleanErrors()
   }
 
