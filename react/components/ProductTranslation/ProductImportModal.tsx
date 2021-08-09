@@ -1,14 +1,8 @@
 import React, { useState } from 'react'
-import {
-  ModalDialog,
-  ButtonPlain,
-  Dropzone,
-  Modal,
-  Pagination,
-  Table,
-} from 'vtex.styleguide'
+import { ModalDialog, ButtonPlain, Dropzone } from 'vtex.styleguide'
 
 import { sanitizeImportJSON, parseXLSToJSON } from '../../utils'
+import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
 
 const categoryHeaders: Array<keyof Product | 'locale'> = [
   'id',
@@ -18,21 +12,6 @@ const categoryHeaders: Array<keyof Product | 'locale'> = [
   'shortDescription',
   'locale',
 ]
-
-const tableSchema = {
-  properties: {
-    line: {
-      title: 'Line',
-    },
-    missingFields: {
-      title: 'Missing Fields',
-      // eslint-disable-next-line react/display-name
-      cellRenderer: ({ cellData }: { cellData: string[] }) => (
-        <p>{cellData.join(', ')}</p>
-      ),
-    },
-  },
-}
 
 const ProductImportModal = ({
   isImportOpen = false,
@@ -172,38 +151,18 @@ const ProductImportModal = ({
           </li>
         ) : null}
       </ul>
-      <Modal isOpen={warningModal} onClose={() => setWarningModal(false)}>
-        <Pagination
-          currentItemFrom={1}
-          currentItemTo={10}
-          textOf="of"
-          totalItems={validtionWarnings.length}
-        >
-          <div>Warning Modal</div>
-          <Table
-            fullWidth
-            items={validtionWarnings.slice(0, 10)}
-            density="high"
-            schema={tableSchema}
-          />
-        </Pagination>
-      </Modal>
-      <Modal isOpen={errorModal} onClose={() => setErrorModal(false)}>
-        <Pagination
-          currentItemFrom={1}
-          currentItemTo={10}
-          textOf="of"
-          totalItems={validtionErrors.length}
-        >
-          <div>Error Modal</div>
-          <Table
-            fullWidth
-            items={validtionErrors.slice(0, 10)}
-            density="high"
-            schema={tableSchema}
-          />
-        </Pagination>
-      </Modal>
+      <WarningAndErrorsImportModal
+        isOpen={warningModal}
+        modalName="Warning Modal"
+        handleClose={setWarningModal}
+        data={validtionWarnings}
+      />
+      <WarningAndErrorsImportModal
+        isOpen={errorModal}
+        modalName="Error Modal"
+        handleClose={setErrorModal}
+        data={validtionErrors}
+      />
     </ModalDialog>
   )
 }
