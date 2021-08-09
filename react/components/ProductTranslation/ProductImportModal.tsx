@@ -26,6 +26,9 @@ const ProductImportModal = ({
   const [validtionErrors, setValidationErrors] = useState<Message[]>([])
   const [validtionWarnings, setValidationWarnings] = useState<Message[]>([])
   const [originalFile, setOriginalFile] = useState<Array<{}>>([])
+  const [translationsAdj, setTranslationsAdj] = useState<
+    Array<Record<EntryHeaders<Product>, string>>
+  >([])
 
   const handleFile = async (files: FileList) => {
     if (loading) {
@@ -55,8 +58,7 @@ const ProductImportModal = ({
         setValidationWarnings(warnings)
       }
 
-      // eslint-disable-next-line no-console
-      console.log({ translations, errors, warnings })
+      setTranslationsAdj(translations)
     } catch (e) {
       setErrorParsingFile(e)
     } finally {
@@ -110,7 +112,7 @@ const ProductImportModal = ({
             return
           }
           // eslint-disable-next-line no-console
-          console.log('submit translations')
+          console.log({ translationsAdj })
         },
       }}
       isOpen={isImportOpen}
