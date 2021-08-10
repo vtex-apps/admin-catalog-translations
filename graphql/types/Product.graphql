@@ -18,3 +18,12 @@ type ProductTranslationRequest {
   completedAt: String
   estimatedTime: Int
 }
+
+input ProductTranslationInput {
+  id: String!
+  name: String
+  description: String
+  shortDescription: String
+  title: String
+  locale: String!
+}

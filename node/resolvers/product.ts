@@ -176,6 +176,24 @@ const downloadProductTranslation = async (
   return translations
 }
 
+const translateProducts = async (
+  _root: unknown,
+  { products }: { products: ProductTranslationInput[] },
+  ctx: Context
+) => {
+  const {
+    clients: { catalogGQL },
+  } = ctx
+
+  for (const product of products) {
+    catalogGQL.translateProduct(product)
+  }
+
+  return true
+}
+
+export const mutations = { translateProducts }
+
 export const queries = {
   productTranslations,
   productTranslationRequests,

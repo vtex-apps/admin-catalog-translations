@@ -13,3 +13,7 @@ type Query {
   skuTranslationRequestInfo(requestId: String!): SKUTranslationRequest
   downloadSKUTranslation(requestId: String!): [SKU]
 }
+
+type Mutation {
+  translateProducts(products: [ProductTranslationInput]!): Boolean
+}

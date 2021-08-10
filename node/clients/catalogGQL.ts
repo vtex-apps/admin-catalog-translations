@@ -52,6 +52,10 @@ const GET_SKU_TRANSLATION_QUERY = `
   }
 `
 
+const TRANSLATE_PRODUCT = `mutation translateProduct($product:ProductInputTranslation!, $locale: Locale!) {
+  translateProduct(product: $product, locale: $locale)
+}`
+
 export class CatalogGQL extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
     super(CATALOG_GRAPHQL_APP, ctx, opts)
@@ -156,4 +160,16 @@ export class CatalogGQL extends AppGraphQLClient {
         },
       }
     )
+
+  public translateProduct = (productTranslation: ProductTranslationInput) => {
+    const { locale, ...product } = productTranslation
+
+    return this.graphql.query({
+      query: TRANSLATE_PRODUCT,
+      variables: {
+        product,
+        locale,
+      },
+    })
+  }
 }

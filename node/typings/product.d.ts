@@ -31,3 +31,12 @@ interface ProductTranslationRequest {
   completedAt?: Date
   estimatedTime: number
 }
+
+interface ProductTranslationInput {
+  id: string
+  name?: string
+  description?: string
+  shortDescription?: string
+  title?: string
+  locale: string
+}
