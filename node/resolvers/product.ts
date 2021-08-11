@@ -32,7 +32,7 @@ export const Product = {
     root.data.product.linkId,
 }
 
-const saveTranslation = async (
+const saveTranslationsToVBase = async (
   {
     productIds,
     locale,
@@ -135,7 +135,7 @@ const productTranslations = async (
     requestInfo
   )
 
-  saveTranslation(
+  saveTranslationsToVBase(
     { productIds: productIdCollection, locale, requestId },
     {
       catalogGQLClient: catalogGQL,
@@ -176,7 +176,19 @@ const downloadProductTranslation = async (
   return translations
 }
 
-const translateProducts = async (
+const processTranslateProducts = async (
+  products: ProductTranslationInput[],
+  { catalogGQL }: { catalogGQL: CatalogGQL }
+) => {
+  for (const product of products) {
+    catalogGQL.translateProduct(product)
+
+    // eslint-disable-next-line no-await-in-loop
+    await pacer(CALLS_PER_MINUTE)
+  }
+}
+
+const translateProducts = (
   _root: unknown,
   { products }: { products: ProductTranslationInput[] },
   ctx: Context
@@ -185,9 +197,7 @@ const translateProducts = async (
     clients: { catalogGQL },
   } = ctx
 
-  for (const product of products) {
-    catalogGQL.translateProduct(product)
-  }
+  processTranslateProducts(products, { catalogGQL })
 
   return true
 }
