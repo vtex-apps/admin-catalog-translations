@@ -19,11 +19,20 @@ type ProductTranslationRequest {
   estimatedTime: Int
 }
 
-input ProductTranslationInput {
+input ProductTranslationUpload {
   id: String!
   name: String
   description: String
   shortDescription: String
   title: String
   locale: String!
+}
+
+type UploadRequest {
+  requestId: String!
+  translatedBy: String!
+  createdAt: String!
+  estimatedTime: Int!
+  error: Boolean
+  progress: Int
 }

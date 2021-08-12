@@ -40,3 +40,12 @@ interface ProductTranslationInput {
   title?: string
   locale: string
 }
+
+interface UploadRequest {
+  requestId: string
+  translatedBy: string
+  createdAt: Date
+  estimatedTime: number
+  error?: boolean
+  progress?: number
+}
