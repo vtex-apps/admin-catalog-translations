@@ -34,4 +34,5 @@ type UploadRequest {
   estimatedTime: Int!
   error: Boolean
   progress: Int
+  locale: String!
 }

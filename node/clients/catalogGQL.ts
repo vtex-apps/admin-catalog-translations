@@ -161,13 +161,14 @@ export class CatalogGQL extends AppGraphQLClient {
       }
     )
 
-  public translateProduct = (productTranslation: ProductTranslationInput) => {
-    const { locale, ...product } = productTranslation
-
+  public translateProduct = (
+    translateProduct: ProductTranslationInput,
+    locale: string
+  ) => {
     return this.graphql.query({
       query: TRANSLATE_PRODUCT,
       variables: {
-        product,
+        product: translateProduct,
         locale,
       },
     })
