@@ -38,7 +38,6 @@ interface ProductTranslationInput {
   description?: string
   shortDescription?: string
   title?: string
-  locale: string
 }
 
 interface UploadRequest {
@@ -46,6 +45,7 @@ interface UploadRequest {
   translatedBy: string
   createdAt: Date
   estimatedTime: number
+  locale: string
   error?: boolean
   progress?: number
 }

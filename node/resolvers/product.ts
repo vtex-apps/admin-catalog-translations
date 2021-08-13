@@ -240,7 +240,7 @@ const uploadProductAsync = async (
 
 const uploadProductTranslations = async (
   _root: unknown,
-  { products }: { products: ProductTranslationInput[] },
+  { products, locale }: { products: ProductTranslationInput[]; locale: string },
   ctx: Context
 ) => {
   const {
@@ -270,6 +270,7 @@ const uploadProductTranslations = async (
 
   const requestInfo = {
     requestId,
+    locale,
     translatedBy: email,
     createdAt: new Date(),
     estimatedTime: calculateExportProcessTime(
@@ -278,7 +279,7 @@ const uploadProductTranslations = async (
     ),
   }
 
-  await vbase.saveJSON(BUCKET_NAME, requestId, requestInfo)
+  await vbase.saveJSON<UploadRequest>(BUCKET_NAME, requestId, requestInfo)
 
   uploadProductAsync(products, requestId, { catalogGQL, vbase })
 

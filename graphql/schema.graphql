@@ -17,5 +17,8 @@ type Query {
 }
 
 type Mutation {
-  uploadProductTranslations(products: [ProductTranslationUpload]!): Boolean
+  uploadProductTranslations(
+    products: [ProductTranslationUpload]!
+    locale: String!
+  ): Boolean
 }
