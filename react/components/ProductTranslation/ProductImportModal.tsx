@@ -2,15 +2,15 @@ import React, { useState } from 'react'
 import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
 
 import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../../utils'
+import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
 
-const categoryHeaders: Array<keyof Product | 'locale'> = [
+const categoryHeaders: Array<keyof Product> = [
   'id',
   'name',
   'title',
   'description',
   'shortDescription',
-  'locale',
 ]
 
 const PRODUCT_DATA = 'product_data'
@@ -31,6 +31,7 @@ const ProductImportModal = ({
   >([])
 
   const [tabSelected, setTabSelected] = useState<1 | 2>(1)
+  const { selectedLocale } = useLocaleSelector()
 
   const handleFile = async (files: FileList) => {
     if (loading) {
@@ -49,7 +50,7 @@ const ProductImportModal = ({
       const [translations, { errors, warnings }] = sanitizeImportJSON<Product>({
         data: fileParsed,
         entryHeaders: categoryHeaders,
-        requiredHeaders: ['id', 'locale'],
+        requiredHeaders: ['id'],
       })
 
       if (errors.length) {
@@ -124,7 +125,7 @@ const ProductImportModal = ({
         cleanErrors()
       }}
     >
-      <h3>Import Category Translations</h3>
+      <h3>{`Import Category Translations for ${selectedLocale}`}</h3>
       <div>
         <Tabs>
           <Tab
