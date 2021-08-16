@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
+import { useMutation } from 'react-apollo'
 import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
 
 import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
+import UPLOAD_PRODUCT_TRANSLATION from '../../graphql/uploadProductTranslation.gql'
 
 const categoryHeaders: Array<keyof Product> = [
   'id',
@@ -26,7 +28,7 @@ const ProductImportModal = ({
   const [validtionErrors, setValidationErrors] = useState<Message[]>([])
   const [validtionWarnings, setValidationWarnings] = useState<Message[]>([])
   const [originalFile, setOriginalFile] = useState<Array<{}>>([])
-  const [translationsAdj, setTranslationsAdj] = useState<
+  const [formattedTranslations, setFormattedTranslations] = useState<
     Array<Record<EntryHeaders<Product>, string>>
   >([])
 
@@ -61,7 +63,7 @@ const ProductImportModal = ({
         setValidationWarnings(warnings)
       }
 
-      setTranslationsAdj(translations)
+      setFormattedTranslations(translations)
     } catch (e) {
       setErrorParsingFile(e)
     } finally {
@@ -81,7 +83,7 @@ const ProductImportModal = ({
       return
     }
     setOriginalFile([])
-    setTranslationsAdj([])
+    setFormattedTranslations([])
     cleanErrors()
   }
 
@@ -97,6 +99,27 @@ const ProductImportModal = ({
       fileName: 'product_translate_model',
       sheetName: PRODUCT_DATA,
     })
+  }
+
+  const [startProductUpload, { error: uploadError }] = useMutation<
+    {
+      uploadProductTranslations: boolean
+    },
+    {
+      locale: string
+      products: ProductTranslationInput[]
+    }
+  >(UPLOAD_PRODUCT_TRANSLATION)
+
+  const handleUploadRequest = async () => {
+    await startProductUpload({
+      variables: {
+        locale: selectedLocale,
+        products: formattedTranslations,
+      },
+    })
+
+    setTabSelected(2)
   }
 
   return (
@@ -115,8 +138,7 @@ const ProductImportModal = ({
           if (errorParsingFile) {
             return
           }
-          // eslint-disable-next-line no-console
-          console.log({ translationsAdj })
+          handleUploadRequest()
         },
       }}
       isOpen={isImportOpen}
@@ -182,6 +204,11 @@ const ProductImportModal = ({
                 </li>
               ) : null}
             </ul>
+            {uploadError ? (
+              <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
+                Error uploading product translations
+              </p>
+            ) : null}
           </Tab>
           <Tab
             label="Requests"

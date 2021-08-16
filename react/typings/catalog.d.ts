@@ -113,3 +113,11 @@ interface SkuTranslationRequests {
 interface SkuTranslationDownload {
   downloadSKUTranslation: SKU[]
 }
+
+interface ProductTranslationInput {
+  id: string
+  name?: string
+  description?: string
+  shortDescription?: string
+  title?: string
+}
