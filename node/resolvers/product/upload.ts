@@ -119,7 +119,7 @@ const uploadProductTranslations = async (
 
   uploadProductAsync({ products, requestId, locale }, { catalogGQL, vbase })
 
-  return true
+  return requestId
 }
 
 const productTranslationsUploadRequests = async (

@@ -121,3 +121,13 @@ interface ProductTranslationInput {
   shortDescription?: string
   title?: string
 }
+
+interface UploadRequest {
+  requestId: string
+  translatedBy: string
+  createdAt: string
+  estimatedTime: number
+  locale: string
+  error?: boolean
+  progress?: number
+}

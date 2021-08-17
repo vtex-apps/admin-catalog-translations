@@ -20,5 +20,5 @@ type Mutation {
   uploadProductTranslations(
     products: [ProductTranslationUpload]!
     locale: String!
-  ): Boolean
+  ): String
 }

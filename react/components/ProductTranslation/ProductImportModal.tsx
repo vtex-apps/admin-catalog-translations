@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
-import { useMutation } from 'react-apollo'
+import { useMutation, useQuery } from 'react-apollo'
 import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
 
 import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
 import UPLOAD_PRODUCT_TRANSLATION from '../../graphql/uploadProductTranslation.gql'
+import UPLOAD_PRODUCT_REQUESTS from '../../graphql/productUploadRequests.gql'
+import ImportStatusList from '../ImportStatusList'
 
 const categoryHeaders: Array<keyof Product> = [
   'id',
@@ -16,6 +18,7 @@ const categoryHeaders: Array<keyof Product> = [
 ]
 
 const PRODUCT_DATA = 'product_data'
+const UPLOAD_LIST_SIZE = 10
 
 const ProductImportModal = ({
   isImportOpen = false,
@@ -103,7 +106,7 @@ const ProductImportModal = ({
 
   const [startProductUpload, { error: uploadError }] = useMutation<
     {
-      uploadProductTranslations: boolean
+      uploadProductTranslations: string
     },
     {
       locale: string
@@ -111,15 +114,29 @@ const ProductImportModal = ({
     }
   >(UPLOAD_PRODUCT_TRANSLATION)
 
+  const { data, updateQuery } = useQuery<{
+    productTranslationsUploadRequests: string[]
+  }>(UPLOAD_PRODUCT_REQUESTS)
+
   const handleUploadRequest = async () => {
-    await startProductUpload({
+    const { data: newRequest } = await startProductUpload({
       variables: {
         locale: selectedLocale,
         products: formattedTranslations,
       },
     })
-
-    setTabSelected(2)
+    // eslint-disable-next-line vtex/prefer-early-return
+    if (newRequest?.uploadProductTranslations) {
+      updateQuery((prevResult) => {
+        return {
+          productTranslationsUploadRequests: [
+            newRequest.uploadProductTranslations,
+            ...(prevResult.productTranslationsUploadRequests ?? []),
+          ],
+        }
+      })
+      setTabSelected(2)
+    }
   }
 
   return (
@@ -147,7 +164,7 @@ const ProductImportModal = ({
         cleanErrors()
       }}
     >
-      <h3>{`Import Category Translations for ${selectedLocale}`}</h3>
+      <h3>{`Import Product Translations for ${selectedLocale}`}</h3>
       <div>
         <Tabs>
           <Tab
@@ -215,7 +232,24 @@ const ProductImportModal = ({
             active={tabSelected === 2}
             onClick={() => setTabSelected(2)}
           >
-            <div>Request list</div>
+            <table className="w-100 mt7 tc">
+              <thead>
+                <tr>
+                  <th>Locale</th>
+                  <th>Translated by</th>
+                  <th>Created at</th>
+                  <th>Progress</th>
+                  <th>% Translated</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data?.productTranslationsUploadRequests
+                  .slice(0, UPLOAD_LIST_SIZE)
+                  .map((requestId) => (
+                    <ImportStatusList requestId={requestId} key={requestId} />
+                  ))}
+              </tbody>
+            </table>
           </Tab>
         </Tabs>
       </div>
