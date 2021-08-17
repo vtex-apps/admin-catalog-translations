@@ -70,10 +70,6 @@ const ProductImportModal = ({
         type: 'application/json',
       })
 
-      // const file = new File([blob], 'product_translation', {
-      //   lastModified: 1534584790000,
-      // })
-
       setFormattedTranslations(blob)
     } catch (e) {
       setErrorParsingFile(e)
@@ -184,6 +180,7 @@ const ProductImportModal = ({
             active={tabSelected === 1}
             onClick={() => {
               setTabSelected(1)
+              handleReset()
             }}
           >
             <div>
@@ -242,7 +239,10 @@ const ProductImportModal = ({
           <Tab
             label="Requests"
             active={tabSelected === 2}
-            onClick={() => setTabSelected(2)}
+            onClick={() => {
+              setTabSelected(2)
+              handleReset()
+            }}
           >
             <table className="w-100 mt7 tc">
               <thead>
