@@ -15,6 +15,7 @@ const categoryHeaders: Array<keyof Product> = [
   'title',
   'description',
   'shortDescription',
+  'linkId',
 ]
 
 const PRODUCT_DATA = 'product_data'

@@ -38,6 +38,7 @@ interface ProductTranslationInput {
   description?: string
   shortDescription?: string
   title?: string
+  linkId?: string
 }
 
 interface UploadRequest {
