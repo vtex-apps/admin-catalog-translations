@@ -32,8 +32,8 @@ const ProductImportModal = ({
   const [validtionWarnings, setValidationWarnings] = useState<Message[]>([])
   const [originalFile, setOriginalFile] = useState<Array<{}>>([])
   const [formattedTranslations, setFormattedTranslations] = useState<
-    Array<Record<EntryHeaders<Product>, string>>
-  >([])
+    Blob | undefined
+  >(undefined)
 
   const [tabSelected, setTabSelected] = useState<1 | 2>(1)
   const { selectedLocale } = useLocaleSelector()
@@ -66,7 +66,15 @@ const ProductImportModal = ({
         setValidationWarnings(warnings)
       }
 
-      setFormattedTranslations(translations)
+      const blob = new Blob([JSON.stringify(translations, null, 2)], {
+        type: 'application/json',
+      })
+
+      // const file = new File([blob], 'product_translation', {
+      //   lastModified: 1534584790000,
+      // })
+
+      setFormattedTranslations(blob)
     } catch (e) {
       setErrorParsingFile(e)
     } finally {
@@ -86,7 +94,7 @@ const ProductImportModal = ({
       return
     }
     setOriginalFile([])
-    setFormattedTranslations([])
+    setFormattedTranslations(undefined)
     cleanErrors()
   }
 
@@ -110,7 +118,7 @@ const ProductImportModal = ({
     },
     {
       locale: string
-      products: ProductTranslationInput[]
+      products: Blob
     }
   >(UPLOAD_PRODUCT_TRANSLATION)
 
@@ -119,6 +127,10 @@ const ProductImportModal = ({
   }>(UPLOAD_PRODUCT_REQUESTS)
 
   const handleUploadRequest = async () => {
+    if (!formattedTranslations) {
+      return
+    }
+
     const { data: newRequest } = await startProductUpload({
       variables: {
         locale: selectedLocale,

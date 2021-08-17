@@ -49,3 +49,10 @@ interface UploadRequest {
   error?: boolean
   progress?: number
 }
+
+type UploadFile<T> = Promise<{
+  filename: string
+  mimetype: string
+  enconding: string
+  createReadStream: () => T
+}>

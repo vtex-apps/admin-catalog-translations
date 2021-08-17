@@ -1,4 +1,7 @@
+import { ReadStream } from 'fs'
+
 import { VBase } from '@vtex/api'
+import JSONStream from 'JSONStream'
 
 import { CatalogGQL } from '../../clients/catalogGQL'
 import {
@@ -74,15 +77,40 @@ const uploadProductAsync = async (
   }
 }
 
+const parseStreamToJSON = <T>(stream: ReadStream): Promise<T[]> => {
+  const promise = new Promise<T[]>((resolve) => {
+    const finalArray: T[] = []
+    stream.pipe(
+      JSONStream.parse('*').on('data', (data: T) => {
+        finalArray.push(data)
+      })
+    )
+    stream.on('end', () => {
+      stream.destroy()
+      resolve(finalArray)
+    })
+  })
+
+  return promise
+}
+
 const uploadProductTranslations = async (
   _root: unknown,
-  { products, locale }: { products: ProductTranslationInput[]; locale: string },
+  { products, locale }: { products: UploadFile<ReadStream>; locale: string },
   ctx: Context
 ) => {
   const {
     clients: { catalogGQL, licenseManager, vbase },
     vtex: { adminUserAuthToken, requestId },
   } = ctx
+
+  const { createReadStream } = await products
+
+  const productStream = createReadStream()
+
+  const productsParsed = await parseStreamToJSON<ProductTranslationInput>(
+    productStream
+  )
 
   const {
     profile: { email },
@@ -110,14 +138,17 @@ const uploadProductTranslations = async (
     translatedBy: email,
     createdAt: new Date(),
     estimatedTime: calculateExportProcessTime(
-      products.length,
+      productsParsed.length,
       CALLS_PER_MINUTE
     ),
   }
 
   await vbase.saveJSON<UploadRequest>(BUCKET_NAME, requestId, requestInfo)
 
-  uploadProductAsync({ products, requestId, locale }, { catalogGQL, vbase })
+  uploadProductAsync(
+    { products: productsParsed, requestId, locale },
+    { catalogGQL, vbase }
+  )
 
   return requestId
 }
