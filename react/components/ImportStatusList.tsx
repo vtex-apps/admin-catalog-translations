@@ -29,7 +29,7 @@ const ImportStatusList = ({ requestId }: { requestId: string }) => {
 
   useEffect(() => {
     if (progress !== 100 && !error && createdAt && estimatedTime) {
-      if (shouldHaveCompleted(createdAt, estimatedTime)) {
+      if (shouldHaveCompleted(createdAt, estimatedTime * 1.5)) {
         stopPolling()
         setShouldHaveFinished(true)
         return
