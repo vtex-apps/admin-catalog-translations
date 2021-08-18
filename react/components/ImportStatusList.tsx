@@ -1,6 +1,6 @@
 import { useQuery } from 'react-apollo'
 import React, { useEffect, useRef, useState } from 'react'
-import { FormattedDate, FormattedTime } from 'react-intl'
+import { FormattedDate, FormattedMessage, FormattedTime } from 'react-intl'
 import { Progress } from 'vtex.styleguide'
 
 import PRODUCT_UPLOAD_REQUEST_INFO from '../graphql/productUploadRequestInfo.gql'
@@ -65,7 +65,9 @@ const ImportStatusList = ({ requestId }: { requestId: string }) => {
       </td>
       <td>
         {error || shouldHaveFinished ? (
-          <p className="c-danger i f7">Error</p>
+          <p className="c-danger i f7">
+            <FormattedMessage id="catalog-translation.import.modal.status-list.error" />
+          </p>
         ) : (
           <Progress
             type="steps"

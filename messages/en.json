@@ -60,5 +60,6 @@
   "catalog-translation.import.modal.table-header.translated-by": "Translated by",
   "catalog-translation.import.modal.table-header.created-at": "Created at",
   "catalog-translation.import.modal.table-header.progress": "Progress",
-  "catalog-translation.import.modal.table-header.total-translated": "% translated"
+  "catalog-translation.import.modal.table-header.total-translated": "% translated",
+  "catalog-translation.import.modal.status-list.error": "Error"
 }
