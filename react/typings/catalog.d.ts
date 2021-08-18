@@ -58,9 +58,6 @@ interface Specifications extends FieldInputTranslation {
 }
 interface FieldInputTranslation {
   name: string
-  description: string
-  fieldTypeId: string
-  fieldTypeName: string
 }
 interface CategoriesNameAndId {
   getCategoriesName: Array<{ id: string; name: string }>
