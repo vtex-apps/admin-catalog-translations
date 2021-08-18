@@ -29,11 +29,11 @@ const SpecificationsForm: FC<SpecificationsFormProps> = ({
     handleInputChange,
     changed,
     handleToggleEdit,
-  } = useFormTranslation(specificationInfo)
+  } = useFormTranslation<FieldInputTranslation>(specificationInfo)
 
   const { isXVtexTenant, selectedLocale } = useLocaleSelector()
   const [translateSpecification, { loading }] = useMutation<
-    { translateSpecification: boolean },
+    { translateField: boolean },
     { args: Specifications; locale: string }
   >(translateSpecificationMutation)
 
@@ -43,7 +43,7 @@ const SpecificationsForm: FC<SpecificationsFormProps> = ({
     if (loading) {
       return
     }
-    const args = {
+    const SpecificationArgs = {
       ...formState,
       ...{ fieldId: specificationId },
     }
@@ -51,12 +51,15 @@ const SpecificationsForm: FC<SpecificationsFormProps> = ({
       const { data, errors } = await translateSpecification({
         variables: {
           locale: selectedLocale,
-          args,
+          args: SpecificationArgs,
         },
       })
-      const { translateSpecification: translateSpecificationResult } =
-        data ?? {}
+      const { translateField: translateSpecificationResult } = data ?? {}
       if (translateSpecificationResult) {
+        updateMemoSpecifications((state) => ({
+          ...state,
+          ...{ [selectedLocale]: { field: SpecificationArgs } },
+        }))
         openAlert('success', 'Specifications')
       }
       if (errors?.length) {
@@ -77,18 +80,6 @@ const SpecificationsForm: FC<SpecificationsFormProps> = ({
             name="name"
             disabled={isXVtexTenant || !canEdit}
             onChange={handleInputChange}
-            required
-          />
-        </div>
-        <div className="mb5">
-          <Textarea
-            resize="none"
-            label="Description"
-            value={formState.description}
-            name="description"
-            disabled={isXVtexTenant || !canEdit}
-            onChange={handleInputChange}
-            required
           />
         </div>
         {isXVtexTenant ? null : (
