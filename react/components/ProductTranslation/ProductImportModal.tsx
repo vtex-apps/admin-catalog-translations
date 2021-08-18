@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useMutation, useQuery } from 'react-apollo'
 import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
+import { FormattedMessage } from 'react-intl'
 
 import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
@@ -152,14 +153,18 @@ const ProductImportModal = ({
     <ModalDialog
       loading={loading}
       cancelation={{
-        label: 'Cancel',
+        label: (
+          <FormattedMessage id="catalog-translation.import.modal.cancelation" />
+        ),
         onClick: () => {
           handleOpenImport(false)
           cleanErrors()
         },
       }}
       confirmation={{
-        label: 'Send Translations',
+        label: (
+          <FormattedMessage id="catalog-translation.import.modal.confirmation" />
+        ),
         onClick: () => {
           if (errorParsingFile) {
             return
@@ -173,11 +178,20 @@ const ProductImportModal = ({
         cleanErrors()
       }}
     >
-      <h3>{`Import Product Translations for ${selectedLocale}`}</h3>
+      <h3>
+        <FormattedMessage
+          id="catalog-translation.import.modal.header"
+          values={{
+            selectedLocale,
+          }}
+        />
+      </h3>
       <div>
         <Tabs>
           <Tab
-            label="Import"
+            label={
+              <FormattedMessage id="catalog-translation.import.modal.import-tab" />
+            }
             active={tabSelected === 1}
             onClick={() => {
               setTabSelected(1)
@@ -187,7 +201,7 @@ const ProductImportModal = ({
             <div>
               <div className="mv4">
                 <ButtonPlain onClick={createModel}>
-                  Download xlsx model
+                  <FormattedMessage id="catalog-translation.import.modal.model-download-button" />
                 </ButtonPlain>
               </div>
               <div>
@@ -197,9 +211,11 @@ const ProductImportModal = ({
                   onFileReset={handleReset}
                 >
                   <div className="pt7">
-                    <span className="f4">Drop here your XLSX or </span>
+                    <span className="f4">
+                      <FormattedMessage id="catalog-translation.import.modal.dropzone" />
+                    </span>
                     <span className="f4 c-link" style={{ cursor: 'pointer' }}>
-                      choose a file
+                      <FormattedMessage id="catalog-translation.import.modal.dropzone-choose-file" />
                     </span>
                   </div>
                 </Dropzone>
@@ -210,12 +226,16 @@ const ProductImportModal = ({
             </div>
             <ul>
               {originalFile.length ? (
-                <li>{originalFile?.length} total entries</li>
+                <li>
+                  {originalFile?.length}{' '}
+                  <FormattedMessage id="catalog-translation.import.modal.total-entries" />
+                </li>
               ) : null}
               {validtionWarnings.length ? (
                 <li>
                   <ButtonPlain onClick={() => setWarningModal(true)}>
-                    {validtionWarnings.length} warnings.
+                    {validtionWarnings.length}{' '}
+                    <FormattedMessage id="catalog-translation.import.modal.total-warnings" />
                   </ButtonPlain>
                 </li>
               ) : null}
@@ -225,20 +245,22 @@ const ProductImportModal = ({
                     variation="danger"
                     onClick={() => setErrorModal(true)}
                   >
-                    {validtionErrors.length} errors. The entries will be
-                    ignored.
+                    {validtionErrors.length}{' '}
+                    <FormattedMessage id="catalog-translation.import.modal.total-errors" />
                   </ButtonPlain>
                 </li>
               ) : null}
             </ul>
             {uploadError ? (
               <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
-                Error uploading product translations
+                <FormattedMessage id="catalog-translation.import.modal.error-uploading" />
               </p>
             ) : null}
           </Tab>
           <Tab
-            label="Requests"
+            label={
+              <FormattedMessage id="catalog-translation.import.modal.request-tab" />
+            }
             active={tabSelected === 2}
             onClick={() => {
               setTabSelected(2)
@@ -248,11 +270,21 @@ const ProductImportModal = ({
             <table className="w-100 mt7 tc">
               <thead>
                 <tr>
-                  <th>Locale</th>
-                  <th>Translated by</th>
-                  <th>Created at</th>
-                  <th>Progress</th>
-                  <th>% Translated</th>
+                  <th>
+                    <FormattedMessage id="catalog-translation.import.modal.table-header.locale" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="catalog-translation.import.modal.table-header.translated-by" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="catalog-translation.import.modal.table-header.created-at" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="catalog-translation.import.modal.table-header.progress" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="catalog-translation.import.modal.table-header.total-translated" />
+                  </th>
                 </tr>
               </thead>
               <tbody>
