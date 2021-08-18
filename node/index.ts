@@ -6,7 +6,7 @@ import {
 } from '@vtex/api'
 
 import { Clients } from './clients'
-import { resolvers, queries } from './resolvers'
+import { resolvers, queries, mutations } from './resolvers'
 
 declare global {
   type Context = ServiceContext<Clients, State>
@@ -31,6 +31,9 @@ export default new Service<Clients, State, ParamsContext>({
       ...resolvers,
       Query: {
         ...queries,
+      },
+      Mutation: {
+        ...mutations,
       },
     },
   },

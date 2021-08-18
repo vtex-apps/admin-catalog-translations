@@ -31,3 +31,21 @@ interface ProductTranslationRequest {
   completedAt?: Date
   estimatedTime: number
 }
+
+interface ProductTranslationInput {
+  id: string
+  name?: string
+  description?: string
+  shortDescription?: string
+  title?: string
+}
+
+interface UploadRequest {
+  requestId: string
+  translatedBy: string
+  createdAt: Date
+  estimatedTime: number
+  locale: string
+  error?: boolean
+  progress?: number
+}
