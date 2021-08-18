@@ -1,20 +1,31 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
+import { FormattedMessage, IntlShape, useIntl } from 'react-intl'
 import { Modal, Pagination, Table } from 'vtex.styleguide'
 
-const tableSchema = {
+const tableSchemaGenerator = (intl: IntlShape) => ({
   properties: {
     line: {
-      title: 'Line',
+      title: intl.formatMessage({
+        id: 'catalog-translation.import.table-header.line',
+      }),
     },
     missingFields: {
-      title: 'Missing Fields',
+      title: intl.formatMessage({
+        id: 'catalog-translation.import.table-header.missing-fields',
+      }),
       // eslint-disable-next-line react/display-name
       cellRenderer: ({ cellData }: { cellData: string[] }) => (
         <p>{cellData.join(', ')}</p>
       ),
     },
   },
-}
+})
 
 interface ComponentProps {
   modalName: string
@@ -35,6 +46,7 @@ const WarningAndErrorsImportModal = ({
   const [slicedData, setSlicedData] = useState<Message[]>([])
   const [from, setFrom] = useState(ITEM_FROM)
   const [to, setTo] = useState(ITEM_FROM + STEPS)
+  const intl = useIntl()
 
   useEffect(() => {
     setSlicedData(data.slice(ITEM_FROM, ITEM_FROM + STEPS))
@@ -60,12 +72,16 @@ const WarningAndErrorsImportModal = ({
     setSlicedData(selectedData)
   }
 
+  const tableSchema = useMemo(() => tableSchemaGenerator(intl), [intl])
+
   return (
     <Modal isOpen={isOpen} onClose={() => handleClose(false)}>
       <Pagination
         currentItemFrom={from + 1}
         currentItemTo={to}
-        textOf="of"
+        textOf={
+          <FormattedMessage id="catalog-translation.import.warning-and-error" />
+        }
         totalItems={data.length}
         onNextClick={handleNext}
         onPrevClick={handlePrev}

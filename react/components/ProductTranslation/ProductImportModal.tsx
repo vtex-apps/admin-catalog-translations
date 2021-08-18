@@ -201,7 +201,7 @@ const ProductImportModal = ({
             <div>
               <div className="mv4">
                 <ButtonPlain onClick={createModel}>
-                  <FormattedMessage id="catalog-translation.import.modal.model-download-button" />
+                  <FormattedMessage id="catalog-translation.import.modal.download-button" />
                 </ButtonPlain>
               </div>
               <div>

@@ -51,7 +51,7 @@
   "catalog-translation.import.modal.request-tab": "Requests",
   "catalog-translation.import.modal.download-button": "Download xlsx model",
   "catalog-translation.import.modal.dropzone": "Drop here your XLSX or ",
-  "catalog-translation.import.modal.model-dropzone-choose-file": "choose a file",
+  "catalog-translation.import.modal.dropzone-choose-file": "choose a file",
   "catalog-translation.import.modal.total-entries": "total entries",
   "catalog-translation.import.modal.total-warnings": "warnings",
   "catalog-translation.import.modal.total-errors": "errors. The entries will be ignored",
@@ -61,5 +61,8 @@
   "catalog-translation.import.modal.table-header.created-at": "Created at",
   "catalog-translation.import.modal.table-header.progress": "Progress",
   "catalog-translation.import.modal.table-header.total-translated": "% translated",
-  "catalog-translation.import.modal.status-list.error": "Error"
+  "catalog-translation.import.modal.status-list.error": "Error",
+  "catalog-translation.import.warning-and-error": "of",
+  "catalog-translation.import.table-header.line": "Line",
+  "catalog-translation.import.table-header.missing-fields": "Missing Fields"
 }
