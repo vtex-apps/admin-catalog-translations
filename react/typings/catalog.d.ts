@@ -110,3 +110,22 @@ interface SkuTranslationRequests {
 interface SkuTranslationDownload {
   downloadSKUTranslation: SKU[]
 }
+
+interface ProductTranslationInput {
+  id: string
+  name?: string
+  description?: string
+  shortDescription?: string
+  title?: string
+  linkId?: string
+}
+
+interface UploadRequest {
+  requestId: string
+  translatedBy: string
+  createdAt: string
+  estimatedTime: number
+  locale: string
+  error?: boolean
+  progress?: number
+}
