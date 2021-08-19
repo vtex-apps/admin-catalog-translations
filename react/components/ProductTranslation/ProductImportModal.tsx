@@ -289,7 +289,7 @@ const ProductImportModal = ({
               </thead>
               <tbody>
                 {data?.productTranslationsUploadRequests
-                  .slice(0, UPLOAD_LIST_SIZE)
+                  ?.slice(0, UPLOAD_LIST_SIZE)
                   .map((requestId) => (
                     <ImportStatusList requestId={requestId} key={requestId} />
                   ))}
