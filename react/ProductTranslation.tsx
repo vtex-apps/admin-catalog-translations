@@ -11,6 +11,7 @@ const ProductTranslationWrapped: FC = () => {
         <FormattedMessage id="catalog-translation.product.header" />
       }
       hasExport
+      hasImport
     >
       <ProductTranslation />
     </CatalogTranslationWrapper>

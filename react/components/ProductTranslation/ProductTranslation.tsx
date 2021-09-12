@@ -7,10 +7,13 @@ import ProductForm from './ProductForm'
 import ErrorHandler from '../ErrorHandler'
 import useCatalogQuery from '../../hooks/useCatalogQuery'
 import ProductExportModal from './ProductExportModal'
+import ProductImportModal from './ProductImportModal'
 
 const ProductTranslation = ({
   isExportOpen = false,
   handleOpenExport = () => {},
+  isImportOpen = false,
+  handleOpenImport = () => {},
 }: ComponentProps) => {
   const {
     entryInfo,
@@ -83,6 +86,10 @@ const ProductTranslation = ({
       <ProductExportModal
         isExportOpen={isExportOpen}
         setIsExportOpen={handleOpenExport}
+      />
+      <ProductImportModal
+        isImportOpen={isImportOpen}
+        handleOpenImport={handleOpenImport}
       />
     </>
   )
