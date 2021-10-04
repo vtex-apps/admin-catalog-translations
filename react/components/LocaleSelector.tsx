@@ -37,10 +37,11 @@ const BindingProvider: FC = ({ children }) => {
     // eslint-disable-next-line vtex/prefer-early-return
     if (bindingData) {
       const fetchedLocales = bindingData.tenantInfo.bindings
+      const { defaultLocale } = bindingData.tenantInfo
       const filteredLocales = filterLocales(fetchedLocales)
       setBindings(filteredLocales)
-      setSelectedLocale(filteredLocales[0].defaultLocale)
-      setXVtexTenant(filteredLocales[0].defaultLocale)
+      setSelectedLocale(defaultLocale)
+      setXVtexTenant(defaultLocale)
     }
   }, [bindingData])
 
