@@ -4,7 +4,7 @@
   "main": "index.ts",
   "license": "UNLICENSED",
   "dependencies": {
-    "@vtex/api": "6.44.0"
+    "@vtex/api": "6.45.4"
   },
   "devDependencies": {
     "@vtex/tsconfig": "^0.5.6",
