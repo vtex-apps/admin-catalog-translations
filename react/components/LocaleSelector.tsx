@@ -36,8 +36,7 @@ const BindingProvider: FC = ({ children }) => {
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
     if (bindingData) {
-      const fetchedLocales = bindingData.tenantInfo.bindings
-      const { defaultLocale } = bindingData.tenantInfo
+      const { defaultLocale, bindings: fetchedLocales } = bindingData.tenantInfo
       const filteredLocales = filterLocales(fetchedLocales, defaultLocale)
       setBindings(filteredLocales)
       setSelectedLocale(defaultLocale)
