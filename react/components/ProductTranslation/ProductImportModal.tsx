@@ -1,19 +1,26 @@
 import React, { useState } from 'react'
-import { ModalDialog, ButtonPlain, Dropzone } from 'vtex.styleguide'
+import { useMutation, useQuery } from 'react-apollo'
+import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
+import { FormattedMessage } from 'react-intl'
 
 import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../../utils'
+import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
+import UPLOAD_PRODUCT_TRANSLATION from '../../graphql/uploadProductTranslation.gql'
+import UPLOAD_PRODUCT_REQUESTS from '../../graphql/productUploadRequests.gql'
+import ImportStatusList from '../ImportStatusList'
 
-const categoryHeaders: Array<keyof Product | 'locale'> = [
+const categoryHeaders: Array<keyof Product> = [
   'id',
   'name',
   'title',
   'description',
   'shortDescription',
-  'locale',
+  'linkId',
 ]
 
 const PRODUCT_DATA = 'product_data'
+const UPLOAD_LIST_SIZE = 10
 
 const ProductImportModal = ({
   isImportOpen = false,
@@ -26,9 +33,12 @@ const ProductImportModal = ({
   const [validtionErrors, setValidationErrors] = useState<Message[]>([])
   const [validtionWarnings, setValidationWarnings] = useState<Message[]>([])
   const [originalFile, setOriginalFile] = useState<Array<{}>>([])
-  const [translationsAdj, setTranslationsAdj] = useState<
-    Array<Record<EntryHeaders<Product>, string>>
-  >([])
+  const [formattedTranslations, setFormattedTranslations] = useState<
+    Blob | undefined
+  >(undefined)
+
+  const [tabSelected, setTabSelected] = useState<1 | 2>(1)
+  const { selectedLocale } = useLocaleSelector()
 
   const handleFile = async (files: FileList) => {
     if (loading) {
@@ -47,7 +57,7 @@ const ProductImportModal = ({
       const [translations, { errors, warnings }] = sanitizeImportJSON<Product>({
         data: fileParsed,
         entryHeaders: categoryHeaders,
-        requiredHeaders: ['id', 'locale'],
+        requiredHeaders: ['id'],
       })
 
       if (errors.length) {
@@ -58,7 +68,11 @@ const ProductImportModal = ({
         setValidationWarnings(warnings)
       }
 
-      setTranslationsAdj(translations)
+      const blob = new Blob([JSON.stringify(translations, null, 2)], {
+        type: 'application/json',
+      })
+
+      setFormattedTranslations(blob)
     } catch (e) {
       setErrorParsingFile(e)
     } finally {
@@ -78,7 +92,7 @@ const ProductImportModal = ({
       return
     }
     setOriginalFile([])
-    setTranslationsAdj([])
+    setFormattedTranslations(undefined)
     cleanErrors()
   }
 
@@ -96,24 +110,66 @@ const ProductImportModal = ({
     })
   }
 
+  const [startProductUpload, { error: uploadError }] = useMutation<
+    {
+      uploadProductTranslations: string
+    },
+    {
+      locale: string
+      products: Blob
+    }
+  >(UPLOAD_PRODUCT_TRANSLATION)
+
+  const { data, updateQuery } = useQuery<{
+    productTranslationsUploadRequests: string[]
+  }>(UPLOAD_PRODUCT_REQUESTS)
+
+  const handleUploadRequest = async () => {
+    if (!formattedTranslations) {
+      return
+    }
+
+    const { data: newRequest } = await startProductUpload({
+      variables: {
+        locale: selectedLocale,
+        products: formattedTranslations,
+      },
+    })
+    // eslint-disable-next-line vtex/prefer-early-return
+    if (newRequest?.uploadProductTranslations) {
+      updateQuery((prevResult) => {
+        return {
+          productTranslationsUploadRequests: [
+            newRequest.uploadProductTranslations,
+            ...(prevResult.productTranslationsUploadRequests ?? []),
+          ],
+        }
+      })
+      setTabSelected(2)
+    }
+  }
+
   return (
     <ModalDialog
       loading={loading}
       cancelation={{
-        label: 'Cancel',
+        label: (
+          <FormattedMessage id="catalog-translation.import.modal.cancelation" />
+        ),
         onClick: () => {
           handleOpenImport(false)
           cleanErrors()
         },
       }}
       confirmation={{
-        label: 'Send Translations',
+        label: (
+          <FormattedMessage id="catalog-translation.import.modal.confirmation" />
+        ),
         onClick: () => {
           if (errorParsingFile) {
             return
           }
-          // eslint-disable-next-line no-console
-          console.log({ translationsAdj })
+          handleUploadRequest()
         },
       }}
       isOpen={isImportOpen}
@@ -122,46 +178,126 @@ const ProductImportModal = ({
         cleanErrors()
       }}
     >
+      <h3>
+        <FormattedMessage
+          id="catalog-translation.import.modal.header"
+          values={{
+            selectedLocale,
+          }}
+        />
+      </h3>
       <div>
-        <h3>Import Category Translations</h3>
-        <ButtonPlain onClick={createModel}>Download xlsx model</ButtonPlain>
-        <div className="mt2">
-          <Dropzone
-            accept=".xlsx"
-            onDropAccepted={handleFile}
-            onFileReset={handleReset}
+        <Tabs>
+          <Tab
+            label={
+              <FormattedMessage id="catalog-translation.import.modal.import-tab" />
+            }
+            active={tabSelected === 1}
+            onClick={() => {
+              setTabSelected(1)
+              handleReset()
+            }}
           >
-            <div className="pt7">
-              <span className="f4">Drop here your XLSX or </span>
-              <span className="f4 c-link" style={{ cursor: 'pointer' }}>
-                choose a file
-              </span>
+            <div>
+              <div className="mv4">
+                <ButtonPlain onClick={createModel}>
+                  <FormattedMessage id="catalog-translation.import.modal.download-button" />
+                </ButtonPlain>
+              </div>
+              <div>
+                <Dropzone
+                  accept=".xlsx"
+                  onDropAccepted={handleFile}
+                  onFileReset={handleReset}
+                >
+                  <div className="pt7">
+                    <span className="f4">
+                      <FormattedMessage id="catalog-translation.import.modal.dropzone" />
+                    </span>
+                    <span className="f4 c-link" style={{ cursor: 'pointer' }}>
+                      <FormattedMessage id="catalog-translation.import.modal.dropzone-choose-file" />
+                    </span>
+                  </div>
+                </Dropzone>
+              </div>
+              {errorParsingFile ? (
+                <p className="c-danger i f7">{errorParsingFile}</p>
+              ) : null}
             </div>
-          </Dropzone>
-        </div>
-        {errorParsingFile ? (
-          <p className="c-danger i f7">{errorParsingFile}</p>
-        ) : null}
+            <ul>
+              {originalFile.length ? (
+                <li>
+                  {originalFile?.length}{' '}
+                  <FormattedMessage id="catalog-translation.import.modal.total-entries" />
+                </li>
+              ) : null}
+              {validtionWarnings.length ? (
+                <li>
+                  <ButtonPlain onClick={() => setWarningModal(true)}>
+                    {validtionWarnings.length}{' '}
+                    <FormattedMessage id="catalog-translation.import.modal.total-warnings" />
+                  </ButtonPlain>
+                </li>
+              ) : null}
+              {validtionErrors.length ? (
+                <li>
+                  <ButtonPlain
+                    variation="danger"
+                    onClick={() => setErrorModal(true)}
+                  >
+                    {validtionErrors.length}{' '}
+                    <FormattedMessage id="catalog-translation.import.modal.total-errors" />
+                  </ButtonPlain>
+                </li>
+              ) : null}
+            </ul>
+            {uploadError ? (
+              <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
+                <FormattedMessage id="catalog-translation.import.modal.error-uploading" />
+              </p>
+            ) : null}
+          </Tab>
+          <Tab
+            label={
+              <FormattedMessage id="catalog-translation.import.modal.request-tab" />
+            }
+            active={tabSelected === 2}
+            onClick={() => {
+              setTabSelected(2)
+              handleReset()
+            }}
+          >
+            <table className="w-100 mt7 tc">
+              <thead>
+                <tr>
+                  <th>
+                    <FormattedMessage id="catalog-translation.import.modal.table-header.locale" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="catalog-translation.import.modal.table-header.translated-by" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="catalog-translation.import.modal.table-header.created-at" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="catalog-translation.import.modal.table-header.progress" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="catalog-translation.import.modal.table-header.total-translated" />
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {data?.productTranslationsUploadRequests
+                  ?.slice(0, UPLOAD_LIST_SIZE)
+                  .map((requestId) => (
+                    <ImportStatusList requestId={requestId} key={requestId} />
+                  ))}
+              </tbody>
+            </table>
+          </Tab>
+        </Tabs>
       </div>
-      <ul>
-        {originalFile.length ? (
-          <li>{originalFile?.length} total entries</li>
-        ) : null}
-        {validtionWarnings.length ? (
-          <li>
-            <ButtonPlain onClick={() => setWarningModal(true)}>
-              {validtionWarnings.length} warnings.
-            </ButtonPlain>
-          </li>
-        ) : null}
-        {validtionErrors.length ? (
-          <li>
-            <ButtonPlain variation="danger" onClick={() => setErrorModal(true)}>
-              {validtionErrors.length} errors. The entries will be ignored.
-            </ButtonPlain>
-          </li>
-        ) : null}
-      </ul>
       <WarningAndErrorsImportModal
         isOpen={warningModal}
         modalName="Warning Modal"

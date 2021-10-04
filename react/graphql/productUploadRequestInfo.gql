@@ -1,0 +1,12 @@
+query translationUploadRequestInfo($requestId: String!) {
+  translationUploadRequestInfo(requestId: $requestId)
+    @context(provider: "vtex.admin-catalog-translation") {
+    requestId
+    translatedBy
+    createdAt
+    estimatedTime
+    error
+    progress
+    locale
+  }
+}
