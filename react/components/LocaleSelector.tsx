@@ -38,7 +38,7 @@ const BindingProvider: FC = ({ children }) => {
     if (bindingData) {
       const fetchedLocales = bindingData.tenantInfo.bindings
       const { defaultLocale } = bindingData.tenantInfo
-      const filteredLocales = filterLocales(fetchedLocales)
+      const filteredLocales = filterLocales(fetchedLocales, defaultLocale)
       setBindings(filteredLocales)
       setSelectedLocale(defaultLocale)
       setXVtexTenant(defaultLocale)
