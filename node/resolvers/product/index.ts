@@ -1,12 +1,16 @@
 import { VBase } from '@vtex/api'
 
-import { CatalogGQL } from '../clients/catalogGQL'
+import { CatalogGQL } from '../../clients/catalogGQL'
 import {
   pacer,
   BUCKET_NAME,
   ALL_TRANSLATIONS_FILES,
   calculateExportProcessTime,
-} from '../utils'
+} from '../../utils'
+import {
+  mutations as uploadMutations,
+  queries as uploadQueries,
+} from './upload'
 
 const CALLS_PER_MINUTE = 1600
 
@@ -32,7 +36,7 @@ export const Product = {
     root.data.product.linkId,
 }
 
-const saveTranslation = async (
+const saveTranslationsToVBase = async (
   {
     productIds,
     locale,
@@ -135,7 +139,7 @@ const productTranslations = async (
     requestInfo
   )
 
-  saveTranslation(
+  saveTranslationsToVBase(
     { productIds: productIdCollection, locale, requestId },
     {
       catalogGQLClient: catalogGQL,
@@ -176,9 +180,14 @@ const downloadProductTranslation = async (
   return translations
 }
 
+export const mutations = {
+  ...uploadMutations,
+}
+
 export const queries = {
   productTranslations,
   productTranslationRequests,
   productTranslationRequestInfo,
   downloadProductTranslation,
+  ...uploadQueries,
 }
