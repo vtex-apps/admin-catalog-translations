@@ -12,4 +12,10 @@ type Query {
   skuTranslationRequests: [String]
   skuTranslationRequestInfo(requestId: String!): SKUTranslationRequest
   downloadSKUTranslation(requestId: String!): [SKU]
+  productTranslationsUploadRequests: [String]
+  translationUploadRequestInfo(requestId: String!): UploadRequest
+}
+
+type Mutation {
+  uploadProductTranslations(products: Upload!, locale: String!): String
 }
