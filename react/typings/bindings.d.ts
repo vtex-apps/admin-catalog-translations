@@ -6,6 +6,7 @@ interface Binding {
 
 interface BindingsData {
   tenantInfo: {
+    defaultLocale: string
     bindings: Binding[]
   }
 }

@@ -4,13 +4,34 @@ export * from './fileParsers'
 export * from './sanitizeImportJSON'
 
 /**
+ * Keep the xVtexTenant in the top of the dropdown button
+ */
+const sortBindings = (bindings: Binding[], xVtexTenant: string): Binding[] => {
+  const xVtexTenantBinding = []
+  const otherBindings = []
+
+  for (const binding of bindings) {
+    if (binding.defaultLocale === xVtexTenant) {
+      xVtexTenantBinding.push(binding)
+    } else {
+      otherBindings.push(binding)
+    }
+  }
+
+  return [...xVtexTenantBinding, ...otherBindings]
+}
+
+/**
  * Returns all the unique binding locales, excluding the first one provided by the api (admin)
  *
  * @param {array} Array received from api graphql
  * @return {array} Array with only unique locales and without the admin binding.
  */
 
-export const filterLocales = (bindings: Binding[]): Binding[] => {
+export const filterLocales = (
+  bindings: Binding[],
+  xVtexTenant: string
+): Binding[] => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [admin, ...otherBindings] = bindings
   const uniqueBindings: { [id: string]: boolean } = {}
@@ -37,7 +58,7 @@ export const filterLocales = (bindings: Binding[]): Binding[] => {
     }
   }
 
-  return filteredBindings
+  return sortBindings(filteredBindings, xVtexTenant)
 }
 
 /**
