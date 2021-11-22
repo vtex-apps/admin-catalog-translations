@@ -56,6 +56,21 @@ const TRANSLATE_PRODUCT = `mutation translateProduct($product:ProductInputTransl
   translateProduct(product: $product, locale: $locale)
 }`
 
+const BRAND_QUERY = `
+  query GetBrands ($active: Boolean) {
+    brands(term:"*", active: $active) {
+      {
+        id
+        name
+        isActive
+        title
+        metaTagDescription
+        imageUrl
+      }
+    }
+  }
+`
+
 export class CatalogGQL extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
     super(CATALOG_GRAPHQL_APP, ctx, opts)
@@ -160,6 +175,15 @@ export class CatalogGQL extends AppGraphQLClient {
         },
       }
     )
+
+  public getBrands = (active: boolean) => {
+      return this.graphql.query({
+        query: BRAND_QUERY,
+        variables: {
+          active
+        },
+      })
+  }
 
   public translateProduct = (
     translateProduct: ProductTranslationInput,

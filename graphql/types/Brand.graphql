@@ -1,0 +1,8 @@
+type Brand {
+  id:	Int
+  name:	String
+  imageUrl:	String
+  isActive:	Boolean
+  title:	String
+  metaTagDescription:	String
+}
