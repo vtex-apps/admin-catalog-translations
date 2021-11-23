@@ -7,6 +7,7 @@ import ErrorHandler from '../ErrorHandler'
 import BrandForm from './BrandForm'
 import useCatalogQuery from '../../hooks/useCatalogQuery'
 import BrandExportModal from './BrandExportModal'
+import BrandImportModal from './BrandImportModal'
 
 const BrandTranslation = ({
   isExportOpen = false,
@@ -76,7 +77,7 @@ const BrandTranslation = ({
         isExportOpen={isExportOpen}
         handleOpenExport={handleOpenExport}
       />
-      <BrandExportModal
+      <BrandImportModal
         isImportOpen={isImportOpen}
         handleOpenImport={handleOpenImport}
       />

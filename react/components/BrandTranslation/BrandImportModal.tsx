@@ -10,13 +10,13 @@ import {
   Checkbox,
 } from 'vtex.styleguide'
 
-interface BrandTranslations {
-  brandTranslations: Brand[]
+interface Translations {
+  translations: Brand[]
 }
 
-const BrandExportModal = ({
-  isExportOpen = false,
-  handleOpenExport = () => {},
+const BrandImportModal = ({
+  isImportOpen = false,
+  handleOpenImport = () => {},
 }: ComponentProps) => {
 
   const [onlyActive, setOnlyActive] = useState(true)
@@ -26,7 +26,7 @@ const BrandExportModal = ({
   const { selectedLocale } = useLocaleSelector()
 
   const [fetchTranslations, { data, error }] = useLazyQuery<
-    BrandTranslations,
+    Translations,
     { locale: string; active?: boolean }
   >(getAllBrands, {
     context: {
@@ -47,15 +47,15 @@ const BrandExportModal = ({
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
     if (data && downloading) {
-      parseJSONToXLS(data.brandTranslations, {
-        fileName: `brands-data-${selectedLocale}`,
-        sheetName: 'brands_data',
+      parseJSONToXLS(data.translations, {
+        fileName: `category-data-${selectedLocale}`,
+        sheetName: 'category_data',
       })
 
       setDownloading(false)
-      handleOpenExport(false)
+      handleOpenImport(false)
     }
-  }, [data, selectedLocale, downloading, handleOpenExport])
+  }, [data, selectedLocale, downloading, handleOpenImport])
 
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
@@ -71,7 +71,7 @@ const BrandExportModal = ({
     cancelation={{
       label: 'Cancel',
       onClick: () => {
-        handleOpenExport(false)
+        handleOpenImport(false)
         setHasError(false)
       },
     }}
@@ -79,9 +79,9 @@ const BrandExportModal = ({
       label: 'Export Brands',
       onClick: downloadTranslations,
     }}
-    isOpen={isExportOpen}
+    isOpen={isImportOpen}
     onClose={() => {
-      handleOpenExport(false)
+      handleOpenImport(false)
       setHasError(false)
     }}
   >
@@ -104,4 +104,4 @@ const BrandExportModal = ({
   )
 }
 
-export default BrandExportModal
+export default BrandImportModal

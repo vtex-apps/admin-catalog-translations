@@ -1,6 +1,6 @@
 interface BrandResponse {
-  categories: {
-    items: Array<{ id: string; name: string }>
+  brands: {
+    items: Array<{ id: string; name: string ; active: boolean }>
     paging: {
       pages: number
     }
@@ -9,11 +9,14 @@ interface BrandResponse {
 
 interface BrandTranslationResponse {
   brand: {
-    id:	number
+    id:	string
     name:	string
-    imageUrl:	string
-    isActive:	boolean
-    title:	string
-    metaTagDescription:	string
+    text: string
+    siteTitle: string
+    active: boolean
   }
+}
+
+interface ResolvedPromise<Response> {
+  data: Response
 }

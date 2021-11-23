@@ -1,8 +1,14 @@
 type Brand {
   id:	Int
   name:	String
-  imageUrl:	String
-  isActive:	Boolean
-  title:	String
-  metaTagDescription:	String
+  text: String
+  siteTitle: String
+  active: Boolean
+  locale: String
 }
+
+type BrandName {
+  id: String
+  name: String
+}
+

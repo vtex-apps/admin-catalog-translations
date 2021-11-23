@@ -10,14 +10,12 @@ export const Brand = {
     root.data.brand.id,
   name: (root: ResolvedPromise<BrandTranslationResponse>) =>
     root.data.brand.name,
-  imageUrl: (root: ResolvedPromise<BrandTranslationResponse>) =>
-  root.data.brand.imageUrl,
-  isActive: (root: ResolvedPromise<BrandTranslationResponse>) =>
-    root.data.brand.isActive,
-  title: (root: ResolvedPromise<BrandTranslationResponse>) =>
-    root.data.brand.title,
-  metaTagDescription: (root: ResolvedPromise<BrandTranslationResponse>) =>
-    root.data.brand.metaTagDescription,
+  text: (root: ResolvedPromise<BrandTranslationResponse>) =>
+    root.data.brand.text,
+  siteTitle: (root: ResolvedPromise<BrandTranslationResponse>) =>
+    root.data.brand.siteTitle,
+  active: (root: ResolvedPromise<BrandTranslationResponse>) =>
+    root.data.brand.active,
 }
 
 const brandTranslations = async (
@@ -32,7 +30,20 @@ const brandTranslations = async (
   const { active, locale } = args
 
   ctx.state.locale = locale
-  const translations = await catalogGQL.getBrands(active ?? false)
+
+  const ids = await catalogGQL.getBrands()
+
+  const translationsP = []
+
+  // TODO: use this, check ids format see getBrandTranslation => flattenResponse ?
+  for (const { id, active: activeBrand } of ids) {
+    if (!active || active === activeBrand){
+      const promise = catalogGQL.getBrandTranslation(id, locale)
+      translationsP.push(promise)
+    }
+  }
+
+  const translations = await Promise.all(translationsP)
   return translations
 }
 

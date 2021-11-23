@@ -3,9 +3,8 @@ query getAllBrands($locale: String!, $active: Boolean) {
     @context(provider: "vtex.admin-catalog-translation") {
     id
     name
-    isActive
-    title
-    metaTagDescription
-    imageUrl
+    text
+    siteTitle
+    active
   }
 }

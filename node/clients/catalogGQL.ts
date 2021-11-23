@@ -57,19 +57,31 @@ const TRANSLATE_PRODUCT = `mutation translateProduct($product:ProductInputTransl
 }`
 
 const BRAND_QUERY = `
-  query GetBrands ($active: Boolean) {
-    brands(term:"*", active: $active) {
-      {
+  query GetBrands ($page: Int!) {
+    brands(term:"*", page: $page, pageSize: 50) {
+      items {
         id
         name
-        isActive
-        title
-        metaTagDescription
-        imageUrl
+        active
+      }
+      paging {
+        pages
       }
     }
   }
 `
+
+const GET_BRAND_TRANSLATION_QUERY = `
+  query getTranslation($id:ID!) {
+    brand(id: $id) {
+      id
+      name
+      text
+      siteTitle
+      active
+    }
+  }
+  `
 
 export class CatalogGQL extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
@@ -176,13 +188,60 @@ export class CatalogGQL extends AppGraphQLClient {
       }
     )
 
-  public getBrands = (active: boolean) => {
-      return this.graphql.query({
-        query: BRAND_QUERY,
+  private getBrandsPerPage = ({
+    page,
+  }: {
+    page: number
+  }) =>
+    this.graphql.query<BrandResponse, { page: number }>({
+      query: BRAND_QUERY,
+      variables: {
+        page
+      },
+    })
+
+
+  public getBrands = async() => {
+      try {
+        const response = await this.getBrandsPerPage({ page: 1 })
+        const {
+          items,
+          paging: { pages },
+        } = (response.data as BrandResponse).brands
+        const collectItems = items
+        const responsePromises = []
+
+        for (let i = 2; i <= pages; i++) {
+          const promise = this.getBrandsPerPage({ page: i })
+          responsePromises.push(promise)
+        }
+
+        const resolvedPromises = await Promise.all(responsePromises)
+
+        const flattenResponse = resolvedPromises.reduce((acc, curr) => {
+          return [...acc, ...(curr.data as BrandResponse).brands.items]
+        }, collectItems)
+
+        return flattenResponse
+      } catch (error) {
+        return statusToError(error)
+      }
+  }
+
+  public getBrandTranslation = (id: string, locale: string) => {
+    return this.graphql.query<BrandTranslationResponse, { id: string }>(
+      {
+        query: GET_BRAND_TRANSLATION_QUERY,
         variables: {
-          active
+          id,
         },
-      })
+      },
+      {
+        headers: {
+          'x-vtex-locale': `${locale}`,
+        },
+      }
+    )
   }
 
   public translateProduct = (
