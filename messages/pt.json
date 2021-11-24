@@ -64,5 +64,8 @@
   "catalog-translation.import.modal.status-list.error": "Erro",
   "catalog-translation.import.warning-and-error": "de",
   "catalog-translation.import.table-header.line": "Linha",
-  "catalog-translation.import.table-header.missing-fields": "Campos vazios"
+  "catalog-translation.import.table-header.missing-fields": "Campos vazios",
+  "catalog-translation.export.modal.title-brand":"Export Brand Data for",
+  "catalog-translation.export.modal.confirmation-brands": "Export brands",
+  "catalog-translation.export.modal.export-active-brands": "Export only Active Brands"
 }

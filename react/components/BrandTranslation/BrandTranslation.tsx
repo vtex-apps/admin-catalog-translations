@@ -1,4 +1,4 @@
-import React, { FC, SyntheticEvent } from 'react'
+import React, { SyntheticEvent } from 'react'
 import { PageBlock, Spinner, InputSearch } from 'vtex.styleguide'
 
 import getBrand from '../../graphql/getBrand.gql'

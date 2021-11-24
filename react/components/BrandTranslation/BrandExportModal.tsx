@@ -1,15 +1,33 @@
 import React, { useState, useEffect } from 'react'
-import { useLazyQuery, useQuery } from 'react-apollo'
+import { useLazyQuery } from 'react-apollo'
 import { useLocaleSelector } from '../LocaleSelector'
-
-import getAllBrands from '../../graphql/getAllBrands.gql'
-import { parseJSONToXLS } from '../../utils'
-
+import { defineMessages, FormattedMessage, useIntl } from 'react-intl'
 import {
   ModalDialog,
   Checkbox,
 } from 'vtex.styleguide'
 
+import getAllBrands from '../../graphql/getAllBrands.gql'
+import { parseJSONToXLS } from '../../utils'
+
+
+const modalMessage = defineMessages({
+  export: {
+    id: 'catalog-translation.export.modal.title-brand',
+  },
+  confirmation: {
+    id: 'catalog-translation.export.modal.confirmation-brands',
+  },
+  active: {
+    id: 'catalog-translation.export.modal.export-active-brands',
+  },
+  cancel: {
+    id: 'catalog-translation.action-buttons.cancel',
+  },
+  error: {
+    id: 'catalog-translation.export.modal.error-exporting',
+  },
+})
 interface BrandTranslations {
   brandTranslations: Brand[]
 }
@@ -18,6 +36,7 @@ const BrandExportModal = ({
   isExportOpen = false,
   handleOpenExport = () => {},
 }: ComponentProps) => {
+  const intl = useIntl()
 
   const [onlyActive, setOnlyActive] = useState(true)
   const [downloading, setDownloading] = useState(false)
@@ -69,14 +88,14 @@ const BrandExportModal = ({
     <ModalDialog
     loading={downloading}
     cancelation={{
-      label: 'Cancel',
+      label: intl.formatMessage(modalMessage.cancel),
       onClick: () => {
         handleOpenExport(false)
         setHasError(false)
       },
     }}
     confirmation={{
-      label: 'Export Brands',
+      label: intl.formatMessage(modalMessage.confirmation),
       onClick: downloadTranslations,
     }}
     isOpen={isExportOpen}
@@ -86,9 +105,10 @@ const BrandExportModal = ({
     }}
   >
     <div>
-      <h3>Export Brand Data for {selectedLocale}</h3>
+      <h3>
+        {intl.formatMessage(modalMessage.export)} {selectedLocale}</h3>
       <Checkbox
-        label="Export only Active Brands"
+        label={intl.formatMessage(modalMessage.active)}
         name="active-selection"
         value={onlyActive}
         checked={onlyActive}
@@ -97,7 +117,7 @@ const BrandExportModal = ({
     </div>
     {hasError ? (
       <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
-        There was an error exporting brands. Please try again.
+        {intl.formatMessage(modalMessage.error)}
       </p>
     ) : null}
   </ModalDialog>
