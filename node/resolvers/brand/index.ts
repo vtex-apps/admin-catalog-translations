@@ -31,20 +31,8 @@ const brandTranslations = async (
 
   ctx.state.locale = locale
 
-  const ids = await catalogGQL.getBrands()
-
-  const translationsP = []
-
-  // TODO: use this, check ids format see getBrandTranslation => flattenResponse ?
-  for (const { id, active: activeBrand } of ids) {
-    if (!active || active === activeBrand){
-      const promise = catalogGQL.getBrandTranslation(id, locale)
-      translationsP.push(promise)
-    }
-  }
-
-  const translations = await Promise.all(translationsP)
-  return translations
+  const brands = await catalogGQL.getBrands(active)
+  return brands
 }
 
 export const queries = {

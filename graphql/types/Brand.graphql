@@ -6,9 +6,3 @@ type Brand {
   active: Boolean
   locale: String
 }
-
-type BrandName {
-  id: String
-  name: String
-}
-

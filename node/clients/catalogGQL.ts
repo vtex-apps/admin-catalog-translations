@@ -62,6 +62,8 @@ const BRAND_QUERY = `
       items {
         id
         name
+        text
+        siteTitle
         active
       }
       paging {
@@ -70,18 +72,6 @@ const BRAND_QUERY = `
     }
   }
 `
-
-const GET_BRAND_TRANSLATION_QUERY = `
-  query getTranslation($id:ID!) {
-    brand(id: $id) {
-      id
-      name
-      text
-      siteTitle
-      active
-    }
-  }
-  `
 
 export class CatalogGQL extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
@@ -200,48 +190,51 @@ export class CatalogGQL extends AppGraphQLClient {
       },
     })
 
-
-  public getBrands = async() => {
-      try {
-        const response = await this.getBrandsPerPage({ page: 1 })
-        const {
-          items,
-          paging: { pages },
-        } = (response.data as BrandResponse).brands
-        const collectItems = items
-        const responsePromises = []
-
-        for (let i = 2; i <= pages; i++) {
-          const promise = this.getBrandsPerPage({ page: i })
-          responsePromises.push(promise)
+  private filterAndBuildItemsTranslation = (items: Brand[], active: boolean) => {
+    const filterItems = []
+    if ( items?.length > 0 ) {
+      for ( const a in items ) {
+        if (!active || active === items[a]?.active){
+          filterItems.push({
+            data: {
+                brand:  items[a]
+              }
+            })
         }
-
-        const resolvedPromises = await Promise.all(responsePromises)
-
-        const flattenResponse = resolvedPromises.reduce((acc, curr) => {
-          return [...acc, ...(curr.data as BrandResponse).brands.items]
-        }, collectItems)
-
-        return flattenResponse
-      } catch (error) {
-        return statusToError(error)
       }
+    }
+    return filterItems
   }
 
-  public getBrandTranslation = (id: string, locale: string) => {
-    return this.graphql.query<BrandTranslationResponse, { id: string }>(
-      {
-        query: GET_BRAND_TRANSLATION_QUERY,
-        variables: {
-          id,
-        },
-      },
-      {
-        headers: {
-          'x-vtex-locale': `${locale}`,
-        },
+  public getBrands = async(active = true) => {
+    try {
+      const response = await this.getBrandsPerPage({ page: 1 })
+      const {
+        items,
+        paging: { pages },
+      } = (response.data as BrandResponse).brands
+      const responsePromises = []
+
+      for (let i = 2; i <= pages; i++) {
+        const promise = this.getBrandsPerPage({ page: i })
+        responsePromises.push(promise)
       }
-    )
+
+      const resolvedPromises = await Promise.all(responsePromises)
+
+      let translations:any =  [...this.filterAndBuildItemsTranslation(items ?? [], active)]
+      for (const i in resolvedPromises) {
+        const { data } = resolvedPromises[i]
+        translations = [
+          ...translations,
+          ...this.filterAndBuildItemsTranslation(data?.brands?.items ?? [], active)
+        ]
+      }
+
+      return translations
+    } catch (error) {
+      return statusToError(error)
+    }
   }
 
   public translateProduct = (

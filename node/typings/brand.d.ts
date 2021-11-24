@@ -1,6 +1,14 @@
+interface Brand {
+  id:	string
+  name:	string
+  text: string
+  siteTitle: string
+  active: boolean
+}
+
 interface BrandResponse {
   brands: {
-    items: Array<{ id: string; name: string ; active: boolean }>
+    items: Array<Brand>
     paging: {
       pages: number
     }
@@ -8,15 +16,5 @@ interface BrandResponse {
 }
 
 interface BrandTranslationResponse {
-  brand: {
-    id:	string
-    name:	string
-    text: string
-    siteTitle: string
-    active: boolean
-  }
-}
-
-interface ResolvedPromise<Response> {
-  data: Response
+  brand: Brand
 }
