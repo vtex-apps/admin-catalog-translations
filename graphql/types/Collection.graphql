@@ -1,0 +1,12 @@
+type Collection {
+  id: String
+  name: String
+  description: String
+  locale: String
+  status: String
+}
+
+type CollectionName {
+  id: String
+  name: String
+}

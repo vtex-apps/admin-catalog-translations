@@ -90,6 +90,15 @@ interface ProductTranslationDownload {
   downloadProductTranslation: Product[]
 }
 
+interface Collection extends CollectionInputTranslation {
+  id: string
+}
+
+interface CollectionInputTranslation {
+  description: string
+  name: string
+}
+
 interface CollectionsData {
   collection: Collections
 }

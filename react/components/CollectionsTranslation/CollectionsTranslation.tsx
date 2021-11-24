@@ -1,6 +1,12 @@
 import React, { SyntheticEvent, useMemo, useState } from 'react'
-import { InputSearch, PageBlock, Spinner } from 'vtex.styleguide'
-import { useQuery } from 'react-apollo'
+import {
+  InputSearch,
+  PageBlock,
+  Spinner,
+  ModalDialog,
+  Checkbox
+} from 'vtex.styleguide'
+import { useLazyQuery, useQuery } from 'react-apollo'
 import { MessageListV2, IndexedMessages } from 'vtex.messages'
 import { FormattedMessage, useIntl } from 'react-intl'
 
@@ -8,11 +14,19 @@ import useCatalogQuery from '../../hooks/useCatalogQuery'
 import { useLocaleSelector } from '../LocaleSelector'
 import ErrorHandler from '../ErrorHandler'
 import getCollectionById from '../../graphql/getCollections.gql'
+import getAllCollections from '../../graphql/getAllCollections.gql'
 import CollectionsForm from './CollectionsForm'
 import QUERY_MESSAGES from '../../graphql/messages.gql'
 import { formatCollectionFromMessages } from '../../utils'
 
-const CollectionsTranslation = () => {
+interface CollectionTranslations {
+  collectionTranslations: Collection[]
+}
+
+const CollectionsTranslation = ({
+  isExportOpen = false,
+  handleOpenExport = () => { },
+}: ComponentProps) => {
   const {
     entryInfo,
     isLoadingOrRefetching,
@@ -29,6 +43,10 @@ const CollectionsTranslation = () => {
     {} as { userTranslations: MessageListV2[] }
   )
   const intl = useIntl()
+  /* Transfer Modal */
+  const [onlyActive, setOnlyActive] = useState(true)
+  const [downloading, setDownloading] = useState(false)
+  const [hasError, setHasError] = useState(false)
 
   const handleSubmitSpecification = (e: SyntheticEvent) => {
     e.preventDefault()
@@ -101,54 +119,111 @@ const CollectionsTranslation = () => {
     setMessagesTranslations(data)
   }
 
+  const [fetchCollections, { data, error }] = useLazyQuery<
+    CollectionTranslations,
+    { locale: string; active?: boolean }
+  >(getAllCollections, {
+    context: {
+      headers: {
+        'x-vtex-locale': `${selectedLocale}`,
+      },
+    },
+  })
+
+  const downloadCollections = () => {
+    setHasError(false)
+    setDownloading(true)
+    fetchCollections({
+      variables: { active: onlyActive, locale: selectedLocale },
+    })
+  }
+
   return (
-    <main>
-      <div style={{ maxWidth: '340px' }} className="mv7">
-        <InputSearch
-          value={entryId}
-          label={
-            <FormattedMessage id="catalog-translation.collections.search-label" />
-          }
-          size="regular"
-          onChange={handleEntryIdInput}
-          onSubmit={handleSubmitSpecification}
-          onClear={handleCleanSearch}
-        />
-      </div>
-      {collectionInfo.name ||
-      isLoadingOrRefetching ||
-      loadingMessages ||
-      errorMessage ||
-      errorMessages ? (
-        <PageBlock
-          variation="full"
-          title={
-            <FormattedMessage
-              id="catalog-translation.collections.block-header"
-              values={{ selectedLocale }}
-            />
-          }
-        >
-          {errorMessage ? (
-            <ErrorHandler
-              errorMessage={errorMessage || (errorMessages?.message ?? '')}
-              entryId={entryId}
-              entry={intl.formatMessage({
-                id: 'catalog-translation.entry-type.collection',
-              })}
-            />
-          ) : isLoadingOrRefetching || loadingMessages ? (
-            <Spinner />
-          ) : (
-            <CollectionsForm
-              collectionInfo={collectionInfo}
-              srcMessage={translatedCollectionNames[xVtexTenant]?.name ?? ''}
-              updateMemoCollections={handleUpdateMessage}
-            />
-          )}
-        </PageBlock>
-      ) : null}
-    </main>
+    <>
+      <main>
+        <div style={{ maxWidth: '340px' }} className="mv7">
+          <InputSearch
+            value={entryId}
+            placeholder="Search collections..."
+            label={
+              <FormattedMessage id="catalog-translation.collections.search-label" />
+            }
+            size="regular"
+            onChange={handleEntryIdInput}
+            onSubmit={handleSubmitSpecification}
+            onClear={handleCleanSearch}
+          />
+        </div>
+        {collectionInfo.name ||
+          isLoadingOrRefetching ||
+          loadingMessages ||
+          errorMessage ||
+          errorMessages ? (
+          <PageBlock
+            variation="full"
+            title={
+              <FormattedMessage
+                id="catalog-translation.collections.block-header"
+                values={{ selectedLocale }}
+              />
+            }
+          >
+            {errorMessage ? (
+              <ErrorHandler
+                errorMessage={errorMessage || (errorMessages?.message ?? '')}
+                entryId={entryId}
+                entry={intl.formatMessage({
+                  id: 'catalog-translation.entry-type.collection',
+                })}
+              />
+            ) : isLoadingOrRefetching || loadingMessages ? (
+              <Spinner />
+            ) : (
+              <CollectionsForm
+                collectionInfo={collectionInfo}
+                srcMessage={translatedCollectionNames[xVtexTenant]?.name ?? ''}
+                updateMemoCollections={handleUpdateMessage}
+              />
+            )}
+          </PageBlock>
+        ) : null}
+      </main>
+      <ModalDialog
+        loading={downloading}
+        cancelation={{
+          label: 'Cancel',
+          onClick: () => {
+            handleOpenExport(false)
+            setHasError(false)
+          },
+        }}
+        confirmation={{
+          label: 'Export Collections',
+          onClick: downloadCollections,
+        }}
+        isOpen={isExportOpen}
+        onClose={() => {
+          handleOpenExport(false)
+          setHasError(false)
+        }}
+      >
+        <div>
+          <h3>Export Collections Data for {selectedLocale}</h3>
+          <Checkbox
+            label="Export only active collections"
+            name="active-selection"
+            value={onlyActive}
+            checked={onlyActive}
+            onChange={() => setOnlyActive(!onlyActive)}
+          />
+        </div>
+        {hasError ? (
+          <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
+            There was an error exporting collections. Please try again.
+          </p>
+        ) : null}
+      </ModalDialog>
+    </>
   )
 }
 
