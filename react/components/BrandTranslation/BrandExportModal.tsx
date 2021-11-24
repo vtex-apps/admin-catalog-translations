@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useLazyQuery } from 'react-apollo'
 import { useLocaleSelector } from '../LocaleSelector'
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl'
+import { defineMessages, useIntl } from 'react-intl'
 import {
   ModalDialog,
   Checkbox,

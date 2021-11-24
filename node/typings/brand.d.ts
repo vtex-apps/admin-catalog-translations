@@ -18,3 +18,11 @@ interface BrandResponse {
 interface BrandTranslationResponse {
   brand: Brand
 }
+
+interface BrandTranslationInput {
+  id:	string
+  name?:	string
+  text?: string
+  siteTitle?: string
+  active?: boolean
+}

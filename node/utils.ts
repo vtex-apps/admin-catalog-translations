@@ -6,6 +6,8 @@ export const BUCKET_NAME = 'product-translation'
 export const ALL_TRANSLATIONS_FILES = 'all-translations'
 export const ALL_SKU_TRANSLATIONS_FILES = 'all-sku-translations'
 export const PRODUCT_TRANSLATION_UPLOAD = 'product-upload'
+export const BRAND_TRANSLATION_UPLOAD = 'brand-upload'
+export const BRAND_NAME = 'brand-translation'
 
 export const statusToError = (e: AxiosError) => {
   if (!e.response) {
