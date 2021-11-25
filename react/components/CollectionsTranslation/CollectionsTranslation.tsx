@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useMemo, useState } from 'react'
+import React, { SyntheticEvent, useEffect, useMemo, useState } from 'react'
 import {
   InputSearch,
   PageBlock,
@@ -17,7 +17,7 @@ import getCollectionById from '../../graphql/getCollections.gql'
 import getAllCollections from '../../graphql/getAllCollections.gql'
 import CollectionsForm from './CollectionsForm'
 import QUERY_MESSAGES from '../../graphql/messages.gql'
-import { formatCollectionFromMessages } from '../../utils'
+import { formatCollectionFromMessages, parseJSONToXLS } from '../../utils'
 
 interface CollectionTranslations {
   collectionTranslations: Collection[]
@@ -37,6 +37,7 @@ const CollectionsTranslation = ({
     setMemoEntries,
     errorMessage,
   } = useCatalogQuery<CollectionsData, { fieldId: number }>(getCollectionById)
+
   const { selectedLocale, xVtexTenant } = useLocaleSelector()
   const [fetchMessages, setFetchMessages] = useState(false)
   const [messagesTranslations, setMessagesTranslations] = useState(
@@ -137,6 +138,27 @@ const CollectionsTranslation = ({
       variables: { active: onlyActive, locale: selectedLocale },
     })
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line vtex/prefer-early-return
+    if (data && downloading) {
+      parseJSONToXLS(data.collectionTranslations, {
+        fileName: `collection-data-${selectedLocale}`,
+        sheetName: 'collection_data',
+      })
+
+      setDownloading(false)
+      handleOpenExport(false)
+    }
+  }, [data, selectedLocale, downloading, handleOpenExport])
+
+  useEffect(() => {
+    // eslint-disable-next-line vtex/prefer-early-return
+    if (error) {
+      setDownloading(false)
+      setHasError(true)
+    }
+  }, [error])
 
   return (
     <>
