@@ -5,7 +5,11 @@ import {
   mutations as productMutations,
 } from './product'
 import { SKU, queries as skuQueries } from './SKU'
-import { Brand, queries as brandQueries} from './brand'
+import {
+  Brand,
+  queries as brandQueries,
+  mutations as brandMutations
+} from './brand'
 
 export const queries = {
   ...categoryQueries,
@@ -23,4 +27,5 @@ export const resolvers = {
 
 export const mutations = {
   ...productMutations,
+  ...brandMutations
 }

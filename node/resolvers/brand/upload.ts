@@ -35,6 +35,8 @@ const uploadBrandAsync = async (
     true
   )
 
+  console.log('uploadBrandAsync')
+
   try {
     const totalEntries = brands.length
 
@@ -43,7 +45,7 @@ const uploadBrandAsync = async (
     let promiseController = []
 
     for (let i = 0; i < totalEntries; i++) {
-      promiseController.push(catalogGQL.translateProduct(brands[i], locale))
+      promiseController.push(catalogGQL.translateBrand(brands[i], locale))
       // eslint-disable-next-line no-await-in-loop
       await pacer(CALLS_PER_MINUTE)
       if (breakPointsProgress.includes(i)) {
@@ -78,6 +80,7 @@ const uploadBrandAsync = async (
 }
 
 const parseStreamToJSON = <T>(stream: ReadStream): Promise<T[]> => {
+  console.log('parseStreamToJSON')
   const promise = new Promise<T[]>((resolve) => {
     const finalArray: T[] = []
     stream.pipe(
@@ -96,15 +99,16 @@ const parseStreamToJSON = <T>(stream: ReadStream): Promise<T[]> => {
 
 const uploadBrandTranslations = async (
   _root: unknown,
-  { products, locale }: { products: UploadFile<ReadStream>; locale: string },
+  { brands, locale }: { brands: UploadFile<ReadStream>; locale: string },
   ctx: Context
 ) => {
+  console.log('uploadBrandTranslations')
   const {
     clients: { catalogGQL, licenseManager, vbase },
     vtex: { adminUserAuthToken, requestId },
   } = ctx
 
-  const { createReadStream } = await products
+  const { createReadStream } = await brands
 
   const brandStream = createReadStream()
 

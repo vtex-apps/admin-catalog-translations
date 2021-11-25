@@ -1,3 +1,8 @@
+import {
+  mutations as uploadMutations,
+  queries as uploadQueries,
+} from './upload'
+
 export const Brand = {
   locale: (
     _root: ResolvedPromise<BrandTranslationResponse>,
@@ -36,5 +41,10 @@ const brandTranslations = async (
 }
 
 export const queries = {
-  brandTranslations
+  brandTranslations,
+  ...uploadQueries,
+}
+
+export const mutations = {
+  ...uploadMutations,
 }

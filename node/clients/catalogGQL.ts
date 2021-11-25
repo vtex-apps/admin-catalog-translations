@@ -72,6 +72,9 @@ const BRAND_QUERY = `
     }
   }
 `
+const TRANSLATE_BRAND = `mutation translateBrand($brand:BrandInputTranslation!, $locale: Locale!) {
+  translateBrand(brand: $brand, locale: $locale)
+}`
 
 export class CatalogGQL extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
@@ -178,6 +181,19 @@ export class CatalogGQL extends AppGraphQLClient {
       }
     )
 
+  public translateProduct = (
+    translateProduct: ProductTranslationInput,
+    locale: string
+  ) => {
+    return this.graphql.query({
+      query: TRANSLATE_PRODUCT,
+      variables: {
+        product: translateProduct,
+        locale,
+      },
+    })
+  }
+
   private getBrandsPerPage = ({
     page,
   }: {
@@ -237,14 +253,14 @@ export class CatalogGQL extends AppGraphQLClient {
     }
   }
 
-  public translateProduct = (
-    translateProduct: ProductTranslationInput,
+  public translateBrand = (
+    translateBrand: BrandTranslationInput,
     locale: string
   ) => {
     return this.graphql.query({
-      query: TRANSLATE_PRODUCT,
+      query: TRANSLATE_BRAND,
       variables: {
-        product: translateProduct,
+        brand: translateBrand,
         locale,
       },
     })
