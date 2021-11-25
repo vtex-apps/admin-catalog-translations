@@ -11,6 +11,7 @@ const CollectionsTranslationWrapped: FC = () => {
         <FormattedMessage id="catalog-translation.collections.header" />
       }
       hasExport
+      hasImport
     >
       <CollectionsTranslation />
     </CatalogTranslationWrapper>

@@ -18,6 +18,7 @@ import getAllCollections from '../../graphql/getAllCollections.gql'
 import CollectionsForm from './CollectionsForm'
 import QUERY_MESSAGES from '../../graphql/messages.gql'
 import { formatCollectionFromMessages, parseJSONToXLS } from '../../utils'
+import CollectionImportModal from './CollectionImportModal'
 
 interface CollectionTranslations {
   collectionTranslations: Collection[]
@@ -25,7 +26,9 @@ interface CollectionTranslations {
 
 const CollectionsTranslation = ({
   isExportOpen = false,
+  isImportOpen = false,
   handleOpenExport = () => { },
+  handleOpenImport = () => { },
 }: ComponentProps) => {
   const {
     entryInfo,
@@ -245,6 +248,10 @@ const CollectionsTranslation = ({
           </p>
         ) : null}
       </ModalDialog>
+      <CollectionImportModal
+        isImportOpen={isImportOpen}
+        handleOpenImport={handleOpenImport}
+      />
     </>
   )
 }

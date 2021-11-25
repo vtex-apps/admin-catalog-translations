@@ -23,3 +23,9 @@ interface CollectionTranslationResponse {
 interface ResolvedPromise<Response> {
   data: Response
 }
+
+interface CollectionTranslationInput {
+  id: string
+  name?: string
+  description?: string
+}

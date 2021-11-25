@@ -1,5 +1,9 @@
 import { Category, queries as categoryQueries } from './category'
-import { Collection, queries as collectionQueries } from './collection'
+import {
+  Collection,
+  queries as collectionQueries,
+  mutations as collectionMutations,
+} from './collection'
 import {
   Product,
   queries as productQueries,
@@ -23,4 +27,5 @@ export const resolvers = {
 
 export const mutations = {
   ...productMutations,
+  ...collectionMutations
 }

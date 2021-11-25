@@ -82,6 +82,10 @@ const GET_COLLECTION_TRANSLATION_QUERY = `
   }
 `
 
+const TRANSLATE_COLLECTION = `mutation translateCollection($collection:CollectionInputTranslation!, $locale: Locale!) {
+  translateCollection(collection: $collection, locale: $locale)
+}`
+
 export class CatalogGQL extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
     super(CATALOG_GRAPHQL_APP, ctx, opts)
@@ -253,5 +257,18 @@ export class CatalogGQL extends AppGraphQLClient {
         },
       }
     )
+  }
+
+  public translateCollection = (
+    translateCollection: CollectionTranslationInput,
+    locale: string
+  ) => {
+    return this.graphql.query({
+      query: TRANSLATE_COLLECTION,
+      variables: {
+        collection: translateCollection,
+        locale,
+      },
+    })
   }
 }

@@ -10,14 +10,17 @@ type Query {
   productTranslationRequests: [String]
   productTranslationRequestInfo(requestId: String!): ProductTranslationRequest
   downloadProductTranslation(requestId: String!): [Product]
+  downloadCollectionTranslation(requestId: String!): [Collection]
   skuTranslations(locale: String!, categoryId: String!): SKUTranslationRequest
   skuTranslationRequests: [String]
   skuTranslationRequestInfo(requestId: String!): SKUTranslationRequest
   downloadSKUTranslation(requestId: String!): [SKU]
   productTranslationsUploadRequests: [String]
   translationUploadRequestInfo(requestId: String!): UploadRequest
+  collectionTranslationsUploadRequests: [String]
 }
 
 type Mutation {
   uploadProductTranslations(products: Upload!, locale: String!): String
+  uploadCollectionTranslations(collections: Upload!, locale: String!): String
 }
