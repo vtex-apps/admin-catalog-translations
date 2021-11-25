@@ -101,9 +101,6 @@ const CollectionImportModal = ({
       return obj
     }, {} as Record<typeof collectionHeaders[number], string>)
 
-    console.log('## createModel - headersObject', headersObject)
-    console.log('## createModel - COLLECTION_DATA', COLLECTION_DATA)
-
     parseJSONToXLS([headersObject], {
       fileName: 'collection_translate_model',
       sheetName: COLLECTION_DATA,
@@ -135,7 +132,6 @@ const CollectionImportModal = ({
         collections: formattedTranslations,
       },
     })
-    console.log('## handleUploadRequest - newRequest', newRequest)
     // eslint-disable-next-line vtex/prefer-early-return
     if (newRequest?.uploadCollectionTranslations) {
       updateQuery((prevResult) => {

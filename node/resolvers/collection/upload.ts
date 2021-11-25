@@ -34,7 +34,6 @@ const uploadCollectionAsync = async (
     requestId,
     true
   )
-  console.log('## uploadCollectionAsync - translationRequest', translationRequest)
 
   try {
     const totalEntries = collections.length
@@ -45,8 +44,6 @@ const uploadCollectionAsync = async (
 
     for (let i = 0; i < totalEntries; i++) {
       promiseController.push(catalogGQL.translateCollection(collections[i], locale))
-      console.log('## uploadCollectionAsync - collections[i]', collections[i])
-      console.log('## uploadCollectionAsync - promiseController', promiseController)
       // eslint-disable-next-line no-await-in-loop
       await pacer(CALLS_PER_MINUTE)
       if (breakPointsProgress.includes(i)) {
@@ -63,7 +60,6 @@ const uploadCollectionAsync = async (
     }
 
     await Promise.all(promiseController)
-    console.log('## uploadCollectionAsync - promiseController', promiseController)
     await vbase.saveJSON<UploadRequest>(BUCKET_NAME, requestId, {
       ...translationRequest,
       progress: 100,
@@ -74,8 +70,6 @@ const uploadCollectionAsync = async (
       requestId,
       true
     )
-    console.log('## uploadCollectionAsync - error', error)
-    console.log('## uploadCollectionAsync - translationRequestUpdated', translationRequestUpdated)
     await vbase.saveJSON<UploadRequest>(BUCKET_NAME, requestId, {
       ...translationRequestUpdated,
       error: true,
@@ -118,8 +112,6 @@ const uploadCollectionTranslations = async (
     collectionStream
   )
 
-  console.log('## uploadCollectionTranslations - collectionsParsed', collectionsParsed)
-
   const {
     profile: { email },
   } = await licenseManager.getTopbarData(adminUserAuthToken as string)
@@ -150,7 +142,6 @@ const uploadCollectionTranslations = async (
       CALLS_PER_MINUTE
     ),
   }
-  console.log('## uploadCollectionTranslations - requestInfo', requestInfo)
 
   await vbase.saveJSON<UploadRequest>(BUCKET_NAME, requestId, requestInfo)
 
