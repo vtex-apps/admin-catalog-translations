@@ -1,25 +1,18 @@
 import { ReadStream } from 'fs'
-
 import { VBase } from '@vtex/api'
-import JSONStream from 'JSONStream'
 
-import { CatalogGQL } from '../../clients/catalogGQL'
+import {
+  CatalogGQL
+} from '../../clients/catalogGQL'
 import {
   pacer,
   BRAND_NAME,
   calculateExportProcessTime,
   BRAND_TRANSLATION_UPLOAD,
+  calculateBreakpoints,
+  CALLS_PER_MINUTE,
+  parseStreamToJSON
 } from '../../utils'
-
-const CALLS_PER_MINUTE = 1600
-
-const calculateBreakpoints = (size: number): number[] => {
-  return [
-    Math.ceil(size * 0.25),
-    Math.ceil(size * 0.5),
-    Math.ceil(size * 0.75),
-  ].filter((num, idx, self) => self.indexOf(num) === idx)
-}
 
 const uploadBrandAsync = async (
   {
@@ -77,22 +70,6 @@ const uploadBrandAsync = async (
   }
 }
 
-const parseStreamToJSON = <T>(stream: ReadStream): Promise<T[]> => {
-  const promise = new Promise<T[]>((resolve) => {
-    const finalArray: T[] = []
-    stream.pipe(
-      JSONStream.parse('*').on('data', (data: T) => {
-        finalArray.push(data)
-      })
-    )
-    stream.on('end', () => {
-      stream.destroy()
-      resolve(finalArray)
-    })
-  })
-
-  return promise
-}
 
 const uploadBrandTranslations = async (
   _root: unknown,

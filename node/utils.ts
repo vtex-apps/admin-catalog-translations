@@ -1,7 +1,10 @@
 import { AuthenticationError, ForbiddenError, UserInputError } from '@vtex/api'
 import type { AxiosError } from 'axios'
+import JSONStream from 'JSONStream'
+import { ReadStream } from 'fs'
 
 const ONE_MINUTE = 60 * 1000
+export const CALLS_PER_MINUTE = 1600
 export const BUCKET_NAME = 'product-translation'
 export const ALL_TRANSLATIONS_FILES = 'all-translations'
 export const ALL_SKU_TRANSLATIONS_FILES = 'all-sku-translations'
@@ -69,3 +72,28 @@ export const calculateExportProcessTime = (
   size: number,
   callsPerMinute: number
 ): number => Math.ceil(size * (ONE_MINUTE / callsPerMinute))
+
+export const calculateBreakpoints = (size: number): number[] => {
+  return [
+    Math.ceil(size * 0.25),
+    Math.ceil(size * 0.5),
+    Math.ceil(size * 0.75),
+  ].filter((num, idx, self) => self.indexOf(num) === idx)
+}
+
+export const parseStreamToJSON = <T>(stream: ReadStream): Promise<T[]> => {
+  const promise = new Promise<T[]>((resolve) => {
+    const finalArray: T[] = []
+    stream.pipe(
+      JSONStream.parse('*').on('data', (data: T) => {
+        finalArray.push(data)
+      })
+    )
+    stream.on('end', () => {
+      stream.destroy()
+      resolve(finalArray)
+    })
+  })
+
+  return promise
+}
