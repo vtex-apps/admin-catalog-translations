@@ -65,7 +65,8 @@
   "catalog-translation.import.warning-and-error": "de",
   "catalog-translation.import.table-header.line": "Linha",
   "catalog-translation.import.table-header.missing-fields": "Campos vazios",
-  "catalog-translation.export.modal.title-brand":"Export Brand Data for",
-  "catalog-translation.export.modal.confirmation-brands": "Export brands",
-  "catalog-translation.export.modal.export-active-brands": "Export only Active Brands"
+  "catalog-translation.export.modal.title-brand":"Exportar dados da marca para",
+  "catalog-translation.export.modal.confirmation-brands": "Exportação de marcas",
+  "catalog-translation.export.modal.export-active-brands": "Exportar apenas marcas ativas",
+  "catalog-translation.import.modal.brand-header": "Importar traduções de marcas para {selectedLocale}"
 }
