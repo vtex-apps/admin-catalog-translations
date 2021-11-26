@@ -35,8 +35,6 @@ const uploadBrandAsync = async (
     true
   )
 
-  console.log('uploadBrandAsync')
-
   try {
     const totalEntries = brands.length
 
@@ -80,7 +78,6 @@ const uploadBrandAsync = async (
 }
 
 const parseStreamToJSON = <T>(stream: ReadStream): Promise<T[]> => {
-  console.log('parseStreamToJSON')
   const promise = new Promise<T[]>((resolve) => {
     const finalArray: T[] = []
     stream.pipe(
@@ -102,7 +99,6 @@ const uploadBrandTranslations = async (
   { brands, locale }: { brands: UploadFile<ReadStream>; locale: string },
   ctx: Context
 ) => {
-  console.log('uploadBrandTranslations')
   const {
     clients: { catalogGQL, licenseManager, vbase },
     vtex: { adminUserAuthToken, requestId },

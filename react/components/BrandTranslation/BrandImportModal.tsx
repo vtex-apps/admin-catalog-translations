@@ -40,8 +40,7 @@ const categoryHeaders: Array<keyof Brand> = [
   'id',
   'name',
   'text',
-  'siteTitle',
-  'active',
+  'siteTitle'
 ]
 
 const BRAND_DATA = 'brands_data'
@@ -153,11 +152,9 @@ const BrandImportModal = ({
   }>(UPLOAD_BRAND_REQUESTS)
 
   const handleUploadRequest = async () => {
-    console.log('handleUploadRequest', formattedTranslations)
     if (!formattedTranslations) {
       return
     }
-    console.log('handleUploadRequest B')
 
     const { data: newRequest } = await startBrandUpload({
       variables: {
@@ -166,7 +163,6 @@ const BrandImportModal = ({
       },
     })
     // eslint-disable-next-line vtex/prefer-early-return
-    console.log('newRequest', newRequest)
     if (newRequest?.uploadBrandTranslations) {
       updateQuery((prevResult) => {
         return {
@@ -211,7 +207,7 @@ const BrandImportModal = ({
     >
       <h3>
         <FormattedMessage
-          id="catalog-translation.import.modal.header"
+          id="catalog-translation.import.modal.brand-header"
           values={{
             selectedLocale,
           }}

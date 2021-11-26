@@ -1,4 +1,4 @@
 mutation uploadBrandTranslations($locale: String!, $brands: Upload!) {
-  uploadBrandTranslations(locale: $locale, brands: $brand)
+  uploadBrandTranslations(locale: $locale, brands: $brands)
     @context(provider: "vtex.admin-catalog-translation")
 }

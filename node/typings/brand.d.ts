@@ -24,5 +24,4 @@ interface BrandTranslationInput {
   name?:	string
   text?: string
   siteTitle?: string
-  active?: boolean
 }
