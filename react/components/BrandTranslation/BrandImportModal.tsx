@@ -8,7 +8,6 @@ import {
   Tab
 } from 'vtex.styleguide'
 import { FormattedMessage } from 'react-intl'
-import { defineMessages, useIntl } from 'react-intl'
 
 import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
@@ -16,25 +15,6 @@ import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
 import UPLOAD_BRAND_TRANSLATION from '../../graphql/uploadBrandTranslation.gql'
 import UPLOAD_BRAND_REQUESTS from '../../graphql/brandUploadRequests.gql'
 import ImportStatusList from '../ImportStatusList'
-
-
-const modalMessage = defineMessages({
-  export: {
-    id: 'catalog-translation.export.modal.title-brand',
-  },
-  confirmation: {
-    id: 'catalog-translation.export.modal.confirmation-brands',
-  },
-  active: {
-    id: 'catalog-translation.export.modal.export-active-brands',
-  },
-  cancel: {
-    id: 'catalog-translation.action-buttons.cancel',
-  },
-  error: {
-    id: 'catalog-translation.export.modal.error-exporting',
-  },
-})
 
 const categoryHeaders: Array<keyof Brand> = [
   'id',
@@ -60,9 +40,6 @@ const BrandImportModal = ({
   const [formattedTranslations, setFormattedTranslations] = useState<
     Blob | undefined
   >(undefined)
-
-  const intl = useIntl()
-
 
   const [tabSelected, setTabSelected] = useState<1 | 2>(1)
   const { selectedLocale } = useLocaleSelector()
