@@ -6,8 +6,15 @@ import { useLocaleSelector } from '../LocaleSelector'
 import getSpecificationById from '../../graphql/getSpecification.gql'
 import ErrorHandler from '../ErrorHandler'
 import SpecificationsForm from './SpecificationsForm'
+import SpecificationExportModal from './SpecificationExportModal'
+// import SpecificationImportModal from './SpecificationImportModal'
 
-const SpecificationsTranslation: FC = () => {
+const SpecificationsTranslation = ({
+  isExportOpen = false,
+  handleOpenExport = () => {},
+  isImportOpen = false,
+  handleOpenImport = () => {},
+}: ComponentProps) => {
   const {
     entryInfo,
     isLoadingOrRefetching,
@@ -36,6 +43,7 @@ const SpecificationsTranslation: FC = () => {
     entryInfo?.field || ({} as Specifications)
 
   return (
+    <>
     <main>
       <div style={{ maxWidth: '340px' }} className="mv7">
         <InputSearch
@@ -71,6 +79,15 @@ const SpecificationsTranslation: FC = () => {
         </PageBlock>
       ) : null}
     </main>
+      <SpecificationExportModal
+        isExportOpen={isExportOpen}
+        handleOpenExport={handleOpenExport}
+      />
+      {/* <SpecificationImportModal
+        isImportOpen={isImportOpen}
+        handleOpenImport={handleOpenImport}
+      /> */}
+      </>
   )
 }
 

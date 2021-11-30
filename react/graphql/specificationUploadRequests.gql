@@ -1,0 +1,4 @@
+query specificationTranslationsUploadRequests {
+  specificationTranslationsUploadRequests
+    @context(provider: "vtex.admin-catalog-translation")
+}

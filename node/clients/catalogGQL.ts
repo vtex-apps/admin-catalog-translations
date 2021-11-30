@@ -173,4 +173,13 @@ export class CatalogGQL extends AppGraphQLClient {
       },
     })
   }
+
+  public getFields = async () => {
+    try {
+
+      return ['getFields XD']
+    } catch (error) {
+      return statusToError(error)
+    }
+  }
 }

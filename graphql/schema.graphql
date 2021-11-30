@@ -14,6 +14,7 @@ type Query {
   downloadSKUTranslation(requestId: String!): [SKU]
   productTranslationsUploadRequests: [String]
   translationUploadRequestInfo(requestId: String!): UploadRequest
+  specificationTranslations(locale: String!): [Field]
 }
 
 type Mutation {
