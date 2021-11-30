@@ -52,8 +52,8 @@ const BrandForm: FC<BrandFormProps> = ({
     try {
       const { data, errors } = await translateBrand({
         variables: {
-          locale: selectedLocale,
           brand: brandArgs,
+          locale: selectedLocale,
         },
       })
       const { translateBrand: translateBrandResult } = data ?? {}

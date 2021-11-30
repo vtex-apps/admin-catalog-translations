@@ -8,24 +8,24 @@ import { SKU, queries as skuQueries } from './SKU'
 import {
   Brand,
   queries as brandQueries,
-  mutations as brandMutations
+  mutations as brandMutations,
 } from './brand'
 
 export const queries = {
   ...categoryQueries,
   ...productQueries,
   ...skuQueries,
-  ...brandQueries
+  ...brandQueries,
 }
 
 export const resolvers = {
   Category,
   Product,
   SKU,
-  Brand
+  Brand,
 }
 
 export const mutations = {
   ...productMutations,
-  ...brandMutations
+  ...brandMutations,
 }

@@ -10,7 +10,7 @@ import UPLOAD_PRODUCT_TRANSLATION from '../../graphql/uploadProductTranslation.g
 import UPLOAD_PRODUCT_REQUESTS from '../../graphql/productUploadRequests.gql'
 import ImportStatusList from '../ImportStatusList'
 
-const categoryHeaders: Array<keyof Product> = [
+const productHeaders: Array<keyof Product> = [
   'id',
   'name',
   'title',
@@ -56,7 +56,7 @@ const ProductImportModal = ({
 
       const [translations, { errors, warnings }] = sanitizeImportJSON<Product>({
         data: fileParsed,
-        entryHeaders: categoryHeaders,
+        entryHeaders: productHeaders,
         requiredHeaders: ['id'],
       })
 
@@ -97,12 +97,12 @@ const ProductImportModal = ({
   }
 
   const createModel = () => {
-    const headersObject = categoryHeaders.reduce<
-      Record<typeof categoryHeaders[number], string>
+    const headersObject = productHeaders.reduce<
+      Record<typeof productHeaders[number], string>
     >((obj, header) => {
       obj[header] = ''
       return obj
-    }, {} as Record<typeof categoryHeaders[number], string>)
+    }, {} as Record<typeof productHeaders[number], string>)
 
     parseJSONToXLS([headersObject], {
       fileName: 'product_translate_model',

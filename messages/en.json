@@ -65,7 +65,7 @@
   "catalog-translation.import.warning-and-error": "of",
   "catalog-translation.import.table-header.line": "Line",
   "catalog-translation.import.table-header.missing-fields": "Missing Fields",
-  "catalog-translation.export.modal.title-brand":"Export Brand Data for",
+  "catalog-translation.export.modal.title-brand": "Export Brand Data for",
   "catalog-translation.export.modal.confirmation-brands": "Export brands",
   "catalog-translation.export.modal.export-active-brands": "Export only Active Brands",
   "catalog-translation.import.modal.brand-header": "Import Brand Translations for {selectedLocale}"

@@ -1,12 +1,6 @@
 import React, { useState } from 'react'
 import { useMutation, useQuery } from 'react-apollo'
-import {
-  ModalDialog,
-  ButtonPlain,
-  Dropzone,
-  Tabs,
-  Tab
-} from 'vtex.styleguide'
+import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
 import { FormattedMessage } from 'react-intl'
 
 import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../../utils'
@@ -16,12 +10,7 @@ import UPLOAD_BRAND_TRANSLATION from '../../graphql/uploadBrandTranslation.gql'
 import UPLOAD_BRAND_REQUESTS from '../../graphql/brandUploadRequests.gql'
 import ImportStatusList from '../ImportStatusList'
 
-const categoryHeaders: Array<keyof Brand> = [
-  'id',
-  'name',
-  'text',
-  'siteTitle'
-]
+const brandHeaders: Array<keyof Brand> = ['id', 'name', 'text', 'siteTitle']
 
 const BRAND_DATA = 'brands_data'
 const UPLOAD_LIST_SIZE = 10
@@ -60,7 +49,7 @@ const BrandImportModal = ({
 
       const [translations, { errors, warnings }] = sanitizeImportJSON<Brand>({
         data: fileParsed,
-        entryHeaders: categoryHeaders,
+        entryHeaders: brandHeaders,
         requiredHeaders: ['id'],
       })
 
@@ -101,12 +90,12 @@ const BrandImportModal = ({
   }
 
   const createModel = () => {
-    const headersObject = categoryHeaders.reduce<
-      Record<typeof categoryHeaders[number], string>
+    const headersObject = brandHeaders.reduce<
+      Record<typeof brandHeaders[number], string>
     >((obj, header) => {
       obj[header] = ''
       return obj
-    }, {} as Record<typeof categoryHeaders[number], string>)
+    }, {} as Record<typeof brandHeaders[number], string>)
 
     parseJSONToXLS([headersObject], {
       fileName: 'brand_translate_model',

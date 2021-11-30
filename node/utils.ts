@@ -1,7 +1,8 @@
+import { ReadStream } from 'fs'
+
 import { AuthenticationError, ForbiddenError, UserInputError } from '@vtex/api'
 import type { AxiosError } from 'axios'
 import JSONStream from 'JSONStream'
-import { ReadStream } from 'fs'
 
 const ONE_MINUTE = 60 * 1000
 export const CALLS_PER_MINUTE = 1600

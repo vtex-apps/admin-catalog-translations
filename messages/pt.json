@@ -65,7 +65,7 @@
   "catalog-translation.import.warning-and-error": "de",
   "catalog-translation.import.table-header.line": "Linha",
   "catalog-translation.import.table-header.missing-fields": "Campos vazios",
-  "catalog-translation.export.modal.title-brand":"Exportar Dados da Marca para",
+  "catalog-translation.export.modal.title-brand": "Exportar Dados da Marca para",
   "catalog-translation.export.modal.confirmation-brands": "Exportação de Marcas",
   "catalog-translation.export.modal.export-active-brands": "Exportar apenas Marcas Ativas",
   "catalog-translation.import.modal.brand-header": "Importar Traduções de Marcas para {selectedLocale}"

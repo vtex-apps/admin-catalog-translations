@@ -1,7 +1,4 @@
-mutation TranslateBrand(
-  $brand: BrandInputTranslation!,
-  $locale: Locale
-) {
+mutation TranslateBrand($brand: BrandInputTranslation!, $locale: Locale) {
   translateBrand(brand: $brand, locale: $locale)
     @context(provider: "vtex.catalog-graphql")
 }

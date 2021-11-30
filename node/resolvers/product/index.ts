@@ -6,13 +6,12 @@ import {
   BUCKET_NAME,
   ALL_TRANSLATIONS_FILES,
   calculateExportProcessTime,
+  CALLS_PER_MINUTE,
 } from '../../utils'
 import {
   mutations as uploadMutations,
   queries as uploadQueries,
 } from './upload'
-
-const CALLS_PER_MINUTE = 1600
 
 export const Product = {
   locale: (

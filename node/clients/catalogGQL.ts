@@ -194,35 +194,34 @@ export class CatalogGQL extends AppGraphQLClient {
     })
   }
 
-  private getBrandsPerPage = ({
-    page,
-  }: {
-    page: number
-  }) =>
+  private getBrandsPerPage = ({ page }: { page: number }) =>
     this.graphql.query<BrandResponse, { page: number }>({
       query: BRAND_QUERY,
       variables: {
-        page
+        page,
       },
     })
 
-  private filterAndBuildItemsTranslation = (items: Brand[], active: boolean) => {
+  private filterAndBuildItemsTranslation = (
+    items: Brand[],
+    active: boolean
+  ) => {
     const filterItems = []
-    if ( items?.length > 0 ) {
-      for ( const a in items ) {
-        if (!active || active === items[a]?.active){
+    if (items?.length > 0) {
+      for (const a in items) {
+        if (!active || active === items[a]?.active) {
           filterItems.push({
             data: {
-                brand:  items[a]
-              }
-            })
+              brand: items[a],
+            },
+          })
         }
       }
     }
     return filterItems
   }
 
-  public getBrands = async(active = true) => {
+  public getBrands = async (active = true) => {
     try {
       const response = await this.getBrandsPerPage({ page: 1 })
       const {
@@ -238,12 +237,17 @@ export class CatalogGQL extends AppGraphQLClient {
 
       const resolvedPromises = await Promise.all(responsePromises)
 
-      let translations:any =  [...this.filterAndBuildItemsTranslation(items ?? [], active)]
+      let translations = [
+        ...this.filterAndBuildItemsTranslation(items ?? [], active),
+      ]
       for (const i in resolvedPromises) {
         const { data } = resolvedPromises[i]
         translations = [
           ...translations,
-          ...this.filterAndBuildItemsTranslation(data?.brands?.items ?? [], active)
+          ...this.filterAndBuildItemsTranslation(
+            data?.brands?.items ?? [],
+            active
+          ),
         ]
       }
 

@@ -1,9 +1,8 @@
 import { ReadStream } from 'fs'
+
 import { VBase } from '@vtex/api'
 
-import {
-  CatalogGQL
-} from '../../clients/catalogGQL'
+import { CatalogGQL } from '../../clients/catalogGQL'
 import {
   pacer,
   BRAND_NAME,
@@ -11,7 +10,7 @@ import {
   BRAND_TRANSLATION_UPLOAD,
   calculateBreakpoints,
   CALLS_PER_MINUTE,
-  parseStreamToJSON
+  parseStreamToJSON,
 } from '../../utils'
 
 const uploadBrandAsync = async (
@@ -69,7 +68,6 @@ const uploadBrandAsync = async (
     })
   }
 }
-
 
 const uploadBrandTranslations = async (
   _root: unknown,

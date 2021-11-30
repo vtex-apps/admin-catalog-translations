@@ -11,8 +11,7 @@ export const Brand = {
   ) => {
     return ctx.state.locale
   },
-  id: (root: ResolvedPromise<BrandTranslationResponse>) =>
-    root.data.brand.id,
+  id: (root: ResolvedPromise<BrandTranslationResponse>) => root.data.brand.id,
   name: (root: ResolvedPromise<BrandTranslationResponse>) =>
     root.data.brand.name,
   text: (root: ResolvedPromise<BrandTranslationResponse>) =>
