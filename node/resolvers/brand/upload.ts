@@ -1,73 +1,14 @@
+/* eslint-disable no-console */
 import { ReadStream } from 'fs'
 
-import { VBase } from '@vtex/api'
-
-import { CatalogGQL } from '../../clients/catalogGQL'
 import {
-  pacer,
   BRAND_NAME,
   calculateExportProcessTime,
   BRAND_TRANSLATION_UPLOAD,
-  calculateBreakpoints,
   CALLS_PER_MINUTE,
   parseStreamToJSON,
+  uploadEntriesAsync,
 } from '../../utils'
-
-const uploadBrandAsync = async (
-  {
-    brands,
-    requestId,
-    locale,
-  }: { brands: BrandTranslationInput[]; requestId: string; locale: string },
-  { catalogGQL, vbase }: { catalogGQL: CatalogGQL; vbase: VBase }
-) => {
-  const translationRequest = await vbase.getJSON<UploadRequest>(
-    BRAND_NAME,
-    requestId,
-    true
-  )
-
-  try {
-    const totalEntries = brands.length
-
-    const breakPointsProgress = calculateBreakpoints(totalEntries)
-
-    let promiseController = []
-
-    for (let i = 0; i < totalEntries; i++) {
-      promiseController.push(catalogGQL.translateBrand(brands[i], locale))
-      // eslint-disable-next-line no-await-in-loop
-      await pacer(CALLS_PER_MINUTE)
-      if (breakPointsProgress.includes(i)) {
-        // eslint-disable-next-line no-await-in-loop
-        await Promise.all(promiseController)
-
-        // eslint-disable-next-line no-await-in-loop
-        await vbase.saveJSON<UploadRequest>(BRAND_NAME, requestId, {
-          ...translationRequest,
-          progress: Math.ceil((i / totalEntries) * 100),
-        })
-        promiseController = []
-      }
-    }
-
-    await Promise.all(promiseController)
-    await vbase.saveJSON<UploadRequest>(BRAND_NAME, requestId, {
-      ...translationRequest,
-      progress: 100,
-    })
-  } catch (error) {
-    const translationRequestUpdated = await vbase.getJSON<UploadRequest>(
-      BRAND_NAME,
-      requestId,
-      true
-    )
-    await vbase.saveJSON<UploadRequest>(BRAND_NAME, requestId, {
-      ...translationRequestUpdated,
-      error: true,
-    })
-  }
-}
 
 const uploadBrandTranslations = async (
   _root: unknown,
@@ -120,9 +61,15 @@ const uploadBrandTranslations = async (
 
   await vbase.saveJSON<UploadRequest>(BRAND_NAME, requestId, requestInfo)
 
-  uploadBrandAsync(
-    { brands: brandsParsed, requestId, locale },
-    { catalogGQL, vbase }
+  uploadEntriesAsync<BrandTranslationInput>(
+    {
+      entries: brandsParsed,
+      requestId,
+      locale,
+      bucket: BRAND_NAME,
+      translateEntry: catalogGQL?.translateBrand,
+    },
+    { vbase }
   )
 
   return requestId
@@ -139,15 +86,8 @@ const brandTranslationsUploadRequests = async (
     true
   )
 
-const translationUploadRequestInfo = (
-  _root: unknown,
-  args: { requestId: string },
-  ctx: Context
-) => ctx.clients.vbase.getJSON<UploadRequest>(BRAND_NAME, args.requestId)
-
 export const mutations = { uploadBrandTranslations }
 
 export const queries = {
   brandTranslationsUploadRequests,
-  translationUploadRequestInfo,
 }

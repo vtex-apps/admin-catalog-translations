@@ -3,10 +3,16 @@ import React, { useEffect, useRef, useState } from 'react'
 import { FormattedDate, FormattedMessage, FormattedTime } from 'react-intl'
 import { Progress } from 'vtex.styleguide'
 
-import PRODUCT_UPLOAD_REQUEST_INFO from '../graphql/productUploadRequestInfo.gql'
+import TRANSLATION_UPLOAD_REQUEST_INFO from '../graphql/translationUploadRequestInfo.gql'
 import { shouldHaveCompleted } from '../utils'
 
-const ImportStatusList = ({ requestId }: { requestId: string }) => {
+const ImportStatusList = ({
+  requestId,
+  bucket,
+}: {
+  requestId: string
+  bucket: string
+}) => {
   const [shouldHaveFinished, setShouldHaveFinished] = useState(false)
   const {
     data,
@@ -15,10 +21,11 @@ const ImportStatusList = ({ requestId }: { requestId: string }) => {
     stopPolling,
   } = useQuery<
     { translationUploadRequestInfo: UploadRequest },
-    { requestId: string }
-  >(PRODUCT_UPLOAD_REQUEST_INFO, {
+    { requestId: string; bucket: string }
+  >(TRANSLATION_UPLOAD_REQUEST_INFO, {
     variables: {
       requestId,
+      bucket,
     },
   })
 

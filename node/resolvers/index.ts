@@ -10,12 +10,14 @@ import {
   queries as brandQueries,
   mutations as brandMutations,
 } from './brand'
+import { queries as translationUploadRequestInfo } from './translation'
 
 export const queries = {
   ...categoryQueries,
   ...productQueries,
   ...skuQueries,
   ...brandQueries,
+  ...translationUploadRequestInfo,
 }
 
 export const resolvers = {

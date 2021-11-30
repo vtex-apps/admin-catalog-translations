@@ -284,7 +284,11 @@ const BrandImportModal = ({
                 {data?.brandTranslationsUploadRequests
                   ?.slice(0, UPLOAD_LIST_SIZE)
                   .map((requestId) => (
-                    <ImportStatusList requestId={requestId} key={requestId} />
+                    <ImportStatusList
+                      requestId={requestId}
+                      key={requestId}
+                      bucket="brand-translation"
+                    />
                   ))}
               </tbody>
             </table>

@@ -181,10 +181,7 @@ export class CatalogGQL extends AppGraphQLClient {
       }
     )
 
-  public translateProduct = (
-    translateProduct: ProductTranslationInput,
-    locale: string
-  ) => {
+  public translateProduct = <T>(translateProduct: T, locale: string) => {
     return this.graphql.query({
       query: TRANSLATE_PRODUCT,
       variables: {
@@ -257,10 +254,7 @@ export class CatalogGQL extends AppGraphQLClient {
     }
   }
 
-  public translateBrand = (
-    translateBrand: BrandTranslationInput,
-    locale: string
-  ) => {
+  public translateBrand = <T>(translateBrand: T, locale: string) => {
     return this.graphql.query({
       query: TRANSLATE_BRAND,
       variables: {

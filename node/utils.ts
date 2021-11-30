@@ -1,6 +1,13 @@
 import { ReadStream } from 'fs'
 
-import { AuthenticationError, ForbiddenError, UserInputError } from '@vtex/api'
+import {
+  AuthenticationError,
+  ForbiddenError,
+  GraphQLResponse,
+  Serializable,
+  UserInputError,
+  VBase,
+} from '@vtex/api'
 import type { AxiosError } from 'axios'
 import JSONStream from 'JSONStream'
 
@@ -97,4 +104,70 @@ export const parseStreamToJSON = <T>(stream: ReadStream): Promise<T[]> => {
   })
 
   return promise
+}
+
+export const uploadEntriesAsync = async <T>(
+  {
+    entries,
+    requestId,
+    locale,
+    bucket,
+    translateEntry,
+  }: {
+    entries: T[]
+    requestId: string
+    locale: string
+    bucket: string
+    translateEntry: <T>(
+      entry: T,
+      locale: string
+    ) => Promise<GraphQLResponse<Serializable>>
+  },
+  { vbase }: { vbase: VBase }
+) => {
+  const translationRequest = await vbase.getJSON<UploadRequest>(
+    bucket,
+    requestId,
+    true
+  )
+
+  try {
+    const totalEntries = entries.length
+
+    const breakPointsProgress = calculateBreakpoints(totalEntries)
+
+    let promiseController = []
+    for (let i = 0; i < totalEntries; i++) {
+      promiseController.push(translateEntry<T>(entries[i], locale))
+      // eslint-disable-next-line no-await-in-loop
+      await pacer(CALLS_PER_MINUTE)
+      if (breakPointsProgress.includes(i)) {
+        // eslint-disable-next-line no-await-in-loop
+        await Promise.all(promiseController)
+
+        // eslint-disable-next-line no-await-in-loop
+        await vbase.saveJSON<UploadRequest>(bucket, requestId, {
+          ...translationRequest,
+          progress: Math.ceil((i / totalEntries) * 100),
+        })
+        promiseController = []
+      }
+    }
+
+    await Promise.all(promiseController)
+    await vbase.saveJSON<UploadRequest>(bucket, requestId, {
+      ...translationRequest,
+      progress: 100,
+    })
+  } catch (error) {
+    const translationRequestUpdated = await vbase.getJSON<UploadRequest>(
+      bucket,
+      requestId,
+      true
+    )
+    await vbase.saveJSON<UploadRequest>(bucket, requestId, {
+      ...translationRequestUpdated,
+      error: true,
+    })
+  }
 }
