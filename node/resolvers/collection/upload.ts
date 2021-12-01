@@ -1,9 +1,11 @@
+/* eslint-disable no-await-in-loop */
 import { ReadStream } from 'fs'
 
 import { VBase } from '@vtex/api'
 import JSONStream from 'JSONStream'
 
 import { CatalogGQL } from '../../clients/catalogGQL'
+import { Messages } from '../../clients/messages'
 import {
   pacer,
   COLLECTION_NAME,
@@ -21,13 +23,21 @@ const calculateBreakpoints = (size: number): number[] => {
   ].filter((num, idx, self) => self.indexOf(num) === idx)
 }
 
-const uploadCollectionAsync = async (
+const translateMessagesCollection = async (
   {
     collections,
     requestId,
     locale,
-  }: { collections: CollectionTranslationInput[]; requestId: string; locale: string },
-  { catalogGQL, vbase }: { catalogGQL: CatalogGQL; vbase: VBase }
+  }: {
+    collections: CollectionTranslationInput[]
+    requestId: string
+    locale: string
+  },
+  {
+    messages,
+    catalogGQL,
+    vbase,
+  }: { messages: Messages; catalogGQL: CatalogGQL; vbase: VBase }
 ) => {
   const translationRequest = await vbase.getJSON<UploadRequest>(
     COLLECTION_NAME,
@@ -36,30 +46,37 @@ const uploadCollectionAsync = async (
   )
 
   try {
+    const messagesToTranslate: MessageSaveInput[] = []
     const totalEntries = collections.length
-
     const breakPointsProgress = calculateBreakpoints(totalEntries)
 
-    let promiseController = []
-
     for (let i = 0; i < totalEntries; i++) {
-      promiseController.push(catalogGQL.translateCollection(collections[i], locale))
-      // eslint-disable-next-line no-await-in-loop
+      const { data } = await catalogGQL.getCollectionTranslation(
+        collections[i].id,
+        'es-ES'
+      )
+
+      messagesToTranslate.push({
+        srcLang: 'es-ES',
+        srcMessage: data?.collection.name ?? '',
+        context: collections[i].id,
+        targetMessage: collections[i].name ?? '',
+      })
+
       await pacer(CALLS_PER_MINUTE)
       if (breakPointsProgress.includes(i)) {
-        // eslint-disable-next-line no-await-in-loop
-        await Promise.all(promiseController)
-
-        // eslint-disable-next-line no-await-in-loop
         await vbase.saveJSON<UploadRequest>(COLLECTION_NAME, requestId, {
           ...translationRequest,
           progress: Math.ceil((i / totalEntries) * 100),
         })
-        promiseController = []
       }
     }
 
-    await Promise.all(promiseController)
+    messages.save({
+      to: locale,
+      messages: messagesToTranslate,
+    })
+
     await vbase.saveJSON<UploadRequest>(COLLECTION_NAME, requestId, {
       ...translationRequest,
       progress: 100,
@@ -96,11 +113,14 @@ const parseStreamToJSON = <T>(stream: ReadStream): Promise<T[]> => {
 
 const uploadCollectionTranslations = async (
   _root: unknown,
-  { collections, locale }: { collections: UploadFile<ReadStream>; locale: string },
+  {
+    collections,
+    locale,
+  }: { collections: UploadFile<ReadStream>; locale: string },
   ctx: Context
 ) => {
   const {
-    clients: { catalogGQL, licenseManager, vbase },
+    clients: { catalogGQL, messages, licenseManager, vbase },
     vtex: { adminUserAuthToken, requestId },
   } = ctx
 
@@ -145,9 +165,9 @@ const uploadCollectionTranslations = async (
 
   await vbase.saveJSON<UploadRequest>(COLLECTION_NAME, requestId, requestInfo)
 
-  uploadCollectionAsync(
+  translateMessagesCollection(
     { collections: collectionsParsed, requestId, locale },
-    { catalogGQL, vbase }
+    { messages, catalogGQL, vbase }
   )
 
   return requestId

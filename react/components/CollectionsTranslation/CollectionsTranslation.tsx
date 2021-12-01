@@ -4,7 +4,7 @@ import {
   PageBlock,
   Spinner,
   ModalDialog,
-  Checkbox
+  Checkbox,
 } from 'vtex.styleguide'
 import { useLazyQuery, useQuery } from 'react-apollo'
 import { MessageListV2, IndexedMessages } from 'vtex.messages'
@@ -27,8 +27,8 @@ interface CollectionTranslations {
 const CollectionsTranslation = ({
   isExportOpen = false,
   isImportOpen = false,
-  handleOpenExport = () => { },
-  handleOpenImport = () => { },
+  handleOpenExport = () => {},
+  handleOpenImport = () => {},
 }: ComponentProps) => {
   const {
     entryInfo,
@@ -180,10 +180,10 @@ const CollectionsTranslation = ({
           />
         </div>
         {collectionInfo.name ||
-          isLoadingOrRefetching ||
-          loadingMessages ||
-          errorMessage ||
-          errorMessages ? (
+        isLoadingOrRefetching ||
+        loadingMessages ||
+        errorMessage ||
+        errorMessages ? (
           <PageBlock
             variation="full"
             title={

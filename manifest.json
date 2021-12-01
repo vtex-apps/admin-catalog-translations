@@ -11,7 +11,8 @@
   "dependencies": {
     "vtex.styleguide": "9.x",
     "vtex.tenant-graphql": "0.x",
-    "vtex.catalog-graphql": "1.x"
+    "vtex.catalog-graphql": "1.x",
+    "vtex.messages": "1.x"
   },
   "builders": {
     "react": "3.x",
@@ -24,6 +25,9 @@
   "policies": [
     {
       "name": "vtex.catalog-graphql:resolve-graphql"
+    },
+    {
+      "name": "vtex.messages:graphql-save-translation-messages"
     },
     {
       "name": "outbound-access",

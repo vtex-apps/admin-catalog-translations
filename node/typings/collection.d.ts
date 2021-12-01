@@ -1,9 +1,9 @@
 interface CollectionResponse {
   collections: {
     items: Array<{
-      id: string;
-      name: string;
-      status: string;
+      id: string
+      name: string
+      status: string
     }>
     paging: {
       pages: number
