@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { ReadStream } from 'fs'
 
 import {
