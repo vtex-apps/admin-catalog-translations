@@ -1,6 +1,6 @@
 interface Brand {
-  id:	string
-  name:	string
+  id: string
+  name: string
   text: string
   siteTitle: string
   active: boolean
@@ -8,7 +8,7 @@ interface Brand {
 
 interface BrandResponse {
   brands: {
-    items: Array<Brand>
+    items: Brand[]
     paging: {
       pages: number
     }
@@ -20,8 +20,8 @@ interface BrandTranslationResponse {
 }
 
 interface BrandTranslationInput {
-  id:	string
-  name?:	string
+  id: string
+  name?: string
   text?: string
   siteTitle?: string
 }
