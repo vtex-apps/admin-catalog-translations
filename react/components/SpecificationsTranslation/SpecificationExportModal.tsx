@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import { useLazyQuery } from 'react-apollo'
-import { useLocaleSelector } from '../LocaleSelector'
+import { ModalDialog, Checkbox } from 'vtex.styleguide'
 import { defineMessages, useIntl } from 'react-intl'
-import {
-  ModalDialog,
-  Checkbox,
-} from 'vtex.styleguide'
 
+import { useLocaleSelector } from '../LocaleSelector'
 import getSpecificationsByCategory from '../../graphql/getSpecificationsByCategory.gql'
 import { parseJSONToXLS } from '../../utils'
-
 
 const modalMessage = defineMessages({
   export: {
@@ -86,41 +82,42 @@ const SpecificationExportModal = ({
 
   return (
     <ModalDialog
-    loading={downloading}
-    cancelation={{
-      label: intl.formatMessage(modalMessage.cancel),
-      onClick: () => {
+      loading={downloading}
+      cancelation={{
+        label: intl.formatMessage(modalMessage.cancel),
+        onClick: () => {
+          handleOpenExport(false)
+          setHasError(false)
+        },
+      }}
+      confirmation={{
+        label: intl.formatMessage(modalMessage.confirmation),
+        onClick: downloadTranslations,
+      }}
+      isOpen={isExportOpen}
+      onClose={() => {
         handleOpenExport(false)
         setHasError(false)
-      },
-    }}
-    confirmation={{
-      label: intl.formatMessage(modalMessage.confirmation),
-      onClick: downloadTranslations,
-    }}
-    isOpen={isExportOpen}
-    onClose={() => {
-      handleOpenExport(false)
-      setHasError(false)
-    }}
-  >
-    <div>
-      <h3>
-        {intl.formatMessage(modalMessage.export)} {selectedLocale}</h3>
-      <Checkbox
-        label={intl.formatMessage(modalMessage.active)}
-        name="active-selection"
-        value={onlyActive}
-        checked={onlyActive}
-        onChange={() => setOnlyActive(!onlyActive)}
-      />
-    </div>
-    {hasError ? (
-      <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
-        {intl.formatMessage(modalMessage.error)}
-      </p>
-    ) : null}
-  </ModalDialog>
+      }}
+    >
+      <div>
+        <h3>
+          {intl.formatMessage(modalMessage.export)} {selectedLocale}
+        </h3>
+        <Checkbox
+          label={intl.formatMessage(modalMessage.active)}
+          name="active-selection"
+          value={onlyActive}
+          checked={onlyActive}
+          onChange={() => setOnlyActive(!onlyActive)}
+        />
+      </div>
+      {hasError ? (
+        <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
+          {intl.formatMessage(modalMessage.error)}
+        </p>
+      ) : null}
+    </ModalDialog>
   )
 }
 
