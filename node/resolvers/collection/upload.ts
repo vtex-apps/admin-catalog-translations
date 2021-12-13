@@ -11,17 +11,9 @@ import {
   COLLECTION_NAME,
   calculateExportProcessTime,
   COLLECTION_TRANSLATION_UPLOAD,
+  CALLS_PER_MINUTE,
+  calculateBreakpoints,
 } from '../../utils'
-
-const CALLS_PER_MINUTE = 1600
-
-const calculateBreakpoints = (size: number): number[] => {
-  return [
-    Math.ceil(size * 0.25),
-    Math.ceil(size * 0.5),
-    Math.ceil(size * 0.75),
-  ].filter((num, idx, self) => self.indexOf(num) === idx)
-}
 
 const translateMessagesCollection = async (
   {

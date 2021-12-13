@@ -10,18 +10,14 @@ import UPLOAD_COLLECTION_TRANSLATION from '../../graphql/uploadCollectionTransla
 import UPLOAD_COLLECTION_REQUESTS from '../../graphql/collectionUploadRequests.gql'
 import ImportStatusList from '../ImportStatusList'
 
-const collectionHeaders: Array<keyof Collection> = [
-  'id',
-  'name',
-  'description'
-]
+const collectionHeaders: Array<keyof Collection> = ['id', 'name', 'description']
 
 const COLLECTION_DATA = 'collection_data'
 const UPLOAD_LIST_SIZE = 10
 
 const CollectionImportModal = ({
   isImportOpen = false,
-  handleOpenImport = () => { },
+  handleOpenImport = () => {},
 }: ComponentProps) => {
   const [errorParsingFile, setErrorParsingFile] = useState('')
   const [loading, setLoading] = useState(false)
@@ -51,7 +47,9 @@ const CollectionImportModal = ({
 
       setOriginalFile(fileParsed)
 
-      const [translations, { errors, warnings }] = sanitizeImportJSON<Collection>({
+      const [translations, { errors, warnings }] = sanitizeImportJSON<
+        Collection
+      >({
         data: fileParsed,
         entryHeaders: collectionHeaders,
         requiredHeaders: ['id'],

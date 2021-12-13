@@ -8,6 +8,7 @@ export const ALL_TRANSLATIONS_FILES = 'all-translations'
 export const ALL_SKU_TRANSLATIONS_FILES = 'all-sku-translations'
 export const PRODUCT_TRANSLATION_UPLOAD = 'product-upload'
 export const COLLECTION_TRANSLATION_UPLOAD = 'collection-upload'
+export const CALLS_PER_MINUTE = 1600
 
 export const statusToError = (e: AxiosError) => {
   if (!e.response) {
@@ -69,3 +70,11 @@ export const calculateExportProcessTime = (
   size: number,
   callsPerMinute: number
 ): number => Math.ceil(size * (ONE_MINUTE / callsPerMinute))
+
+export const calculateBreakpoints = (size: number): number[] => {
+  return [
+    Math.ceil(size * 0.25),
+    Math.ceil(size * 0.5),
+    Math.ceil(size * 0.75),
+  ].filter((num, idx, self) => self.indexOf(num) === idx)
+}

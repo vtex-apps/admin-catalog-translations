@@ -2,7 +2,7 @@ import React, { FC } from 'react'
 import { FormattedMessage } from 'react-intl'
 
 import CatalogTranslationWrapper from './components/CatalogTranslationWrapper'
-import CollectionsTranslation from './components/CollectionsTranslation/CollectionsTranslation'
+import CollectionsTranslation from './components/CollectionsTranslation/CollectionTranslation'
 
 const CollectionsTranslationWrapped: FC = () => {
   return (
