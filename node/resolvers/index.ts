@@ -6,23 +6,30 @@ import {
 } from './product'
 import { SKU, queries as skuQueries } from './SKU'
 import {
-  queries as fieldsQueries
-}
-from './field'
+  Brand,
+  queries as brandQueries,
+  mutations as brandMutations,
+} from './brand'
+import { queries as fieldsQueries } from './field'
+import { queries as translationUploadRequestInfo } from './translation'
 
 export const queries = {
   ...categoryQueries,
   ...productQueries,
   ...skuQueries,
-  ...fieldsQueries
+  ...brandQueries,
+  ...translationUploadRequestInfo,
+  ...fieldsQueries,
 }
 
 export const resolvers = {
   Category,
   Product,
   SKU,
+  Brand,
 }
 
 export const mutations = {
   ...productMutations,
+  ...brandMutations,
 }

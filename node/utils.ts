@@ -1,11 +1,24 @@
-import { AuthenticationError, ForbiddenError, UserInputError } from '@vtex/api'
+import { ReadStream } from 'fs'
+
+import {
+  AuthenticationError,
+  ForbiddenError,
+  GraphQLResponse,
+  Serializable,
+  UserInputError,
+  VBase,
+} from '@vtex/api'
 import type { AxiosError } from 'axios'
+import JSONStream from 'JSONStream'
 
 const ONE_MINUTE = 60 * 1000
+export const CALLS_PER_MINUTE = 1600
 export const BUCKET_NAME = 'product-translation'
 export const ALL_TRANSLATIONS_FILES = 'all-translations'
 export const ALL_SKU_TRANSLATIONS_FILES = 'all-sku-translations'
 export const PRODUCT_TRANSLATION_UPLOAD = 'product-upload'
+export const BRAND_TRANSLATION_UPLOAD = 'brand-upload'
+export const BRAND_NAME = 'brand-translation'
 
 export const statusToError = (e: AxiosError) => {
   if (!e.response) {
@@ -67,3 +80,94 @@ export const calculateExportProcessTime = (
   size: number,
   callsPerMinute: number
 ): number => Math.ceil(size * (ONE_MINUTE / callsPerMinute))
+
+export const calculateBreakpoints = (size: number): number[] => {
+  return [
+    Math.ceil(size * 0.25),
+    Math.ceil(size * 0.5),
+    Math.ceil(size * 0.75),
+  ].filter((num, idx, self) => self.indexOf(num) === idx)
+}
+
+export const parseStreamToJSON = <T>(stream: ReadStream): Promise<T[]> => {
+  const promise = new Promise<T[]>((resolve) => {
+    const finalArray: T[] = []
+    stream.pipe(
+      JSONStream.parse('*').on('data', (data: T) => {
+        finalArray.push(data)
+      })
+    )
+    stream.on('end', () => {
+      stream.destroy()
+      resolve(finalArray)
+    })
+  })
+
+  return promise
+}
+
+export const uploadEntriesAsync = async <T>(
+  {
+    entries,
+    requestId,
+    locale,
+    bucket,
+    translateEntry,
+  }: {
+    entries: T[]
+    requestId: string
+    locale: string
+    bucket: string
+    translateEntry: <T>(
+      entry: T,
+      locale: string
+    ) => Promise<GraphQLResponse<Serializable>>
+  },
+  { vbase }: { vbase: VBase }
+) => {
+  const translationRequest = await vbase.getJSON<UploadRequest>(
+    bucket,
+    requestId,
+    true
+  )
+
+  try {
+    const totalEntries = entries.length
+
+    const breakPointsProgress = calculateBreakpoints(totalEntries)
+
+    let promiseController = []
+    for (let i = 0; i < totalEntries; i++) {
+      promiseController.push(translateEntry<T>(entries[i], locale))
+      // eslint-disable-next-line no-await-in-loop
+      await pacer(CALLS_PER_MINUTE)
+      if (breakPointsProgress.includes(i)) {
+        // eslint-disable-next-line no-await-in-loop
+        await Promise.all(promiseController)
+
+        // eslint-disable-next-line no-await-in-loop
+        await vbase.saveJSON<UploadRequest>(bucket, requestId, {
+          ...translationRequest,
+          progress: Math.ceil((i / totalEntries) * 100),
+        })
+        promiseController = []
+      }
+    }
+
+    await Promise.all(promiseController)
+    await vbase.saveJSON<UploadRequest>(bucket, requestId, {
+      ...translationRequest,
+      progress: 100,
+    })
+  } catch (error) {
+    const translationRequestUpdated = await vbase.getJSON<UploadRequest>(
+      bucket,
+      requestId,
+      true
+    )
+    await vbase.saveJSON<UploadRequest>(bucket, requestId, {
+      ...translationRequestUpdated,
+      error: true,
+    })
+  }
+}

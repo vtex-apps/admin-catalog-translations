@@ -1,5 +1,5 @@
-query translationUploadRequestInfo($requestId: String!) {
-  translationUploadRequestInfo(requestId: $requestId)
+query translationUploadRequestInfo($requestId: String!, $bucket: String!) {
+  translationUploadRequestInfo(requestId: $requestId, bucket: $bucket)
     @context(provider: "vtex.admin-catalog-translation") {
     requestId
     translatedBy

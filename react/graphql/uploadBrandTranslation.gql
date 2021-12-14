@@ -1,0 +1,4 @@
+mutation uploadBrandTranslations($locale: String!, $brands: Upload!) {
+  uploadBrandTranslations(locale: $locale, brands: $brands)
+    @context(provider: "vtex.admin-catalog-translation")
+}
