@@ -31,6 +31,7 @@ interface BrandInputTranslation {
   name: string
   text: string
   siteTitle: string
+  active: boolean
 }
 
 interface ProductData {

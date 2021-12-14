@@ -122,10 +122,10 @@
     "@types/mime" "^1"
     "@types/node" "*"
 
-"@vtex/api@6.45.4":
-  version "6.45.4"
-  resolved "https://registry.yarnpkg.com/@vtex/api/-/api-6.45.4.tgz#58be7497c0c0f91a388fabd42149e48cb95e271d"
-  integrity sha512-DVAJr5BkSjXupjn2h5Z1In8C3Li9kZwCXPwRQbpIgyS7s9dN2ZEFQc6nQlJm6ZoDCoyYBg62LgD7Kurvz9jc3w==
+"@vtex/api@6.45.6":
+  version "6.45.6"
+  resolved "https://registry.yarnpkg.com/@vtex/api/-/api-6.45.6.tgz#e5f08476d7c76f26baa1c040666d1364bdd6bc35"
+  integrity sha512-9pDiUxcUzq8RZa9yBex4C8dcAHXBRGAZokvHJ6sykrojq6mJxs+rUTE28TPeeQxwvvKsvrdpsfCUAYQ+UDz+zA==
   dependencies:
     "@types/koa" "^2.11.0"
     "@types/koa-compose" "^3.2.3"
@@ -1369,13 +1369,17 @@ vary@^1.1.2:
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
   integrity sha1-IpnwLG3tMNSllhsLn3RSShj2NPw=
 
-"vtex.catalog-graphql@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.catalog-graphql@1.96.0/public/@types/vtex.catalog-graphql":
-  version "1.96.0"
-  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.catalog-graphql@1.96.0/public/@types/vtex.catalog-graphql#20fd7dc4f24848cb3e227a3ae369fcfb71861008"
+"vtex.admin-catalog-translation@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.admin-catalog-translation@1.3.0/public/@types/vtex.admin-catalog-translation":
+  version "1.3.0"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.admin-catalog-translation@1.3.0/public/@types/vtex.admin-catalog-translation#1dfa321eebc02eca287db31a02d019b2dd01bdd1"
 
-"vtex.styleguide@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.styleguide@9.145.0/public/@types/vtex.styleguide":
-  version "9.145.0"
-  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.styleguide@9.145.0/public/@types/vtex.styleguide#41dfb32af8756eb5528dbd452e47003a8f67fe8c"
+"vtex.catalog-graphql@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.catalog-graphql@1.97.0/public/@types/vtex.catalog-graphql":
+  version "1.97.0"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.catalog-graphql@1.97.0/public/@types/vtex.catalog-graphql#1f4543b1ba437a5eeb3f20a9f6a19ca82a38b815"
+
+"vtex.styleguide@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.styleguide@9.145.2/public/@types/vtex.styleguide":
+  version "9.145.2"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.styleguide@9.145.2/public/@types/vtex.styleguide#ca64bf8408ad3eb487b0822dd68f77565c986a56"
 
 "vtex.tenant-graphql@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.tenant-graphql@0.1.2/public/@types/vtex.tenant-graphql":
   version "0.1.2"
