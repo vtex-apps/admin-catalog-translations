@@ -1,0 +1,10 @@
+type TranslationRequest {
+  requestId: String!
+  requestedBy: String!
+  categoryId: String
+  error: Boolean
+  createdAt: String!
+  locale: String!
+  completedAt: String
+  estimatedTime: Int
+}

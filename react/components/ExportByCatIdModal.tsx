@@ -15,6 +15,8 @@ import GET_CATEGORIES_NAME from '../graphql/getCategoriesName.gql'
 import { filterSearchCategories } from '../utils'
 import { useLocaleSelector } from './LocaleSelector'
 import ExportListItem from './ExportListItem'
+// import PROD_INFO_REQUEST from '../../graphql/getProdTranslationInfoReq.gql'
+import { Bucket } from '../utils/Bucket'
 
 const AUTOCOMPLETE_LIST_SIZE = 6
 const DOWNLOAD_LIST_SIZE = 6
@@ -30,6 +32,8 @@ interface Options {
   }
 }
 
+type typeItem = 'product' | 'sku'
+
 interface Props {
   isExportOpen: boolean
   setIsExportOpen: (open: boolean) => void
@@ -41,7 +45,7 @@ interface Props {
   download: (options: Options) => void
   downloadJson: any
   downloadError?: ApolloError
-  type: 'product' | 'sku'
+  type: typeItem
 }
 
 export const ExportByCategoryIdModal = ({
@@ -252,6 +256,7 @@ export const ExportByCategoryIdModal = ({
                         key={requestId}
                         requestId={requestId}
                         type={type}
+                        bucket={Bucket?.product}
                         {...props}
                       />
                     ))}

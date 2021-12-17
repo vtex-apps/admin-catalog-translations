@@ -13,16 +13,29 @@ type Query {
   skuTranslationRequestInfo(requestId: String!): SKUTranslationRequest
   downloadSKUTranslation(requestId: String!): [SKU]
   productTranslationsUploadRequests: [String]
-  specificationTranslations(locale: String!): [Field]
   translationUploadRequestInfo(
     requestId: String!
     bucket: String!
   ): UploadRequest
   brandTranslations(locale: String!, active: Boolean): [Brand]
   brandTranslationsUploadRequests: [String]
+  uploadSpecificationTranslationsExport(
+    fields: Upload!
+    locale: String!
+  ): TranslationRequest
+  specificationTranslationsUploadRequests: [String]
+  downloadSpecificationTranslations(requestId: String!): [Field]
+  translationRequestInfo(
+    requestId: String!
+    bucket: String!
+  ): TranslationRequest
 }
 
 type Mutation {
   uploadProductTranslations(products: Upload!, locale: String!): String
   uploadBrandTranslations(brands: Upload!, locale: String!): String
+  uploadSpecificationTranslationsImport(
+    fields: Upload!
+    locale: String!
+  ): String
 }

@@ -2,10 +2,10 @@ interface Field {
   fieldId: string
   name?: string
 }
-
+// TODO: remove this ?
 interface FieldResponse {
   fields: {
-    items: Array<Field>
+    items: Field[]
     paging: {
       pages: number
     }

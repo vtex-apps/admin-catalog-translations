@@ -1,0 +1,7 @@
+mutation uploadSpecificationTranslationsImport(
+  $locale: String!
+  $fields: Upload!
+) {
+  uploadSpecificationTranslationsImport(locale: $locale, fields: $fields)
+    @context(provider: "vtex.admin-catalog-translation")
+}

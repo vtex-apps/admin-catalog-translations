@@ -4,20 +4,25 @@ import { FormattedDate, FormattedTime, FormattedMessage } from 'react-intl'
 import { Progress, ButtonPlain } from 'vtex.styleguide'
 import { ApolloError } from 'apollo-client'
 
-import PROD_INFO_REQUEST from '../graphql/getProdTranslationInfoReq.gql'
+import TRANSLATION_REQUEST_INFO from '../graphql/translationRequestInfo.gql'
 import { shouldHaveCompleted, remainingTime, parseJSONToXLS } from '../utils'
+import { Bucket } from '../utils/Bucket'
 
 interface Options {
   variables: {
     requestId: string
   }
 }
+
+type typeItem = 'product' | 'sku' | 'specification'
+
 interface Props {
   requestId: string
   download: (options: Options) => void
   downloadJson: any
   downloadError?: ApolloError
-  type: 'product' | 'sku'
+  type: typeItem
+  bucket: Bucket
 }
 
 const ExportListItem = ({
@@ -26,6 +31,7 @@ const ExportListItem = ({
   downloadJson,
   downloadError,
   type,
+  bucket,
 }: Props) => {
   const [longTimeAgo, setLongTimeAgo] = useState(false)
   const [downloading, setDownloading] = useState(false)
@@ -36,11 +42,15 @@ const ExportListItem = ({
     startPolling,
     stopPolling,
     refetch,
-  } = useQuery<ProdTransInfoReq, { requestId: string }>(PROD_INFO_REQUEST, {
-    variables: {
-      requestId,
-    },
-  })
+  } = useQuery<TransInfoReq, { requestId: string; bucket: string }>(
+    TRANSLATION_REQUEST_INFO,
+    {
+      variables: {
+        requestId,
+        bucket,
+      },
+    }
+  )
 
   const {
     categoryId,
@@ -50,15 +60,15 @@ const ExportListItem = ({
     completedAt,
     error,
     estimatedTime,
-  } = data?.productTranslationRequestInfo ?? {}
+  } = data?.translationRequestInfo ?? {}
 
   const tooLongRef = useRef<any>()
 
   useEffect(() => {
     if (!completedAt) {
-      refetch({ requestId })
+      refetch({ requestId, bucket })
     }
-  }, [completedAt, refetch, requestId])
+  }, [completedAt, refetch, requestId, bucket])
 
   useEffect(() => {
     if (!completedAt && !error && createdAt && estimatedTime) {
@@ -85,8 +95,12 @@ const ExportListItem = ({
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
     if (downloadJson && downloading) {
+      // TODO: set name or get name by params `category-${categoryId}-${type}-data-${locale}
+      const fileName = categoryId
+        ? `category-${categoryId}-${type}-data-${locale}`
+        : `${type}-data-${locale}`
       parseJSONToXLS(downloadJson, {
-        fileName: `category-${categoryId}-${type}-data-${locale}`,
+        fileName,
         sheetName: `${type}_data`,
       })
       setDownloading(false)
@@ -103,9 +117,11 @@ const ExportListItem = ({
 
   return !data || errorFetching ? null : (
     <tr>
-      <td>
-        <p>{categoryId}</p>
-      </td>
+      {!!categoryId && (
+        <td>
+          <p>{categoryId}</p>
+        </td>
+      )}
       <td>
         <p>{locale}</p>
       </td>

@@ -1,0 +1,9 @@
+query uploadSpecificationTranslationsExport(
+  $locale: String!
+  $fields: Upload!
+) {
+  uploadSpecificationTranslationsExport(locale: $locale, fields: $fields)
+    @context(provider: "vtex.admin-catalog-translation") {
+    requestId
+  }
+}

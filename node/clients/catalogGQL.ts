@@ -75,6 +75,12 @@ const BRAND_QUERY = `
 const TRANSLATE_BRAND = `mutation translateBrand($brand:BrandInputTranslation!, $locale: Locale!) {
   translateBrand(brand: $brand, locale: $locale)
 }`
+const GET_FIELD_TRANSLATION_QUERY = `query field($id:ID!) {
+  field(id: $id){
+    fieldId
+    name
+  }
+}`
 
 export class CatalogGQL extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
@@ -191,14 +197,6 @@ export class CatalogGQL extends AppGraphQLClient {
     })
   }
 
-  public getFields = async () => {
-    try {
-      return ['getFields XD']
-    } catch (error) {
-      return statusToError(error)
-    }
-  }
-
   private getBrandsPerPage = ({ page }: { page: number }) =>
     this.graphql.query<BrandResponse, { page: number }>({
       query: BRAND_QUERY,
@@ -270,5 +268,30 @@ export class CatalogGQL extends AppGraphQLClient {
         locale,
       },
     })
+  }
+
+  public getFields = async (fields: FieldTranslationInput[]) => {
+    try {
+      return [`fields${fields.length}`]
+    } catch (error) {
+      return statusToError(error)
+    }
+  }
+
+  public getFieldTranslation = <T>(params: EntryTranslationParams<T>) => {
+    const { entry: id, locale } = params
+    return this.graphql.query<FieldTranslationResponse, { id: T }>(
+      {
+        query: GET_FIELD_TRANSLATION_QUERY,
+        variables: {
+          id,
+        },
+      },
+      {
+        headers: {
+          'x-vtex-locale': `${locale}`,
+        },
+      }
+    )
   }
 }

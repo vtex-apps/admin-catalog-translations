@@ -11,6 +11,8 @@ import {
 import type { AxiosError } from 'axios'
 import JSONStream from 'JSONStream'
 
+import { CatalogGQL } from './clients/catalogGQL'
+
 const ONE_MINUTE = 60 * 1000
 export const CALLS_PER_MINUTE = 1600
 export const BUCKET_NAME = 'product-translation'
@@ -19,6 +21,8 @@ export const ALL_SKU_TRANSLATIONS_FILES = 'all-sku-translations'
 export const PRODUCT_TRANSLATION_UPLOAD = 'product-upload'
 export const BRAND_TRANSLATION_UPLOAD = 'brand-upload'
 export const BRAND_NAME = 'brand-translation'
+export const FIELD_TRANSLATION_UPLOAD = 'field-upload'
+export const FIELD_NAME = 'field-translation'
 
 export const statusToError = (e: AxiosError) => {
   if (!e.response) {
@@ -118,7 +122,7 @@ export const uploadEntriesAsync = async <T>(
     requestId: string
     locale: string
     bucket: string
-    translateEntry: <T>(
+    translateEntry: <T>( // TODO: send object instead two properties
       entry: T,
       locale: string
     ) => Promise<GraphQLResponse<Serializable>>
@@ -169,5 +173,55 @@ export const uploadEntriesAsync = async <T>(
       ...translationRequestUpdated,
       error: true,
     })
+  }
+}
+
+// TODO: use this instead of saveTranslationsToVBase
+export async function saveTranslationsEntriesToVBase<T, X>(
+  {
+    entries,
+    params,
+    getEntryTranslation,
+  }: InterfaceTranslationsEntriesToVBase<T>,
+  { vbase }: { catalogGQLClient: CatalogGQL; vbase: VBase }
+): Promise<void> {
+  const { requestId, bucket } = params
+  const translationRequest = await vbase.getJSON<TranslationRequest<X>>(
+    bucket,
+    requestId,
+    true
+  )
+  const entryTranslationPromises = []
+  try {
+    for (const entry of entries) {
+      const currentParams: EntryTranslationParams<T> = {
+        ...params,
+        entry,
+      }
+      const translationPromise = getEntryTranslation(currentParams)
+      entryTranslationPromises.push(translationPromise)
+      // eslint-disable-next-line no-await-in-loop
+      await pacer(CALLS_PER_MINUTE)
+    }
+
+    const translations = await Promise.all(entryTranslationPromises)
+
+    const updateTranslation = {
+      ...translationRequest,
+      translations,
+      completedAt: new Date(),
+    }
+
+    await vbase.saveJSON<TranslationRequest<X>>(
+      bucket,
+      requestId,
+      updateTranslation
+    )
+  } catch {
+    const addError = {
+      ...translationRequest,
+      error: true,
+    }
+    await vbase.saveJSON<TranslationRequest<X>>(bucket, requestId, addError)
   }
 }

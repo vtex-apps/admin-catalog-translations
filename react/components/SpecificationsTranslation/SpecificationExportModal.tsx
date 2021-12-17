@@ -1,49 +1,129 @@
-import React, { useState, useEffect } from 'react'
-import { useLazyQuery } from 'react-apollo'
-import { ModalDialog, Checkbox } from 'vtex.styleguide'
-import { defineMessages, useIntl } from 'react-intl'
+import React, { useEffect, useState } from 'react'
+import { useLazyQuery, useQuery } from 'react-apollo'
+import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
+import { FormattedMessage } from 'react-intl'
 
+import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
-import getSpecificationsByCategory from '../../graphql/getSpecificationsByCategory.gql'
-import { parseJSONToXLS } from '../../utils'
+import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
+import UPLOAD_SPECIFICATION_TRANSLATION_EXPORT from '../../graphql/uploadSpecificationTranslationExport.gql'
+import UPLOAD_SPECIFICATION_REQUESTS from '../../graphql/specificationUploadRequests.gql'
+import DOWNLOAD_SPECIFICATION_TRANSLATION from '../../graphql/downloadSpecificationsTranslations.gql'
+import ExportListItem from '../ExportListItem'
+import { Bucket } from '../../utils/Bucket'
 
-const modalMessage = defineMessages({
-  export: {
-    id: 'catalog-translation.export.modal.title-brand',
-  },
-  confirmation: {
-    id: 'catalog-translation.export.modal.confirmation-brands',
-  },
-  active: {
-    id: 'catalog-translation.export.modal.export-active-brands',
-  },
-  cancel: {
-    id: 'catalog-translation.action-buttons.cancel',
-  },
-  error: {
-    id: 'catalog-translation.export.modal.error-exporting',
-  },
-})
+const DOWNLOAD_LIST_SIZE = 6
+const entryHeaders: Array<keyof Specifications> = ['fieldId']
+
+const SPECIFICATION_DATA = 'specification_data'
+
+// TODO: check this vs other downloads catalog
 interface SpecificationTranslations {
-  SpecificationTranslations: Specifications[]
+  uploadSpecificationTranslationsExport: {
+    requestId: string
+  }
 }
 
 const SpecificationExportModal = ({
   isExportOpen = false,
   handleOpenExport = () => {},
 }: ComponentProps) => {
-  const intl = useIntl()
+  const [errorParsingFile, setErrorParsingFile] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [errorModal, setErrorModal] = useState(false)
+  const [warningModal, setWarningModal] = useState(false)
+  const [validationErrors, setValidationErrors] = useState<Message[]>([])
+  const [validationWarnings, setValidationWarnings] = useState<Message[]>([])
+  const [originalFile, setOriginalFile] = useState<Array<{}>>([])
+  const [formattedTranslations, setFormattedTranslations] = useState<
+    Blob | undefined
+  >(undefined)
 
-  const [onlyActive, setOnlyActive] = useState(true)
-  const [downloading, setDownloading] = useState(false)
-  const [hasError, setHasError] = useState(false)
-
+  const [tabSelected, setTabSelected] = useState<1 | 2>(1)
   const { selectedLocale } = useLocaleSelector()
 
-  const [fetchTranslations, { data, error }] = useLazyQuery<
+  const handleFile = async (files: FileList) => {
+    if (loading) {
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const fileParsed = await parseXLSToJSON(files[0], {
+        sheetName: SPECIFICATION_DATA,
+      })
+
+      setOriginalFile(fileParsed)
+
+      const [translations, { errors, warnings }] = sanitizeImportJSON<
+        Specifications
+      >({
+        data: fileParsed,
+        entryHeaders,
+        requiredHeaders: ['fieldId'],
+      })
+
+      if (errors.length) {
+        setValidationErrors(errors)
+      }
+
+      if (warnings.length) {
+        setValidationWarnings(warnings)
+      }
+
+      const blob = new Blob([JSON.stringify(translations, null, 2)], {
+        type: 'application/json',
+      })
+
+      setFormattedTranslations(blob)
+    } catch (e) {
+      setErrorParsingFile(e)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const cleanErrors = () => {
+    setValidationErrors([])
+    setErrorParsingFile('')
+    setValidationWarnings([])
+    setOriginalFile([])
+  }
+
+  const handleReset = () => {
+    if (loading) {
+      return
+    }
+    setOriginalFile([])
+    setFormattedTranslations(undefined)
+    cleanErrors()
+  }
+
+  const createModel = () => {
+    const headersObject = entryHeaders.reduce<
+      Record<typeof entryHeaders[number], string>
+    >((obj, header) => {
+      obj[header] = ''
+      return obj
+    }, {} as Record<typeof entryHeaders[number], string>)
+
+    parseJSONToXLS([headersObject], {
+      fileName: 'specification_translate_model',
+      sheetName: SPECIFICATION_DATA,
+    })
+  }
+
+  const [
+    startTranslationUpload,
+    { data: newRequest, error: uploadError },
+  ] = useLazyQuery<
     SpecificationTranslations,
-    { categoryId: string }
-  >(getSpecificationsByCategory, {
+    {
+      locale: string
+      fields: Blob
+    }
+  >(UPLOAD_SPECIFICATION_TRANSLATION_EXPORT, {
     context: {
       headers: {
         'x-vtex-locale': `${selectedLocale}`,
@@ -51,72 +131,214 @@ const SpecificationExportModal = ({
     },
   })
 
-  const downloadTranslations = () => {
-    setHasError(false)
-    setDownloading(true)
-    fetchTranslations({
-      variables: { categoryId: '516' },
+  const { data, updateQuery } = useQuery<{
+    specificationTranslationsUploadRequests: string[]
+  }>(UPLOAD_SPECIFICATION_REQUESTS)
+
+  useEffect(() => {
+    const { requestId } =
+      newRequest?.uploadSpecificationTranslationsExport ?? {}
+
+    if (!requestId) {
+      return
+    }
+    updateQuery((prevResult) => {
+      return {
+        specificationTranslationsUploadRequests: [
+          requestId,
+          ...(prevResult.specificationTranslationsUploadRequests ?? []),
+        ],
+      }
+    })
+    setTabSelected(2)
+  }, [newRequest, updateQuery])
+
+  const handleUploadRequest = async () => {
+    if (!formattedTranslations) {
+      return
+    }
+
+    startTranslationUpload({
+      variables: {
+        locale: selectedLocale,
+        fields: formattedTranslations,
+      },
     })
   }
 
-  useEffect(() => {
-    // eslint-disable-next-line vtex/prefer-early-return
-    if (data && downloading) {
-      parseJSONToXLS(data.SpecificationTranslations, {
-        fileName: `specifications-data-${selectedLocale}`,
-        sheetName: 'specifications_data',
-      })
-
-      setDownloading(false)
-      handleOpenExport(false)
-    }
-  }, [data, selectedLocale, downloading, handleOpenExport])
-
-  useEffect(() => {
-    // eslint-disable-next-line vtex/prefer-early-return
-    if (error) {
-      setDownloading(false)
-      setHasError(true)
-    }
-  }, [error])
+  const [download, { data: downloadJson, error: downloadError }] = useLazyQuery<
+    TranslationDownload<Specifications>,
+    { requestId: string }
+  >(DOWNLOAD_SPECIFICATION_TRANSLATION)
 
   return (
     <ModalDialog
-      loading={downloading}
+      loading={loading}
       cancelation={{
-        label: intl.formatMessage(modalMessage.cancel),
+        label: (
+          <FormattedMessage id="catalog-translation.import.modal.cancelation" />
+        ),
         onClick: () => {
           handleOpenExport(false)
-          setHasError(false)
+          cleanErrors()
         },
       }}
       confirmation={{
-        label: intl.formatMessage(modalMessage.confirmation),
-        onClick: downloadTranslations,
+        label: (
+          <FormattedMessage id="catalog-translation.export.modal.confirmation" />
+        ),
+        onClick: () => {
+          if (errorParsingFile) {
+            return
+          }
+          handleUploadRequest()
+        },
       }}
       isOpen={isExportOpen}
       onClose={() => {
         handleOpenExport(false)
-        setHasError(false)
+        cleanErrors()
       }}
     >
-      <div>
-        <h3>
-          {intl.formatMessage(modalMessage.export)} {selectedLocale}
-        </h3>
-        <Checkbox
-          label={intl.formatMessage(modalMessage.active)}
-          name="active-selection"
-          value={onlyActive}
-          checked={onlyActive}
-          onChange={() => setOnlyActive(!onlyActive)}
+      <h3>
+        <FormattedMessage
+          id="catalog-translation.export.modal.specification-header"
+          values={{
+            selectedLocale,
+          }}
         />
+      </h3>
+      <div>
+        <Tabs>
+          <Tab
+            label={
+              <FormattedMessage id="catalog-translation.export.modal.export-tab" />
+            }
+            active={tabSelected === 1}
+            onClick={() => {
+              setTabSelected(1)
+              handleReset()
+            }}
+          >
+            <div>
+              <div className="mv4">
+                <ButtonPlain onClick={createModel}>
+                  <FormattedMessage id="catalog-translation.export.modal.download-button" />
+                </ButtonPlain>
+              </div>
+              <div>
+                <Dropzone
+                  accept=".xlsx"
+                  onDropAccepted={handleFile}
+                  onFileReset={handleReset}
+                >
+                  <div className="pt7">
+                    <span className="f4">
+                      <FormattedMessage id="catalog-translation.export.modal.dropzone" />
+                    </span>
+                    <span className="f4 c-link" style={{ cursor: 'pointer' }}>
+                      <FormattedMessage id="catalog-translation.export.modal.dropzone-choose-file" />
+                    </span>
+                  </div>
+                </Dropzone>
+              </div>
+              {errorParsingFile ? (
+                <p className="c-danger i f7">{errorParsingFile}</p>
+              ) : null}
+            </div>
+            <ul>
+              {originalFile.length ? (
+                <li>
+                  {originalFile?.length}{' '}
+                  <FormattedMessage id="catalog-translation.export.modal.total-entries" />
+                </li>
+              ) : null}
+              {validationWarnings.length ? (
+                <li>
+                  <ButtonPlain onClick={() => setWarningModal(true)}>
+                    {validationWarnings.length}{' '}
+                    <FormattedMessage id="catalog-translation.export.modal.total-warnings" />
+                  </ButtonPlain>
+                </li>
+              ) : null}
+              {validationErrors.length ? (
+                <li>
+                  <ButtonPlain
+                    variation="danger"
+                    onClick={() => setErrorModal(true)}
+                  >
+                    {validationErrors.length}{' '}
+                    <FormattedMessage id="catalog-translation.export.modal.total-errors" />
+                  </ButtonPlain>
+                </li>
+              ) : null}
+            </ul>
+            {uploadError ? (
+              <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
+                <FormattedMessage id="catalog-translation.export.modal.error-uploading" />
+              </p>
+            ) : null}
+          </Tab>
+          <Tab
+            label={
+              <FormattedMessage id="catalog-translation.export.modal.see-files-tab" />
+            }
+            active={tabSelected === 2}
+            onClick={() => setTabSelected(2)}
+          >
+            <p className="i f7 tr">
+              <FormattedMessage id="catalog-translation.export.modal.long-process.warning" />
+            </p>
+            <table className="w-100 mt7 tc">
+              <thead>
+                <tr>
+                  <th>
+                    <FormattedMessage id="catalog-translation.export.modal.table-header.locale" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="catalog-translation.export.modal.table-header.requested.by" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="catalog-translation.export.modal.table-header.requested.at" />
+                  </th>
+                  <th>
+                    <FormattedMessage id="catalog-translation.export.modal.table-header.download" />
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {data?.specificationTranslationsUploadRequests
+                  ?.slice(0, DOWNLOAD_LIST_SIZE)
+                  ?.map((requestId) => (
+                    <ExportListItem
+                      key={requestId}
+                      requestId={requestId}
+                      download={download}
+                      downloadJson={
+                        downloadJson?.downloadSpecificationTranslations
+                      }
+                      downloadError={downloadError}
+                      type="specification"
+                      bucket={Bucket?.field}
+                    />
+                  ))}
+              </tbody>
+            </table>
+          </Tab>
+        </Tabs>
       </div>
-      {hasError ? (
-        <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
-          {intl.formatMessage(modalMessage.error)}
-        </p>
-      ) : null}
+      <WarningAndErrorsImportModal
+        isOpen={warningModal}
+        modalName="Warning Modal"
+        handleClose={setWarningModal}
+        data={validationWarnings}
+      />
+      <WarningAndErrorsImportModal
+        isOpen={errorModal}
+        modalName="Error Modal"
+        handleClose={setErrorModal}
+        data={validationErrors}
+      />
     </ModalDialog>
   )
 }

@@ -5,13 +5,14 @@ import { Progress } from 'vtex.styleguide'
 
 import TRANSLATION_UPLOAD_REQUEST_INFO from '../graphql/translationUploadRequestInfo.gql'
 import { shouldHaveCompleted } from '../utils'
+import { Bucket } from '../utils/Bucket'
 
 const ImportStatusList = ({
   requestId,
   bucket,
 }: {
   requestId: string
-  bucket: 'brand-translation' | 'product-translation'
+  bucket: Bucket
 }) => {
   const [shouldHaveFinished, setShouldHaveFinished] = useState(false)
   const {

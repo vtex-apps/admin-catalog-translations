@@ -9,6 +9,7 @@ import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
 import UPLOAD_BRAND_TRANSLATION from '../../graphql/uploadBrandTranslation.gql'
 import UPLOAD_BRAND_REQUESTS from '../../graphql/brandUploadRequests.gql'
 import ImportStatusList from '../ImportStatusList'
+import { Bucket } from '../../utils/Bucket'
 
 const brandHeaders: Array<keyof Brand> = ['id', 'name', 'text', 'siteTitle']
 
@@ -287,7 +288,7 @@ const BrandImportModal = ({
                     <ImportStatusList
                       requestId={requestId}
                       key={requestId}
-                      bucket="brand-translation"
+                      bucket={Bucket?.brand}
                     />
                   ))}
               </tbody>

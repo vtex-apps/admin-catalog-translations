@@ -9,6 +9,7 @@ import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
 import UPLOAD_PRODUCT_TRANSLATION from '../../graphql/uploadProductTranslation.gql'
 import UPLOAD_PRODUCT_REQUESTS from '../../graphql/productUploadRequests.gql'
 import ImportStatusList from '../ImportStatusList'
+import { Bucket } from '../../utils/Bucket'
 
 const productHeaders: Array<keyof Product> = [
   'id',
@@ -294,7 +295,7 @@ const ProductImportModal = ({
                     <ImportStatusList
                       requestId={requestId}
                       key={requestId}
-                      bucket="product-translation"
+                      bucket={Bucket?.product}
                     />
                   ))}
               </tbody>

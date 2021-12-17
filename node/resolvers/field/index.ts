@@ -1,49 +1,33 @@
-export const Fields = {
-  locale: (
-    _root: ResolvedPromise<FieldTranslationResponse>,
-    _args: unknown,
-    ctx: Context
-  ) => {
-    return ctx.state.locale
-  },
+import { FIELD_NAME } from '../../utils'
+import {
+  queries as uploadQueries,
+  mutations as uploadMutations,
+} from './upload'
+
+export const Field = {
   fieldId: (root: ResolvedPromise<FieldTranslationResponse>) =>
     root.data.field.fieldId,
   name: (root: ResolvedPromise<FieldTranslationResponse>) =>
-    root.data.field.name
+    root.data.field.name,
 }
 
-const specificationTranslations = async (
+const downloadSpecificationTranslations = async (
   _root: unknown,
-  args: { locale: string;},
+  args: { requestId: string },
   ctx: Context
 ) => {
-  const {
-    clients: { catalogGQL },
-  } = ctx
-  const res = await catalogGQL.getFields()
-  console.log('res', res)
+  const { translations } = await ctx.clients.vbase.getJSON<
+    TranslationRequest<FieldTranslationResponse>
+  >(FIELD_NAME, args.requestId, true)
 
-  const { locale } = args
-  console.log('active, locale', locale)
-
-  ctx.state.locale = locale
-
-  // const ids = await catalogGQL.getCategories(active)
-
-  // const translationsP = []
-
-  // for (const { id } of ids) {
-  //   const promise = catalogGQL.getCategoryTranslation(id, locale)
-  //   translationsP.push(promise)
-  // }
-
-  // const translations = await Promise.all(translationsP)
-
-  // return translations
-  return ['specificationTranslations XD']
+  return translations
 }
 
+export const mutations = {
+  ...uploadMutations,
+}
 
 export const queries = {
-  specificationTranslations
+  downloadSpecificationTranslations,
+  ...uploadQueries,
 }
