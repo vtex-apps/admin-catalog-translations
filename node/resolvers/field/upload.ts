@@ -88,7 +88,7 @@ const uploadFieldTranslationsExport = async (
   return requestInfo
 }
 
-const uploadSpecificationTranslationsImport = async (
+const uploadFieldTranslationsImport = async (
   _root: unknown,
   { fields, locale }: { fields: UploadFile<ReadStream>; locale: string },
   ctx: Context
@@ -165,7 +165,7 @@ const fieldTranslationsUploadRequests = async (
   )
 
 export const mutations = {
-  uploadSpecificationTranslationsImport,
+  uploadFieldTranslationsImport,
 }
 
 export const queries = {

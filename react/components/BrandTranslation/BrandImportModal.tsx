@@ -3,7 +3,12 @@ import { useMutation, useQuery } from 'react-apollo'
 import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
 import { FormattedMessage } from 'react-intl'
 
-import { sanitizeImportJSON, createModel, parseXLSToJSON } from '../../utils'
+import {
+  sanitizeImportJSON,
+  createModel,
+  parseXLSToJSON,
+  UPLOAD_LIST_SIZE,
+} from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
 import UPLOAD_BRAND_TRANSLATION from '../../graphql/uploadBrandTranslation.gql'
@@ -14,7 +19,6 @@ const brandHeaders: Array<keyof Brand> = ['id', 'name', 'text', 'siteTitle']
 
 const TYPE = 'brand'
 const BRAND_DATA = 'brands_data'
-const UPLOAD_LIST_SIZE = 10
 
 const BrandImportModal = ({
   isImportOpen = false,
@@ -278,7 +282,7 @@ const BrandImportModal = ({
                     <ImportStatusList
                       requestId={requestId}
                       key={requestId}
-                      type="brand"
+                      type={TYPE}
                     />
                   ))}
               </tbody>

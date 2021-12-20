@@ -3,7 +3,12 @@ import { useMutation, useQuery } from 'react-apollo'
 import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
 import { FormattedMessage } from 'react-intl'
 
-import { sanitizeImportJSON, parseXLSToJSON, createModel } from '../../utils'
+import {
+  sanitizeImportJSON,
+  parseXLSToJSON,
+  createModel,
+  UPLOAD_LIST_SIZE,
+} from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
 import UPLOAD_PRODUCT_TRANSLATION from '../../graphql/uploadProductTranslation.gql'
@@ -21,7 +26,6 @@ const productHeaders: Array<keyof Product> = [
 
 const TYPE = 'product'
 const PRODUCT_DATA = 'product_data'
-const UPLOAD_LIST_SIZE = 10
 
 const ProductImportModal = ({
   isImportOpen = false,
@@ -31,8 +35,8 @@ const ProductImportModal = ({
   const [loading, setLoading] = useState(false)
   const [errorModal, setErrorModal] = useState(false)
   const [warningModal, setWarningModal] = useState(false)
-  const [validtionErrors, setValidationErrors] = useState<Message[]>([])
-  const [validtionWarnings, setValidationWarnings] = useState<Message[]>([])
+  const [validationErrors, setValidationErrors] = useState<Message[]>([])
+  const [validationWarnings, setValidationWarnings] = useState<Message[]>([])
   const [originalFile, setOriginalFile] = useState<Array<{}>>([])
   const [formattedTranslations, setFormattedTranslations] = useState<
     Blob | undefined
@@ -222,21 +226,21 @@ const ProductImportModal = ({
                   <FormattedMessage id="catalog-translation.import.modal.total-entries" />
                 </li>
               ) : null}
-              {validtionWarnings.length ? (
+              {validationWarnings.length ? (
                 <li>
                   <ButtonPlain onClick={() => setWarningModal(true)}>
-                    {validtionWarnings.length}{' '}
+                    {validationWarnings.length}{' '}
                     <FormattedMessage id="catalog-translation.import.modal.total-warnings" />
                   </ButtonPlain>
                 </li>
               ) : null}
-              {validtionErrors.length ? (
+              {validationErrors.length ? (
                 <li>
                   <ButtonPlain
                     variation="danger"
                     onClick={() => setErrorModal(true)}
                   >
-                    {validtionErrors.length}{' '}
+                    {validationErrors.length}{' '}
                     <FormattedMessage id="catalog-translation.import.modal.total-errors" />
                   </ButtonPlain>
                 </li>
@@ -285,7 +289,7 @@ const ProductImportModal = ({
                     <ImportStatusList
                       requestId={requestId}
                       key={requestId}
-                      type="product"
+                      type={TYPE}
                     />
                   ))}
               </tbody>
@@ -297,13 +301,13 @@ const ProductImportModal = ({
         isOpen={warningModal}
         modalName="Warning Modal"
         handleClose={setWarningModal}
-        data={validtionWarnings}
+        data={validationWarnings}
       />
       <WarningAndErrorsImportModal
         isOpen={errorModal}
         modalName="Error Modal"
         handleClose={setErrorModal}
-        data={validtionErrors}
+        data={validationErrors}
       />
     </ModalDialog>
   )

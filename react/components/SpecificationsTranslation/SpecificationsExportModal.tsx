@@ -3,7 +3,12 @@ import { useLazyQuery, useQuery } from 'react-apollo'
 import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
 import { FormattedMessage } from 'react-intl'
 
-import { sanitizeImportJSON, parseXLSToJSON, createModel } from '../../utils'
+import {
+  sanitizeImportJSON,
+  parseXLSToJSON,
+  createModel,
+  DOWNLOAD_LIST_SIZE,
+} from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
 import UPLOAD_FIELD_TRANSLATION_EXPORT from '../../graphql/uploadFieldTranslationsExport.gql'
@@ -11,8 +16,7 @@ import FIELD_UPLOAD_REQUESTS from '../../graphql/fieldUploadRequests.gql'
 import DOWNLOAD_FIELD_TRANSLATION from '../../graphql/downloadFieldTranslations.gql'
 import ExportListItem from '../ExportListItem'
 
-const DOWNLOAD_LIST_SIZE = 6
-const entryHeaders: Array<keyof Field> = ['fieldId']
+const ENTRY_HEADERS: Array<keyof Field> = ['fieldId']
 const SPECIFICATION_DATA = 'specification_data'
 
 interface FieldTranslations {
@@ -55,7 +59,7 @@ const SpecificationExportModal = ({
 
       const [translations, { errors, warnings }] = sanitizeImportJSON<Field>({
         data: fileParsed,
-        entryHeaders,
+        entryHeaders: ENTRY_HEADERS,
         requiredHeaders: ['fieldId'],
       })
 
@@ -96,7 +100,7 @@ const SpecificationExportModal = ({
   }
 
   const handleCreateModel = () => {
-    createModel(entryHeaders, SPECIFICATION_DATA, 'specification')
+    createModel(ENTRY_HEADERS, SPECIFICATION_DATA, 'specification')
   }
 
   const [

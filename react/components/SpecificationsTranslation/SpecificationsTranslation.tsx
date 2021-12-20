@@ -7,6 +7,7 @@ import getSpecificationById from '../../graphql/getSpecification.gql'
 import ErrorHandler from '../ErrorHandler'
 import SpecificationsForm from './SpecificationsForm'
 import SpecificationExportModal from './SpecificationsExportModal'
+import SpecificationImportModal from './SpecificationsImportModal'
 
 const SpecificationsTranslation = ({
   isExportOpen = false,
@@ -79,10 +80,10 @@ const SpecificationsTranslation = ({
         isExportOpen={isExportOpen}
         handleOpenExport={handleOpenExport}
       />
-      {/* <SpecificationImportModal
+      <SpecificationImportModal
         isImportOpen={isImportOpen}
         handleOpenImport={handleOpenImport}
-      /> */}
+      />
     </>
   )
 }

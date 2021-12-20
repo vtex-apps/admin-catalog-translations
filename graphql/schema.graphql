@@ -34,8 +34,5 @@ type Query {
 type Mutation {
   uploadProductTranslations(products: Upload!, locale: String!): String
   uploadBrandTranslations(brands: Upload!, locale: String!): String
-  uploadSpecificationTranslationsImport(
-    fields: Upload!
-    locale: String!
-  ): String
+  uploadFieldTranslationsImport(fields: Upload!, locale: String!): String
 }

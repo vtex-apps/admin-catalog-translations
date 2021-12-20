@@ -5,6 +5,9 @@ import { parseJSONToXLS } from './fileParsers'
 export * from './fileParsers'
 export * from './sanitizeImportJSON'
 
+export const UPLOAD_LIST_SIZE = 10
+export const DOWNLOAD_LIST_SIZE = 6
+
 /**
  * Keep the xVtexTenant in the top of the dropdown button
  */
