@@ -3,7 +3,7 @@ import { useMutation, useQuery } from 'react-apollo'
 import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
 import { FormattedMessage } from 'react-intl'
 
-import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../../utils'
+import { sanitizeImportJSON, parseXLSToJSON, createModel } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
 import UPLOAD_PRODUCT_TRANSLATION from '../../graphql/uploadProductTranslation.gql'
@@ -19,6 +19,7 @@ const productHeaders: Array<keyof Product> = [
   'linkId',
 ]
 
+const TYPE = 'product'
 const PRODUCT_DATA = 'product_data'
 const UPLOAD_LIST_SIZE = 10
 
@@ -96,18 +97,8 @@ const ProductImportModal = ({
     cleanErrors()
   }
 
-  const createModel = () => {
-    const headersObject = productHeaders.reduce<
-      Record<typeof productHeaders[number], string>
-    >((obj, header) => {
-      obj[header] = ''
-      return obj
-    }, {} as Record<typeof productHeaders[number], string>)
-
-    parseJSONToXLS([headersObject], {
-      fileName: 'product_translate_model',
-      sheetName: PRODUCT_DATA,
-    })
+  const handleCreateModel = () => {
+    createModel(productHeaders, PRODUCT_DATA, TYPE)
   }
 
   const [startProductUpload, { error: uploadError }] = useMutation<
@@ -200,7 +191,7 @@ const ProductImportModal = ({
           >
             <div>
               <div className="mv4">
-                <ButtonPlain onClick={createModel}>
+                <ButtonPlain onClick={handleCreateModel}>
                   <FormattedMessage id="catalog-translation.import.modal.download-button" />
                 </ButtonPlain>
               </div>

@@ -1,5 +1,7 @@
 import { Translation } from 'vtex.messages'
 
+import { parseJSONToXLS } from './fileParsers'
+
 export * from './fileParsers'
 export * from './sanitizeImportJSON'
 
@@ -159,4 +161,23 @@ export const formatCollectionFromMessages = ({
     col[translation.lang] = { name: translation.translation, id: context }
     return col
   }, {} as Record<string, Collections>)
+}
+
+export const createModel = <T>(
+  headers: Array<keyof T>,
+  sheetName: string,
+  type: string
+) => {
+  const headersObject = headers.reduce<Record<typeof headers[number], string>>(
+    (obj, header) => {
+      obj[header] = ''
+      return obj
+    },
+    {} as Record<typeof headers[number], string>
+  )
+
+  parseJSONToXLS([headersObject], {
+    fileName: `${type}_translate_model}`,
+    sheetName,
+  })
 }

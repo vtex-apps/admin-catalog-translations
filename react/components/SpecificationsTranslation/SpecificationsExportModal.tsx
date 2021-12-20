@@ -3,7 +3,7 @@ import { useLazyQuery, useQuery } from 'react-apollo'
 import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
 import { FormattedMessage } from 'react-intl'
 
-import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../../utils'
+import { sanitizeImportJSON, parseXLSToJSON, createModel } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
 import UPLOAD_FIELD_TRANSLATION_EXPORT from '../../graphql/uploadFieldTranslationsExport.gql'
@@ -13,7 +13,6 @@ import ExportListItem from '../ExportListItem'
 
 const DOWNLOAD_LIST_SIZE = 6
 const entryHeaders: Array<keyof Field> = ['fieldId']
-
 const SPECIFICATION_DATA = 'specification_data'
 
 interface FieldTranslations {
@@ -96,18 +95,8 @@ const SpecificationExportModal = ({
     cleanErrors()
   }
 
-  const createModel = () => {
-    const headersObject = entryHeaders.reduce<
-      Record<typeof entryHeaders[number], string>
-    >((obj, header) => {
-      obj[header] = ''
-      return obj
-    }, {} as Record<typeof entryHeaders[number], string>)
-
-    parseJSONToXLS([headersObject], {
-      fileName: 'specification_translate_model',
-      sheetName: SPECIFICATION_DATA,
-    })
+  const handleCreateModel = () => {
+    createModel(entryHeaders, SPECIFICATION_DATA, 'specification')
   }
 
   const [
@@ -217,7 +206,7 @@ const SpecificationExportModal = ({
           >
             <div>
               <div className="mv4">
-                <ButtonPlain onClick={createModel}>
+                <ButtonPlain onClick={handleCreateModel}>
                   <FormattedMessage id="catalog-translation.export.modal.download-button" />
                 </ButtonPlain>
               </div>
