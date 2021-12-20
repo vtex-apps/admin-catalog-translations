@@ -12,11 +12,11 @@ import DOWNLOAD_FIELD_TRANSLATION from '../../graphql/downloadFieldTranslations.
 import ExportListItem from '../ExportListItem'
 
 const DOWNLOAD_LIST_SIZE = 6
-const entryHeaders: Array<keyof Specifications> = ['fieldId']
+const entryHeaders: Array<keyof Field> = ['fieldId']
 
 const SPECIFICATION_DATA = 'specification_data'
 
-interface SpecificationTranslations {
+interface FieldTranslations {
   uploadFieldTranslationsExport: {
     requestId: string
   }
@@ -54,9 +54,7 @@ const SpecificationExportModal = ({
 
       setOriginalFile(fileParsed)
 
-      const [translations, { errors, warnings }] = sanitizeImportJSON<
-        Specifications
-      >({
+      const [translations, { errors, warnings }] = sanitizeImportJSON<Field>({
         data: fileParsed,
         entryHeaders,
         requiredHeaders: ['fieldId'],
@@ -116,7 +114,7 @@ const SpecificationExportModal = ({
     startTranslationUpload,
     { data: newRequest, error: uploadError },
   ] = useLazyQuery<
-    SpecificationTranslations,
+    FieldTranslations,
     {
       locale: string
       fields: Blob
@@ -164,7 +162,7 @@ const SpecificationExportModal = ({
   }
 
   const [download, { data: downloadJson, error: downloadError }] = useLazyQuery<
-    TranslationDownload<Specifications>,
+    TranslationDownload<Field>,
     { requestId: string }
   >(DOWNLOAD_FIELD_TRANSLATION)
 

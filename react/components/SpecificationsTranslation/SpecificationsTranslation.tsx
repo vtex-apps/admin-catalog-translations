@@ -23,9 +23,7 @@ const SpecificationsTranslation = ({
     fetchEntry,
     setMemoEntries,
     errorMessage,
-  } = useCatalogQuery<SpecificationsData, { fieldId: number }>(
-    getSpecificationById
-  )
+  } = useCatalogQuery<FieldsData, { fieldId: number }>(getSpecificationById)
   const { selectedLocale } = useLocaleSelector()
 
   const handleSubmitSpecification = (e: SyntheticEvent) => {
@@ -38,8 +36,7 @@ const SpecificationsTranslation = ({
       variables: { fieldId: Number(entryId) },
     })
   }
-  const { fieldId, ...specificationInfo } =
-    entryInfo?.field || ({} as Specifications)
+  const { fieldId, ...specificationInfo } = entryInfo?.field || ({} as Field)
 
   return (
     <>
