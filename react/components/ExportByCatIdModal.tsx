@@ -15,8 +15,6 @@ import GET_CATEGORIES_NAME from '../graphql/getCategoriesName.gql'
 import { filterSearchCategories } from '../utils'
 import { useLocaleSelector } from './LocaleSelector'
 import ExportListItem from './ExportListItem'
-// import PROD_INFO_REQUEST from '../../graphql/getProdTranslationInfoReq.gql'
-import { Bucket } from '../utils/Bucket'
 
 const AUTOCOMPLETE_LIST_SIZE = 6
 const DOWNLOAD_LIST_SIZE = 6
@@ -256,7 +254,6 @@ export const ExportByCategoryIdModal = ({
                         key={requestId}
                         requestId={requestId}
                         type={type}
-                        bucket={Bucket?.product}
                         {...props}
                       />
                     ))}

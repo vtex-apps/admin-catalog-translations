@@ -1,12 +1,12 @@
 import { Logger, VBase } from '@vtex/api'
 
-import { CatalogGQL } from '../clients/catalogGQL'
+import { CatalogGQL } from '../../clients/catalogGQL'
 import {
   ALL_SKU_TRANSLATIONS_FILES,
   BUCKET_NAME,
   calculateExportProcessTime,
   pacer,
-} from '../utils'
+} from '../../utils'
 
 const CALLS_PER_MINUTE = 350
 

@@ -145,10 +145,11 @@ export class CatalogGQL extends AppGraphQLClient {
     )
   }
 
-  public getProductTranslation = (id: string, locale: string) =>
-    this.graphql.query<
+  public getProductTranslation = <T>(params: EntryTranslationParams<T>) => {
+    const { entry: id, locale } = params
+    return this.graphql.query<
       ProductTranslationResponse,
-      { identifier: { value: string; field: 'id' } }
+      { identifier: { value: T; field: 'id' } }
     >(
       {
         query: GET_PRODUCT_TRANSLATION_QUERY,
@@ -165,6 +166,7 @@ export class CatalogGQL extends AppGraphQLClient {
         },
       }
     )
+  }
 
   public getSKUTranslation = (id: string, locale: string) =>
     this.graphql.query<
@@ -187,11 +189,12 @@ export class CatalogGQL extends AppGraphQLClient {
       }
     )
 
-  public translateProduct = <T>(translateProduct: T, locale: string) => {
+  public translateProduct = <T>(params: TranslateEntry<T>) => {
+    const { entry: product, locale } = params
     return this.graphql.query({
       query: TRANSLATE_PRODUCT,
       variables: {
-        product: translateProduct,
+        product,
         locale,
       },
     })
@@ -260,11 +263,12 @@ export class CatalogGQL extends AppGraphQLClient {
     }
   }
 
-  public translateBrand = <T>(translateBrand: T, locale: string) => {
+  public translateBrand = <T>(params: TranslateEntry<T>) => {
+    const { entry: brand, locale } = params
     return this.graphql.query({
       query: TRANSLATE_BRAND,
       variables: {
-        brand: translateBrand,
+        brand,
         locale,
       },
     })

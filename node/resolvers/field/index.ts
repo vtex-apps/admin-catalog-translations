@@ -11,7 +11,7 @@ export const Field = {
     root.data.field.name,
 }
 
-const downloadSpecificationTranslations = async (
+const downloadFieldTranslations = async (
   _root: unknown,
   args: { requestId: string },
   ctx: Context
@@ -28,6 +28,6 @@ export const mutations = {
 }
 
 export const queries = {
-  downloadSpecificationTranslations,
+  downloadFieldTranslations,
   ...uploadQueries,
 }

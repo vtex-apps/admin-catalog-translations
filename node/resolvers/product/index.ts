@@ -1,12 +1,9 @@
-import { VBase } from '@vtex/api'
-
-import { CatalogGQL } from '../../clients/catalogGQL'
 import {
-  pacer,
   BUCKET_NAME,
   ALL_TRANSLATIONS_FILES,
   calculateExportProcessTime,
   CALLS_PER_MINUTE,
+  saveTranslationsEntriesToVBase,
 } from '../../utils'
 import {
   mutations as uploadMutations,
@@ -35,62 +32,12 @@ export const Product = {
     root.data.product.linkId,
 }
 
-const saveTranslationsToVBase = async (
-  {
-    productIds,
-    locale,
-    requestId,
-  }: { productIds: string[]; locale: string; requestId: string },
-  { catalogGQLClient, vbase }: { catalogGQLClient: CatalogGQL; vbase: VBase }
-): Promise<void> => {
-  const translationRequest = await vbase.getJSON<ProductTranslationRequest>(
-    BUCKET_NAME,
-    requestId,
-    true
-  )
-  const productTranslationPromises = []
-  try {
-    for (const productId of productIds) {
-      const translationPromise = catalogGQLClient.getProductTranslation(
-        productId,
-        locale
-      )
-      productTranslationPromises.push(translationPromise)
-      // eslint-disable-next-line no-await-in-loop
-      await pacer(CALLS_PER_MINUTE)
-    }
-
-    const translations = await Promise.all(productTranslationPromises)
-
-    const updateTranslation = {
-      ...translationRequest,
-      translations,
-      completedAt: new Date(),
-    }
-
-    await vbase.saveJSON<ProductTranslationRequest>(
-      BUCKET_NAME,
-      requestId,
-      updateTranslation
-    )
-  } catch {
-    const addError = {
-      ...translationRequest,
-      error: true,
-    }
-    await vbase.saveJSON<ProductTranslationRequest>(
-      BUCKET_NAME,
-      requestId,
-      addError
-    )
-  }
-}
-
 const productTranslations = async (
   _root: unknown,
   args: { locale: string; categoryId: string },
   ctx: Context
 ) => {
+  const bucket = BUCKET_NAME
   const {
     clients: { catalog, catalogGQL, vbase, licenseManager },
     vtex: { adminUserAuthToken, requestId },
@@ -105,7 +52,7 @@ const productTranslations = async (
   const productIdCollection = await catalog.getAllProducts(categoryId)
 
   const allTranslationRequest = await vbase.getJSON<string[]>(
-    BUCKET_NAME,
+    bucket,
     ALL_TRANSLATIONS_FILES,
     true
   )
@@ -114,13 +61,9 @@ const productTranslations = async (
     ? [requestId, ...allTranslationRequest]
     : [requestId]
 
-  await vbase.saveJSON<string[]>(
-    BUCKET_NAME,
-    ALL_TRANSLATIONS_FILES,
-    updateRequests
-  )
+  await vbase.saveJSON<string[]>(bucket, ALL_TRANSLATIONS_FILES, updateRequests)
 
-  const requestInfo: ProductTranslationRequest = {
+  const requestInfo: TranslationRequest<ProductTranslationResponse> = {
     requestId,
     requestedBy: email,
     categoryId,
@@ -132,14 +75,23 @@ const productTranslations = async (
     ),
   }
 
-  await vbase.saveJSON<ProductTranslationRequest>(
-    BUCKET_NAME,
+  await vbase.saveJSON<TranslationRequest<ProductTranslationResponse>>(
+    bucket,
     requestId,
     requestInfo
   )
 
-  saveTranslationsToVBase(
-    { productIds: productIdCollection, locale, requestId },
+  const params: ParamsTranslationsToVBase = {
+    locale,
+    requestId,
+    bucket,
+  }
+  saveTranslationsEntriesToVBase<string, ProductTranslationResponse>(
+    {
+      entries: productIdCollection,
+      params,
+      getEntryTranslation: catalogGQL.getProductTranslation,
+    },
     {
       catalogGQLClient: catalogGQL,
       vbase,
@@ -171,7 +123,7 @@ const downloadProductTranslation = async (
   } = ctx
 
   const { translations, locale } = await vbase.getJSON<
-    ProductTranslationRequest
+    TranslationRequest<ProductTranslationResponse>
   >(BUCKET_NAME, args.requestId, true)
 
   ctx.state.locale = locale

@@ -122,9 +122,8 @@ export const uploadEntriesAsync = async <T>(
     requestId: string
     locale: string
     bucket: string
-    translateEntry: <T>( // TODO: send object instead two properties
-      entry: T,
-      locale: string
+    translateEntry: <T>(
+      params: TranslateEntry<T>
     ) => Promise<GraphQLResponse<Serializable>>
   },
   { vbase }: { vbase: VBase }
@@ -142,7 +141,11 @@ export const uploadEntriesAsync = async <T>(
 
     let promiseController = []
     for (let i = 0; i < totalEntries; i++) {
-      promiseController.push(translateEntry<T>(entries[i], locale))
+      const params: TranslateEntry<T> = {
+        entry: entries[i],
+        locale,
+      }
+      promiseController.push(translateEntry<T>(params))
       // eslint-disable-next-line no-await-in-loop
       await pacer(CALLS_PER_MINUTE)
       if (breakPointsProgress.includes(i)) {
@@ -176,7 +179,6 @@ export const uploadEntriesAsync = async <T>(
   }
 }
 
-// TODO: use this instead of saveTranslationsToVBase
 export async function saveTranslationsEntriesToVBase<T, X>(
   {
     entries,

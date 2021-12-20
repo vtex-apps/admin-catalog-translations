@@ -17,7 +17,6 @@
 // import UPLOAD_SPECIFICATION_REQUESTS from '../../graphql/brandUploadRequests.gql'
 // import ImportStatusList from '../ImportStatusList'
 
-
 // const modalMessage = defineMessages({
 //   export: {
 //     id: 'catalog-translation.export.modal.title-brand',
@@ -60,7 +59,6 @@
 //   >(undefined)
 
 //   const intl = useIntl()
-
 
 //   const [tabSelected, setTabSelected] = useState<1 | 2>(1)
 //   const { selectedLocale } = useLocaleSelector()

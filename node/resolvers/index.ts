@@ -4,7 +4,7 @@ import {
   queries as productQueries,
   mutations as productMutations,
 } from './product'
-import { SKU, queries as skuQueries } from './SKU'
+import { SKU, queries as skuQueries } from './sku'
 import {
   Brand,
   queries as brandQueries,

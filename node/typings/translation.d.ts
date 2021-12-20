@@ -9,6 +9,10 @@ interface TranslationRequest<T> {
   completedAt?: Date
   estimatedTime: number
 }
+interface TranslateEntry<T> {
+  entry: T
+  locale: string
+}
 
 interface EntryParams {
   requestId: string

@@ -6,15 +6,19 @@ import { ApolloError } from 'apollo-client'
 
 import TRANSLATION_REQUEST_INFO from '../graphql/translationRequestInfo.gql'
 import { shouldHaveCompleted, remainingTime, parseJSONToXLS } from '../utils'
-import { Bucket } from '../utils/Bucket'
 
+const getBucket = (type: typeItem) => {
+  if (type === 'sku') {
+    return 'product-translation'
+  }
+
+  return `${type}-translation`
+}
 interface Options {
   variables: {
     requestId: string
   }
 }
-
-type typeItem = 'product' | 'sku' | 'specification'
 
 interface Props {
   requestId: string
@@ -22,7 +26,6 @@ interface Props {
   downloadJson: any
   downloadError?: ApolloError
   type: typeItem
-  bucket: Bucket
 }
 
 const ExportListItem = ({
@@ -31,11 +34,10 @@ const ExportListItem = ({
   downloadJson,
   downloadError,
   type,
-  bucket,
 }: Props) => {
   const [longTimeAgo, setLongTimeAgo] = useState(false)
   const [downloading, setDownloading] = useState(false)
-  const [errorDonwloading, setErrorDownloading] = useState(false)
+  const [errorDownloading, setErrorDownloading] = useState(false)
   const {
     data,
     error: errorFetching,
@@ -47,7 +49,7 @@ const ExportListItem = ({
     {
       variables: {
         requestId,
-        bucket,
+        bucket: getBucket(type),
       },
     }
   )
@@ -66,9 +68,9 @@ const ExportListItem = ({
 
   useEffect(() => {
     if (!completedAt) {
-      refetch({ requestId, bucket })
+      refetch({ requestId, bucket: getBucket(type) })
     }
-  }, [completedAt, refetch, requestId, bucket])
+  }, [completedAt, refetch, requestId, type])
 
   useEffect(() => {
     if (!completedAt && !error && createdAt && estimatedTime) {
@@ -95,7 +97,6 @@ const ExportListItem = ({
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
     if (downloadJson && downloading) {
-      // TODO: set name or get name by params `category-${categoryId}-${type}-data-${locale}
       const fileName = categoryId
         ? `category-${categoryId}-${type}-data-${locale}`
         : `${type}-data-${locale}`
@@ -140,7 +141,10 @@ const ExportListItem = ({
         ) : null}
       </td>
       <td>
-        {error || longTimeAgo || errorDonwloading ? (
+        {error ? 'error' : ''}
+        {longTimeAgo ? 'longTimeAgo' : ''}
+        {errorDownloading ? 'errorDownloading' : ''}
+        {error || longTimeAgo || errorDownloading ? (
           <p className="c-danger i f7">
             <FormattedMessage id="catalog-translation.export.modal.download-list.error" />
           </p>

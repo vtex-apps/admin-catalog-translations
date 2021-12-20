@@ -1,7 +1,0 @@
-query GetSpecificationsByCategory($categoryId: ID!) {
-  specificationsByCategory(categoryId: $categoryId) @context(provider: "vtex.catalog-graphql") {
-    fieldId
-    name
-  }
-}
-

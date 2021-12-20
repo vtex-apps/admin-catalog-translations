@@ -19,12 +19,12 @@ type Query {
   ): UploadRequest
   brandTranslations(locale: String!, active: Boolean): [Brand]
   brandTranslationsUploadRequests: [String]
-  uploadSpecificationTranslationsExport(
+  uploadFieldTranslationsExport(
     fields: Upload!
     locale: String!
   ): TranslationRequest
-  specificationTranslationsUploadRequests: [String]
-  downloadSpecificationTranslations(requestId: String!): [Field]
+  fieldTranslationsUploadRequests: [String]
+  downloadFieldTranslations(requestId: String!): [Field]
   translationRequestInfo(
     requestId: String!
     bucket: String!

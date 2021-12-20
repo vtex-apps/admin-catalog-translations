@@ -9,7 +9,7 @@ import {
   saveTranslationsEntriesToVBase,
 } from '../../utils'
 
-const uploadSpecificationTranslationsExport = async (
+const uploadFieldTranslationsExport = async (
   _root: unknown,
   { fields, locale }: { fields: UploadFile<ReadStream>; locale: string },
   ctx: Context
@@ -30,8 +30,13 @@ const uploadSpecificationTranslationsExport = async (
   const fieldsParsed = await parseStreamToJSON<FieldTranslationInput>(
     fieldStream
   )
-  // TODO: get name property using current call or obtain some config with fieldId o bucket
-  const entryIdCollection = fieldsParsed.map((f) => f?.fieldId)
+
+  let entryIdCollection: string[] = []
+  for (let i = 0; i < fieldsParsed?.length; i++) {
+    if (fieldsParsed) {
+      entryIdCollection = [...entryIdCollection, fieldsParsed[i].fieldId]
+    }
+  }
 
   const allTranslationRequest = await vbase.getJSON<string[]>(
     bucket,
@@ -67,7 +72,7 @@ const uploadSpecificationTranslationsExport = async (
     requestId,
     bucket,
   }
-  // TODO: apply this function on Product, SKU, Brand and others
+
   saveTranslationsEntriesToVBase<string, FieldTranslationResponse>(
     {
       entries: entryIdCollection,
@@ -148,7 +153,7 @@ const uploadSpecificationTranslationsImport = async (
   return requestId
 }
 
-const specificationTranslationsUploadRequests = async (
+const fieldTranslationsUploadRequests = async (
   _root: unknown,
   _args: unknown,
   ctx: Context
@@ -164,6 +169,6 @@ export const mutations = {
 }
 
 export const queries = {
-  uploadSpecificationTranslationsExport,
-  specificationTranslationsUploadRequests,
+  uploadFieldTranslationsExport,
+  fieldTranslationsUploadRequests,
 }

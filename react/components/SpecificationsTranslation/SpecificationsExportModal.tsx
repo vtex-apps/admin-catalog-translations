@@ -6,20 +6,18 @@ import { FormattedMessage } from 'react-intl'
 import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
-import UPLOAD_SPECIFICATION_TRANSLATION_EXPORT from '../../graphql/uploadSpecificationTranslationExport.gql'
-import UPLOAD_SPECIFICATION_REQUESTS from '../../graphql/specificationUploadRequests.gql'
-import DOWNLOAD_SPECIFICATION_TRANSLATION from '../../graphql/downloadSpecificationsTranslations.gql'
+import UPLOAD_FIELD_TRANSLATION_EXPORT from '../../graphql/uploadFieldTranslationsExport.gql'
+import FIELD_UPLOAD_REQUESTS from '../../graphql/fieldUploadRequests.gql'
+import DOWNLOAD_FIELD_TRANSLATION from '../../graphql/downloadFieldTranslations.gql'
 import ExportListItem from '../ExportListItem'
-import { Bucket } from '../../utils/Bucket'
 
 const DOWNLOAD_LIST_SIZE = 6
 const entryHeaders: Array<keyof Specifications> = ['fieldId']
 
 const SPECIFICATION_DATA = 'specification_data'
 
-// TODO: check this vs other downloads catalog
 interface SpecificationTranslations {
-  uploadSpecificationTranslationsExport: {
+  uploadFieldTranslationsExport: {
     requestId: string
   }
 }
@@ -123,7 +121,7 @@ const SpecificationExportModal = ({
       locale: string
       fields: Blob
     }
-  >(UPLOAD_SPECIFICATION_TRANSLATION_EXPORT, {
+  >(UPLOAD_FIELD_TRANSLATION_EXPORT, {
     context: {
       headers: {
         'x-vtex-locale': `${selectedLocale}`,
@@ -132,21 +130,20 @@ const SpecificationExportModal = ({
   })
 
   const { data, updateQuery } = useQuery<{
-    specificationTranslationsUploadRequests: string[]
-  }>(UPLOAD_SPECIFICATION_REQUESTS)
+    fieldTranslationsUploadRequests: string[]
+  }>(FIELD_UPLOAD_REQUESTS)
 
   useEffect(() => {
-    const { requestId } =
-      newRequest?.uploadSpecificationTranslationsExport ?? {}
+    const { requestId } = newRequest?.uploadFieldTranslationsExport ?? {}
 
     if (!requestId) {
       return
     }
     updateQuery((prevResult) => {
       return {
-        specificationTranslationsUploadRequests: [
+        fieldTranslationsUploadRequests: [
           requestId,
-          ...(prevResult.specificationTranslationsUploadRequests ?? []),
+          ...(prevResult.fieldTranslationsUploadRequests ?? []),
         ],
       }
     })
@@ -169,7 +166,7 @@ const SpecificationExportModal = ({
   const [download, { data: downloadJson, error: downloadError }] = useLazyQuery<
     TranslationDownload<Specifications>,
     { requestId: string }
-  >(DOWNLOAD_SPECIFICATION_TRANSLATION)
+  >(DOWNLOAD_FIELD_TRANSLATION)
 
   return (
     <ModalDialog
@@ -307,19 +304,16 @@ const SpecificationExportModal = ({
                 </tr>
               </thead>
               <tbody>
-                {data?.specificationTranslationsUploadRequests
+                {data?.fieldTranslationsUploadRequests
                   ?.slice(0, DOWNLOAD_LIST_SIZE)
                   ?.map((requestId) => (
                     <ExportListItem
                       key={requestId}
                       requestId={requestId}
                       download={download}
-                      downloadJson={
-                        downloadJson?.downloadSpecificationTranslations
-                      }
+                      downloadJson={downloadJson?.downloadFieldTranslations}
                       downloadError={downloadError}
-                      type="specification"
-                      bucket={Bucket?.field}
+                      type="field"
                     />
                   ))}
               </tbody>

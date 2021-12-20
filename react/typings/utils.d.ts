@@ -9,3 +9,5 @@ interface Message {
 }
 
 type EntryHeaders<EntryType> = Extract<keyof EntryType, string> | 'locale'
+
+type typeItem = 'product' | 'sku' | 'field' | 'brand'
