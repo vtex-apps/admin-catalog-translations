@@ -145,7 +145,7 @@ export class CatalogGQL extends AppGraphQLClient {
     )
   }
 
-  public getProductTranslation = <T>(params: EntryTranslationParams<T>) => {
+  public getProductTranslation = <T>(params: TranslateEntry<T>) => {
     const { entry: id, locale } = params
     return this.graphql.query<
       ProductTranslationResponse,
@@ -282,7 +282,7 @@ export class CatalogGQL extends AppGraphQLClient {
     }
   }
 
-  public getFieldTranslation = <T>(params: EntryTranslationParams<T>) => {
+  public getFieldTranslation = <T>(params: TranslateEntry<T>) => {
     const { entry: id, locale } = params
     return this.graphql.query<FieldTranslationResponse, { id: T }>(
       {

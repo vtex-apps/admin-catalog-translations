@@ -187,7 +187,7 @@ export async function saveTranslationsEntriesToVBase<T, X>(
   }: InterfaceTranslationsEntriesToVBase<T>,
   { vbase }: { catalogGQLClient: CatalogGQL; vbase: VBase }
 ): Promise<void> {
-  const { requestId, bucket } = params
+  const { requestId, bucket, locale } = params
   const translationRequest = await vbase.getJSON<TranslationRequest<X>>(
     bucket,
     requestId,
@@ -196,8 +196,8 @@ export async function saveTranslationsEntriesToVBase<T, X>(
   const entryTranslationPromises = []
   try {
     for (const entry of entries) {
-      const currentParams: EntryTranslationParams<T> = {
-        ...params,
+      const currentParams: TranslateEntry<T> = {
+        locale,
         entry,
       }
       const translationPromise = getEntryTranslation(currentParams)

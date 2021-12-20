@@ -14,17 +14,10 @@ interface TranslateEntry<T> {
   locale: string
 }
 
-interface EntryParams {
-  requestId: string
-  locale?: string
-}
-
-interface EntryTranslationParams<T> extends EntryParams {
-  entry: T
-}
-
 interface ParamsTranslationsToVBase extends EntryParams {
   bucket: string
+  requestId: string
+  locale: string
 }
 
 interface InterfaceTranslationsEntriesToVBase<T> {
