@@ -1,6 +1,0 @@
-query uploadFieldTranslationsExport($locale: String!, $fields: Upload!) {
-  uploadFieldTranslationsExport(locale: $locale, fields: $fields)
-    @context(provider: "vtex.admin-catalog-translation") {
-    requestId
-  }
-}

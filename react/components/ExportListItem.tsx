@@ -14,6 +14,21 @@ const getBucket = (type: typeItem) => {
 
   return `${type}-translation`
 }
+
+const getFileParams = (
+  type: typeItem,
+  categoryId?: string,
+  locale?: string
+) => {
+  const name = type === 'field' ? 'specification' : type
+
+  const fileName = categoryId
+    ? `category-${categoryId}-${name}-data-${locale}`
+    : `${name}-data-${locale}`
+
+  const sheetName = `${name}_data`
+  return { fileName, sheetName }
+}
 interface Options {
   variables: {
     requestId: string
@@ -97,12 +112,10 @@ const ExportListItem = ({
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
     if (downloadJson && downloading) {
-      const fileName = categoryId
-        ? `category-${categoryId}-${type}-data-${locale}`
-        : `${type}-data-${locale}`
+      const { fileName, sheetName } = getFileParams(type, categoryId, locale)
       parseJSONToXLS(downloadJson, {
         fileName,
-        sheetName: `${type}_data`,
+        sheetName,
       })
       setDownloading(false)
     }
@@ -141,6 +154,7 @@ const ExportListItem = ({
         ) : null}
       </td>
       <td>
+        {/* TODO: remove this */}
         {error ? 'error' : ''}
         {longTimeAgo ? 'longTimeAgo' : ''}
         {errorDownloading ? 'errorDownloading' : ''}

@@ -3,15 +3,13 @@ import { ReadStream } from 'fs'
 import {
   AuthenticationError,
   ForbiddenError,
-  GraphQLResponse,
-  Serializable,
   UserInputError,
   VBase,
 } from '@vtex/api'
 import type { AxiosError } from 'axios'
 import JSONStream from 'JSONStream'
 
-import { CatalogGQL } from './clients/catalogGQL'
+import { CatalogGQL } from '../clients/catalogGQL'
 
 const ONE_MINUTE = 60 * 1000
 export const CALLS_PER_MINUTE = 1600
@@ -21,7 +19,8 @@ export const ALL_SKU_TRANSLATIONS_FILES = 'all-sku-translations'
 export const PRODUCT_TRANSLATION_UPLOAD = 'product-upload'
 export const BRAND_TRANSLATION_UPLOAD = 'brand-upload'
 export const BRAND_NAME = 'brand-translation'
-export const FIELD_TRANSLATION_UPLOAD = 'field-upload'
+export const FIELD_TRANSLATION_EXPORT_UPLOAD = 'field-export-upload'
+export const FIELD_TRANSLATION_IMPORT_UPLOAD = 'field-import-upload'
 export const FIELD_NAME = 'field-translation'
 
 export const statusToError = (e: AxiosError) => {
@@ -111,21 +110,7 @@ export const parseStreamToJSON = <T>(stream: ReadStream): Promise<T[]> => {
 }
 
 export const uploadEntriesAsync = async <T>(
-  {
-    entries,
-    requestId,
-    locale,
-    bucket,
-    translateEntry,
-  }: {
-    entries: T[]
-    requestId: string
-    locale: string
-    bucket: string
-    translateEntry: <T>(
-      params: TranslateEntry<T>
-    ) => Promise<GraphQLResponse<Serializable>>
-  },
+  { entries, requestId, locale, bucket, translateEntry }: UploadEntriesAsync<T>,
   { vbase }: { vbase: VBase }
 ) => {
   const translationRequest = await vbase.getJSON<UploadRequest>(
@@ -179,14 +164,14 @@ export const uploadEntriesAsync = async <T>(
   }
 }
 
-export async function saveTranslationsEntriesToVBase<T, X>(
+export const saveTranslationsEntriesToVBase = async <T, X>(
   {
     entries,
     params,
     getEntryTranslation,
   }: InterfaceTranslationsEntriesToVBase<T>,
   { vbase }: { catalogGQLClient: CatalogGQL; vbase: VBase }
-): Promise<void> {
+): Promise<void> => {
   const { requestId, bucket, locale } = params
   const translationRequest = await vbase.getJSON<TranslationRequest<X>>(
     bucket,
@@ -226,4 +211,123 @@ export async function saveTranslationsEntriesToVBase<T, X>(
     }
     await vbase.saveJSON<TranslationRequest<X>>(bucket, requestId, addError)
   }
+}
+
+export const uploadTranslations = async <T>(
+  { entries, locale, bucket, path, translateEntry }: UploadTranslations<T>,
+  ctx: Context
+) => {
+  const {
+    clients: { licenseManager, vbase },
+    vtex: { adminUserAuthToken, requestId },
+  } = ctx
+
+  const { createReadStream } = await entries
+
+  const stream = createReadStream()
+
+  const streamParsed = await parseStreamToJSON<T>(stream)
+
+  const {
+    profile: { email },
+  } = await licenseManager.getTopbarData(adminUserAuthToken as string)
+
+  const allTranslationsMade = await vbase.getJSON<string[]>(bucket, path, true)
+
+  const updateRequests = allTranslationsMade
+    ? [requestId, ...allTranslationsMade]
+    : [requestId]
+
+  await vbase.saveJSON<string[]>(bucket, path, updateRequests)
+
+  const requestInfo = {
+    requestId,
+    locale,
+    translatedBy: email,
+    createdAt: new Date(),
+    estimatedTime: calculateExportProcessTime(
+      streamParsed.length,
+      CALLS_PER_MINUTE
+    ),
+  }
+
+  await vbase.saveJSON<UploadRequest>(bucket, requestId, requestInfo)
+
+  uploadEntriesAsync<T>(
+    {
+      entries: streamParsed,
+      requestId,
+      locale,
+      bucket,
+      translateEntry,
+    },
+    { vbase }
+  )
+
+  return requestId
+}
+
+export const entryTranslations = async <T, X>(
+  {
+    entries,
+    locale,
+    bucket,
+    path,
+    categoryId,
+    requestId,
+    translateEntry,
+  }: EntryTranslations<T>,
+  ctx: Context
+) => {
+  const {
+    clients: { catalogGQL, vbase, licenseManager },
+    vtex: { adminUserAuthToken },
+  } = ctx
+
+  const {
+    profile: { email },
+  } = await licenseManager.getTopbarData(adminUserAuthToken as string)
+
+  const allTranslationRequest = await vbase.getJSON<string[]>(
+    bucket,
+    path,
+    true
+  )
+
+  const updateRequests = allTranslationRequest
+    ? [requestId, ...allTranslationRequest]
+    : [requestId]
+
+  await vbase.saveJSON<string[]>(bucket, path, updateRequests)
+
+  const requestInfo: TranslationRequest<X> = {
+    requestId,
+    requestedBy: email,
+    locale,
+    createdAt: new Date(),
+    estimatedTime: calculateExportProcessTime(entries.length, CALLS_PER_MINUTE),
+    ...(categoryId ? { categoryId } : ''),
+  }
+
+  await vbase.saveJSON<TranslationRequest<X>>(bucket, requestId, requestInfo)
+
+  const params: ParamsTranslationsToVBase = {
+    locale,
+    requestId,
+    bucket,
+  }
+
+  saveTranslationsEntriesToVBase<T, X>(
+    {
+      entries,
+      params,
+      getEntryTranslation: translateEntry,
+    },
+    {
+      catalogGQLClient: catalogGQL,
+      vbase,
+    }
+  )
+
+  return requestInfo
 }

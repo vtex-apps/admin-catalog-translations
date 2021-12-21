@@ -72,14 +72,20 @@ const BRAND_QUERY = `
     }
   }
 `
+
 const TRANSLATE_BRAND = `mutation translateBrand($brand:BrandInputTranslation!, $locale: Locale!) {
   translateBrand(brand: $brand, locale: $locale)
 }`
+
 const GET_FIELD_TRANSLATION_QUERY = `query field($id:ID!) {
   field(id: $id){
     fieldId
     name
   }
+}`
+
+const TRANSLATE_FIELD = `mutation translateField($field: FieldInputTranslation!, $locale: Locale!) {
+  translateField(field: $field, locale: $locale)
 }`
 
 export class CatalogGQL extends AppGraphQLClient {
@@ -297,5 +303,16 @@ export class CatalogGQL extends AppGraphQLClient {
         },
       }
     )
+  }
+
+  public translateField = <T>(params: TranslateEntry<T>) => {
+    const { entry: field, locale } = params
+    return this.graphql.query({
+      query: TRANSLATE_FIELD,
+      variables: {
+        field,
+        locale,
+      },
+    })
   }
 }

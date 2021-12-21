@@ -27,3 +27,27 @@ interface InterfaceTranslationsEntriesToVBase<T> {
     params: EntryTranslationParams
   ) => Promise<GraphQLResponse<Serializable>>
 }
+
+interface UploadEntriesAsync<T> {
+  entries: T[]
+  requestId: string
+  locale: string
+  bucket: string
+  translateEntry: <T>(
+    params: TranslateEntry<T>
+  ) => Promise<GraphQLResponse<Serializable>>
+}
+
+interface UploadTranslations<T> {
+  entries: UploadFile<ReadStream>
+  locale: string
+  bucket: string
+  path: string
+  translateEntry: <T>(
+    params: TranslateEntry<T>
+  ) => Promise<GraphQLResponse<Serializable>>
+}
+interface EntryTranslations<T> extends UploadEntriesAsync<T> {
+  path: string
+  categoryId?: string
+}

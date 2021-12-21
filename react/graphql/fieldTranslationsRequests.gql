@@ -1,0 +1,3 @@
+query fieldTranslationsRequests {
+  fieldTranslationsRequests @context(provider: "vtex.admin-catalog-translation")
+}

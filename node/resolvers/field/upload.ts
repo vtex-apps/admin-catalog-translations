@@ -2,29 +2,18 @@ import { ReadStream } from 'fs'
 
 import {
   FIELD_NAME,
-  calculateExportProcessTime,
-  FIELD_TRANSLATION_UPLOAD,
-  CALLS_PER_MINUTE,
+  FIELD_TRANSLATION_EXPORT_UPLOAD,
   parseStreamToJSON,
-  saveTranslationsEntriesToVBase,
+  uploadTranslations,
+  FIELD_TRANSLATION_IMPORT_UPLOAD,
+  entryTranslations,
 } from '../../utils'
 
-const uploadFieldTranslationsExport = async (
+const fieldTranslations = async (
   _root: unknown,
   { fields, locale }: { fields: UploadFile<ReadStream>; locale: string },
   ctx: Context
 ) => {
-  const bucket = FIELD_NAME
-  const path = FIELD_TRANSLATION_UPLOAD
-  const {
-    clients: { catalogGQL, vbase, licenseManager },
-    vtex: { adminUserAuthToken, requestId },
-  } = ctx
-
-  const {
-    profile: { email },
-  } = await licenseManager.getTopbarData(adminUserAuthToken as string)
-
   const { createReadStream } = await fields
   const fieldStream = createReadStream()
   const fieldsParsed = await parseStreamToJSON<FieldTranslationInput>(
@@ -38,119 +27,41 @@ const uploadFieldTranslationsExport = async (
     }
   }
 
-  const allTranslationRequest = await vbase.getJSON<string[]>(
-    bucket,
-    path,
+  const params: EntryTranslations<string> = {
+    entries: entryIdCollection,
+    requestId: ctx?.vtex?.requestId,
+    locale,
+    bucket: FIELD_NAME,
+    path: FIELD_TRANSLATION_EXPORT_UPLOAD,
+    translateEntry: ctx?.clients?.catalogGQL.getFieldTranslation,
+  }
+  return entryTranslations<string, FieldTranslationResponse>(params, ctx)
+}
+
+const fieldTranslationsRequests = async (
+  _root: unknown,
+  _args: unknown,
+  ctx: Context
+) =>
+  ctx.clients.vbase.getJSON<string[]>(
+    FIELD_NAME,
+    FIELD_TRANSLATION_EXPORT_UPLOAD,
     true
   )
-
-  const updateRequests = allTranslationRequest
-    ? [requestId, ...allTranslationRequest]
-    : [requestId]
-
-  await vbase.saveJSON<string[]>(bucket, path, updateRequests)
-
-  const requestInfo: TranslationRequest<Field> = {
-    requestId,
-    requestedBy: email,
-    locale,
-    createdAt: new Date(),
-    estimatedTime: calculateExportProcessTime(
-      entryIdCollection.length,
-      CALLS_PER_MINUTE
-    ),
-  }
-
-  await vbase.saveJSON<TranslationRequest<Field>>(
-    bucket,
-    requestId,
-    requestInfo
-  )
-
-  const params: ParamsTranslationsToVBase = {
-    locale,
-    requestId,
-    bucket,
-  }
-
-  saveTranslationsEntriesToVBase<string, FieldTranslationResponse>(
-    {
-      entries: entryIdCollection,
-      params,
-      getEntryTranslation: catalogGQL.getFieldTranslation,
-    },
-    {
-      catalogGQLClient: catalogGQL,
-      vbase,
-    }
-  )
-
-  return requestInfo
-}
 
 const uploadFieldTranslationsImport = async (
   _root: unknown,
   { fields, locale }: { fields: UploadFile<ReadStream>; locale: string },
   ctx: Context
 ) => {
-  const {
-    clients: { licenseManager, vbase },
-    vtex: { adminUserAuthToken, requestId },
-  } = ctx
-
-  const { createReadStream } = await fields
-
-  const fieldStream = createReadStream()
-
-  const fieldsParsed = await parseStreamToJSON<FieldTranslationInput>(
-    fieldStream
-  )
-
-  const {
-    profile: { email },
-  } = await licenseManager.getTopbarData(adminUserAuthToken as string)
-
-  const allTranslationsMade = await vbase.getJSON<string[]>(
-    FIELD_NAME,
-    FIELD_TRANSLATION_UPLOAD,
-    true
-  )
-
-  const updateRequests = allTranslationsMade
-    ? [requestId, ...allTranslationsMade]
-    : [requestId]
-
-  await vbase.saveJSON<string[]>(
-    FIELD_NAME,
-    FIELD_TRANSLATION_UPLOAD,
-    updateRequests
-  )
-
-  const requestInfo = {
-    requestId,
+  const params: UploadTranslations<FieldTranslationInput> = {
+    entries: fields,
     locale,
-    translatedBy: email,
-    createdAt: new Date(),
-    estimatedTime: calculateExportProcessTime(
-      fieldsParsed.length,
-      CALLS_PER_MINUTE
-    ),
+    bucket: FIELD_NAME,
+    path: FIELD_TRANSLATION_IMPORT_UPLOAD,
+    translateEntry: ctx?.clients?.catalogGQL?.translateField,
   }
-
-  await vbase.saveJSON<UploadRequest>(FIELD_NAME, requestId, requestInfo)
-
-  // uploadEntriesAsync<FieldTranslationInput>(
-  //   {
-  //     entries: fieldsParsed,
-  //     requestId,
-  //     locale,
-  //     bucket: FIELD_NAME,
-  //     translateEntry: catalogGQL?.getFieldTranslation,
-  //   },
-  //   { vbase }
-  // )
-
-  return requestId
+  return uploadTranslations(params, ctx)
 }
 
 const fieldTranslationsUploadRequests = async (
@@ -160,7 +71,7 @@ const fieldTranslationsUploadRequests = async (
 ) =>
   ctx.clients.vbase.getJSON<string[]>(
     FIELD_NAME,
-    FIELD_TRANSLATION_UPLOAD,
+    FIELD_TRANSLATION_IMPORT_UPLOAD,
     true
   )
 
@@ -169,6 +80,7 @@ export const mutations = {
 }
 
 export const queries = {
-  uploadFieldTranslationsExport,
+  fieldTranslations,
+  fieldTranslationsRequests,
   fieldTranslationsUploadRequests,
 }

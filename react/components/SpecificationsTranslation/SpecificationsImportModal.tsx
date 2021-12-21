@@ -12,7 +12,7 @@ import {
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
 import UPLOAD_FIELD_TRANSLATION from '../../graphql/uploadFieldTranslationsImport.gql'
-import FIELD_UPLOAD_REQUESTS from '../../graphql/fieldUploadRequests.gql'
+import FIELD_UPLOAD_REQUESTS from '../../graphql/fieldTranslationsUploadRequests.gql'
 import ImportStatusList from '../ImportStatusList'
 
 const ENTRY_HEADERS: Array<keyof Field> = ['fieldId', 'name']

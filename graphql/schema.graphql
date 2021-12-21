@@ -19,10 +19,8 @@ type Query {
   ): UploadRequest
   brandTranslations(locale: String!, active: Boolean): [Brand]
   brandTranslationsUploadRequests: [String]
-  uploadFieldTranslationsExport(
-    fields: Upload!
-    locale: String!
-  ): TranslationRequest
+  fieldTranslations(fields: Upload!, locale: String!): TranslationRequest
+  fieldTranslationsRequests: [String]
   fieldTranslationsUploadRequests: [String]
   downloadFieldTranslations(requestId: String!): [Field]
   translationRequestInfo(

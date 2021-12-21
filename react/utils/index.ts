@@ -180,7 +180,7 @@ export const createModel = <T>(
   )
 
   parseJSONToXLS([headersObject], {
-    fileName: `${type}_translate_model}`,
+    fileName: `${type}_translate_model`,
     sheetName,
   })
 }

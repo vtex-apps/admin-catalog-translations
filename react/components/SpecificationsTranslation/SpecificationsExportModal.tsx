@@ -11,19 +11,13 @@ import {
 } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
-import UPLOAD_FIELD_TRANSLATION_EXPORT from '../../graphql/uploadFieldTranslationsExport.gql'
-import FIELD_UPLOAD_REQUESTS from '../../graphql/fieldUploadRequests.gql'
+import FIELD_TRANSLATIONS from '../../graphql/fieldTranslations.gql'
+import FIELD_UPLOAD_REQUESTS from '../../graphql/fieldTranslationsRequests.gql'
 import DOWNLOAD_FIELD_TRANSLATION from '../../graphql/downloadFieldTranslations.gql'
 import ExportListItem from '../ExportListItem'
 
 const ENTRY_HEADERS: Array<keyof Field> = ['fieldId']
 const SPECIFICATION_DATA = 'specification_data'
-
-interface FieldTranslations {
-  uploadFieldTranslationsExport: {
-    requestId: string
-  }
-}
 
 const SpecificationExportModal = ({
   isExportOpen = false,
@@ -107,34 +101,39 @@ const SpecificationExportModal = ({
     startTranslationUpload,
     { data: newRequest, error: uploadError },
   ] = useLazyQuery<
-    FieldTranslations,
+    {
+      fieldTranslations: {
+        requestId: string
+      }
+    },
     {
       locale: string
       fields: Blob
     }
-  >(UPLOAD_FIELD_TRANSLATION_EXPORT, {
+  >(FIELD_TRANSLATIONS, {
     context: {
       headers: {
         'x-vtex-locale': `${selectedLocale}`,
       },
     },
+    fetchPolicy: 'no-cache',
   })
 
   const { data, updateQuery } = useQuery<{
-    fieldTranslationsUploadRequests: string[]
+    fieldTranslationsRequests: string[]
   }>(FIELD_UPLOAD_REQUESTS)
 
   useEffect(() => {
-    const { requestId } = newRequest?.uploadFieldTranslationsExport ?? {}
+    const { requestId } = newRequest?.fieldTranslations ?? {}
 
     if (!requestId) {
       return
     }
     updateQuery((prevResult) => {
       return {
-        fieldTranslationsUploadRequests: [
+        fieldTranslationsRequests: [
           requestId,
-          ...(prevResult.fieldTranslationsUploadRequests ?? []),
+          ...(prevResult.fieldTranslationsRequests ?? []),
         ],
       }
     })
@@ -295,7 +294,7 @@ const SpecificationExportModal = ({
                 </tr>
               </thead>
               <tbody>
-                {data?.fieldTranslationsUploadRequests
+                {data?.fieldTranslationsRequests
                   ?.slice(0, DOWNLOAD_LIST_SIZE)
                   ?.map((requestId) => (
                     <ExportListItem

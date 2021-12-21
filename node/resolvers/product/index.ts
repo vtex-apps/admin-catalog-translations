@@ -1,9 +1,7 @@
 import {
   BUCKET_NAME,
   ALL_TRANSLATIONS_FILES,
-  calculateExportProcessTime,
-  CALLS_PER_MINUTE,
-  saveTranslationsEntriesToVBase,
+  entryTranslations,
 } from '../../utils'
 import {
   mutations as uploadMutations,
@@ -37,68 +35,25 @@ const productTranslations = async (
   args: { locale: string; categoryId: string },
   ctx: Context
 ) => {
-  const bucket = BUCKET_NAME
   const {
-    clients: { catalog, catalogGQL, vbase, licenseManager },
-    vtex: { adminUserAuthToken, requestId },
+    clients: { catalog, catalogGQL },
+    vtex: { requestId },
   } = ctx
-
-  const {
-    profile: { email },
-  } = await licenseManager.getTopbarData(adminUserAuthToken as string)
 
   const { locale, categoryId } = args
 
   const productIdCollection = await catalog.getAllProducts(categoryId)
 
-  const allTranslationRequest = await vbase.getJSON<string[]>(
-    bucket,
-    ALL_TRANSLATIONS_FILES,
-    true
-  )
-
-  const updateRequests = allTranslationRequest
-    ? [requestId, ...allTranslationRequest]
-    : [requestId]
-
-  await vbase.saveJSON<string[]>(bucket, ALL_TRANSLATIONS_FILES, updateRequests)
-
-  const requestInfo: TranslationRequest<ProductTranslationResponse> = {
+  const params: EntryTranslations<string> = {
+    entries: productIdCollection,
     requestId,
-    requestedBy: email,
     categoryId,
     locale,
-    createdAt: new Date(),
-    estimatedTime: calculateExportProcessTime(
-      productIdCollection.length,
-      CALLS_PER_MINUTE
-    ),
+    bucket: BUCKET_NAME,
+    path: ALL_TRANSLATIONS_FILES,
+    translateEntry: catalogGQL.getProductTranslation,
   }
-
-  await vbase.saveJSON<TranslationRequest<ProductTranslationResponse>>(
-    bucket,
-    requestId,
-    requestInfo
-  )
-
-  const params: ParamsTranslationsToVBase = {
-    locale,
-    requestId,
-    bucket,
-  }
-  saveTranslationsEntriesToVBase<string, ProductTranslationResponse>(
-    {
-      entries: productIdCollection,
-      params,
-      getEntryTranslation: catalogGQL.getProductTranslation,
-    },
-    {
-      catalogGQLClient: catalogGQL,
-      vbase,
-    }
-  )
-
-  return requestInfo
+  return entryTranslations<string, ProductTranslationResponse>(params, ctx)
 }
 
 const productTranslationRequests = (
