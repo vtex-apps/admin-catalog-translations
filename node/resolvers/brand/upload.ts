@@ -1,17 +1,17 @@
 import { ReadStream } from 'fs'
 
 import {
-  BUCKET_NAME,
+  BRAND_NAME,
   calculateExportProcessTime,
-  PRODUCT_TRANSLATION_UPLOAD,
+  BRAND_TRANSLATION_UPLOAD,
   CALLS_PER_MINUTE,
   parseStreamToJSON,
   uploadEntriesAsync,
 } from '../../utils'
 
-const uploadProductTranslations = async (
+const uploadBrandTranslations = async (
   _root: unknown,
-  { products, locale }: { products: UploadFile<ReadStream>; locale: string },
+  { brands, locale }: { brands: UploadFile<ReadStream>; locale: string },
   ctx: Context
 ) => {
   const {
@@ -19,12 +19,12 @@ const uploadProductTranslations = async (
     vtex: { adminUserAuthToken, requestId },
   } = ctx
 
-  const { createReadStream } = await products
+  const { createReadStream } = await brands
 
-  const productStream = createReadStream()
+  const brandStream = createReadStream()
 
-  const productsParsed = await parseStreamToJSON<ProductTranslationInput>(
-    productStream
+  const brandsParsed = await parseStreamToJSON<BrandTranslationInput>(
+    brandStream
   )
 
   const {
@@ -32,8 +32,8 @@ const uploadProductTranslations = async (
   } = await licenseManager.getTopbarData(adminUserAuthToken as string)
 
   const allTranslationsMade = await vbase.getJSON<string[]>(
-    BUCKET_NAME,
-    PRODUCT_TRANSLATION_UPLOAD,
+    BRAND_NAME,
+    BRAND_TRANSLATION_UPLOAD,
     true
   )
 
@@ -42,8 +42,8 @@ const uploadProductTranslations = async (
     : [requestId]
 
   await vbase.saveJSON<string[]>(
-    BUCKET_NAME,
-    PRODUCT_TRANSLATION_UPLOAD,
+    BRAND_NAME,
+    BRAND_TRANSLATION_UPLOAD,
     updateRequests
   )
 
@@ -53,20 +53,20 @@ const uploadProductTranslations = async (
     translatedBy: email,
     createdAt: new Date(),
     estimatedTime: calculateExportProcessTime(
-      productsParsed.length,
+      brandsParsed.length,
       CALLS_PER_MINUTE
     ),
   }
 
-  await vbase.saveJSON<UploadRequest>(BUCKET_NAME, requestId, requestInfo)
+  await vbase.saveJSON<UploadRequest>(BRAND_NAME, requestId, requestInfo)
 
-  uploadEntriesAsync<ProductTranslationInput>(
+  uploadEntriesAsync<BrandTranslationInput>(
     {
-      entries: productsParsed,
+      entries: brandsParsed,
       requestId,
       locale,
-      bucket: BUCKET_NAME,
-      translateEntry: catalogGQL?.translateProduct,
+      bucket: BRAND_NAME,
+      translateEntry: catalogGQL?.translateBrand,
     },
     { vbase }
   )
@@ -74,19 +74,19 @@ const uploadProductTranslations = async (
   return requestId
 }
 
-const productTranslationsUploadRequests = async (
+const brandTranslationsUploadRequests = async (
   _root: unknown,
   _args: unknown,
   ctx: Context
 ) =>
   ctx.clients.vbase.getJSON<string[]>(
-    BUCKET_NAME,
-    PRODUCT_TRANSLATION_UPLOAD,
+    BRAND_NAME,
+    BRAND_TRANSLATION_UPLOAD,
     true
   )
 
-export const mutations = { uploadProductTranslations }
+export const mutations = { uploadBrandTranslations }
 
 export const queries = {
-  productTranslationsUploadRequests,
+  brandTranslationsUploadRequests,
 }

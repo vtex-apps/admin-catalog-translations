@@ -176,15 +176,8 @@ const collectionTranslationsUploadRequests = async (
     true
   )
 
-const translationUploadRequestInfo = (
-  _root: unknown,
-  args: { requestId: string },
-  ctx: Context
-) => ctx.clients.vbase.getJSON<UploadRequest>(COLLECTION_NAME, args.requestId)
-
 export const mutations = { uploadCollectionTranslations }
 
 export const queries = {
   collectionTranslationsUploadRequests,
-  translationUploadRequestInfo,
 }

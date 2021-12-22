@@ -132,6 +132,7 @@ const CollectionsTranslation = ({
         'x-vtex-locale': `${selectedLocale}`,
       },
     },
+    fetchPolicy: 'no-cache',
   })
 
   const downloadCollections = () => {

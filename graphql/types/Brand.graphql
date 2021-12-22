@@ -1,0 +1,8 @@
+type Brand {
+  id: Int
+  name: String
+  text: String
+  siteTitle: String
+  active: Boolean
+  locale: String
+}

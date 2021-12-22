@@ -56,6 +56,27 @@ const TRANSLATE_PRODUCT = `mutation translateProduct($product:ProductInputTransl
   translateProduct(product: $product, locale: $locale)
 }`
 
+const BRAND_QUERY = `
+  query GetBrands ($page: Int!) {
+    brands(term:"*", page: $page, pageSize: 50) {
+      items {
+        id
+        name
+        text
+        siteTitle
+        active
+      }
+      paging {
+        pages
+      }
+    }
+  }
+`
+
+const TRANSLATE_BRAND = `mutation translateBrand($brand:BrandInputTranslation!, $locale: Locale!) {
+  translateBrand(brand: $brand, locale: $locale)
+}`
+
 const COLLECTIONS_QUERY = `
   query GetCollections ($page: Int!) {
     collections(searchKey:"", page: $page, pageSize: 50) {
@@ -187,14 +208,84 @@ export class CatalogGQL extends AppGraphQLClient {
       }
     )
 
-  public translateProduct = (
-    translateProduct: ProductTranslationInput,
-    locale: string
-  ) => {
+  public translateProduct = <T>(translateProduct: T, locale: string) => {
     return this.graphql.query({
       query: TRANSLATE_PRODUCT,
       variables: {
         product: translateProduct,
+        locale,
+      },
+    })
+  }
+
+  private getBrandsPerPage = ({ page }: { page: number }) =>
+    this.graphql.query<BrandResponse, { page: number }>({
+      query: BRAND_QUERY,
+      variables: {
+        page,
+      },
+    })
+
+  private filterAndBuildItemsTranslation = (
+    items: Brand[],
+    active: boolean
+  ) => {
+    const filterItems = []
+    if (items?.length > 0) {
+      for (const a in items) {
+        if (!active || active === items[a]?.active) {
+          filterItems.push({
+            data: {
+              brand: items[a],
+            },
+          })
+        }
+      }
+    }
+    return filterItems
+  }
+
+  public getBrands = async (active = true) => {
+    try {
+      const response = await this.getBrandsPerPage({ page: 1 })
+      const {
+        items,
+        paging: { pages },
+      } = (response.data as BrandResponse).brands
+      const responsePromises = []
+
+      for (let i = 2; i <= pages; i++) {
+        const promise = this.getBrandsPerPage({ page: i })
+        responsePromises.push(promise)
+      }
+
+      const resolvedPromises = await Promise.all(responsePromises)
+
+      let translations = [
+        ...this.filterAndBuildItemsTranslation(items ?? [], active),
+      ]
+      for (const i in resolvedPromises) {
+        const { data } = resolvedPromises[i]
+        translations = [
+          ...translations,
+          ...this.filterAndBuildItemsTranslation(
+            data?.brands?.items ?? [],
+            active
+          ),
+        ]
+      }
+
+      return translations
+    } catch (error) {
+      return statusToError(error)
+    }
+  }
+
+  public translateBrand = <T>(translateBrand: T, locale: string) => {
+    return this.graphql.query({
+      query: TRANSLATE_BRAND,
+      variables: {
+        brand: translateBrand,
         locale,
       },
     })

@@ -22,11 +22,6 @@ export class Messages extends MessagesGraphQL {
       }
     )
 
-    // eslint-disable-next-line no-console
-    console.log('## save - args', args)
-    // eslint-disable-next-line no-console
-    console.log('## save - response', response)
-
     return response.data?.saveV2
   }
 }

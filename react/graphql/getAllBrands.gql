@@ -1,0 +1,10 @@
+query getAllBrands($locale: String!, $active: Boolean) {
+  brandTranslations(locale: $locale, active: $active)
+    @context(provider: "vtex.admin-catalog-translation") {
+    id
+    name
+    text
+    siteTitle
+    active
+  }
+}
