@@ -154,10 +154,6 @@ const ExportListItem = ({
         ) : null}
       </td>
       <td>
-        {/* TODO: remove this */}
-        {error ? 'error' : ''}
-        {longTimeAgo ? 'longTimeAgo' : ''}
-        {errorDownloading ? 'errorDownloading' : ''}
         {error || longTimeAgo || errorDownloading ? (
           <p className="c-danger i f7">
             <FormattedMessage id="catalog-translation.export.modal.download-list.error" />
