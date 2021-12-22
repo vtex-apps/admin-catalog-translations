@@ -49,6 +49,7 @@ const BrandExportModal = ({
         'x-vtex-locale': `${selectedLocale}`,
       },
     },
+    fetchPolicy: 'no-cache',
   })
 
   const downloadTranslations = () => {

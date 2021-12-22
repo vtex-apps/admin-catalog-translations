@@ -32,6 +32,7 @@ const SKUExportModal = ({ isExportOpen, setIsExportOpen }: Props) => {
         'x-vtex-locale': `${selectedLocale}`,
       },
     },
+    fetchPolicy: 'no-cache',
   })
 
   const { data: translationRequests, updateQuery } = useQuery<
