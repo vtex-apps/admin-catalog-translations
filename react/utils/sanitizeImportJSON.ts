@@ -24,10 +24,8 @@ export function sanitizeImportJSON({
         missingFields: errors,
       } as Message)
     } else {
-      // eslint-disable-next-line no-console
-      console.log('entry', entry)
-      // const entrySanitize = createEntry(entry, entryHeaders)
-      // entryList.push(entrySanitize)
+      const entrySanitize = createEntry(entry, entryHeaders)
+      entryList.push(entrySanitize)
 
       if (warnings.length) {
         warningList.push({
@@ -74,7 +72,7 @@ function validateEntry(
   return { warnings, errors }
 }
 
-export function createEntry(
+function createEntry(
   entry: Record<string, string>,
   entryHeaders: EntryHeaders[]
 ) {
