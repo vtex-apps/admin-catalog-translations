@@ -2,36 +2,39 @@ import React, { useState } from 'react'
 import { useMutation, useQuery } from 'react-apollo'
 import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
 import { FormattedMessage } from 'react-intl'
+import { DocumentNode } from 'graphql'
 
-import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../../utils'
-import { useLocaleSelector } from '../LocaleSelector'
-import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
-import UPLOAD_PRODUCT_TRANSLATION from '../../graphql/uploadProductTranslation.gql'
-import UPLOAD_PRODUCT_REQUESTS from '../../graphql/productUploadRequests.gql'
-import ImportStatusList from '../ImportStatusList'
+import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../utils'
+import WarningAndErrorsImportModal from './WarningAndErrorsImportModal'
+// import uploadEntryTranslation from '../graphql/uploadBrandTranslation.gql'
+// import uploadEntryRequest from '../graphql/brandUploadRequests.gql'
+import { useLocaleSelector } from './LocaleSelector'
+import ImportStatusList from './ImportStatusList'
 
-const productHeaders: EntryHeadersProduct[] = [
-  'id',
-  'name',
-  'title',
-  'description',
-  'shortDescription',
-  'linkId',
-]
+// const brandHeaders: Array<keyof Brand> = ['id', 'name', 'text', 'siteTitle']
 
-const PRODUCT_DATA = 'product_data'
+const BRAND_DATA = 'brands_data'
 const UPLOAD_LIST_SIZE = 10
 
-const ProductImportModal = ({
+interface ImportEntriesModal extends ComponentProps {
+  uploadEntryTranslation: DocumentNode
+  uploadEntryRequest: DocumentNode
+  entryHeaders: EntryHeaders[]
+}
+
+const ImportEntriesModal = ({
   isImportOpen = false,
   handleOpenImport = () => {},
-}: ComponentProps) => {
+  uploadEntryTranslation,
+  uploadEntryRequest,
+  entryHeaders,
+}: ImportEntriesModal) => {
   const [errorParsingFile, setErrorParsingFile] = useState('')
   const [loading, setLoading] = useState(false)
   const [errorModal, setErrorModal] = useState(false)
   const [warningModal, setWarningModal] = useState(false)
-  const [validtionErrors, setValidationErrors] = useState<Message[]>([])
-  const [validtionWarnings, setValidationWarnings] = useState<Message[]>([])
+  const [validationErrors, setValidationErrors] = useState<Message[]>([])
+  const [validationWarnings, setValidationWarnings] = useState<Message[]>([])
   const [originalFile, setOriginalFile] = useState<Array<{}>>([])
   const [formattedTranslations, setFormattedTranslations] = useState<
     Blob | undefined
@@ -49,14 +52,14 @@ const ProductImportModal = ({
 
     try {
       const fileParsed = await parseXLSToJSON(files[0], {
-        sheetName: PRODUCT_DATA,
+        sheetName: BRAND_DATA,
       })
 
       setOriginalFile(fileParsed)
 
       const [translations, { errors, warnings }] = sanitizeImportJSON({
         data: fileParsed,
-        entryHeaders: productHeaders,
+        entryHeaders,
         requiredHeaders: ['id'],
       })
 
@@ -97,51 +100,52 @@ const ProductImportModal = ({
   }
 
   const createModel = () => {
-    const headersObject = productHeaders.reduce<
-      Record<typeof productHeaders[number], string>
+    const headersObject = entryHeaders.reduce<
+      Record<typeof entryHeaders[number], string>
     >((obj, header) => {
       obj[header] = ''
       return obj
-    }, {} as Record<typeof productHeaders[number], string>)
+    }, {} as Record<typeof entryHeaders[number], string>)
 
+    // TODO: modify all Brand "entry"m change to dynamic entry
     parseJSONToXLS([headersObject], {
-      fileName: 'product_translate_model',
-      sheetName: PRODUCT_DATA,
+      fileName: 'brand_translate_model',
+      sheetName: BRAND_DATA,
     })
   }
 
-  const [startProductUpload, { error: uploadError }] = useMutation<
+  const [startBrandUpload, { error: uploadError }] = useMutation<
     {
-      uploadProductTranslations: string
+      uploadBrandTranslations: string
     },
     {
       locale: string
-      products: Blob
+      brands: Blob
     }
-  >(UPLOAD_PRODUCT_TRANSLATION)
+  >(uploadEntryTranslation)
 
   const { data, updateQuery } = useQuery<{
-    productTranslationsUploadRequests: string[]
-  }>(UPLOAD_PRODUCT_REQUESTS)
+    brandTranslationsUploadRequests: string[]
+  }>(uploadEntryRequest)
 
   const handleUploadRequest = async () => {
     if (!formattedTranslations) {
       return
     }
 
-    const { data: newRequest } = await startProductUpload({
+    const { data: newRequest } = await startBrandUpload({
       variables: {
         locale: selectedLocale,
-        products: formattedTranslations,
+        brands: formattedTranslations,
       },
     })
     // eslint-disable-next-line vtex/prefer-early-return
-    if (newRequest?.uploadProductTranslations) {
+    if (newRequest?.uploadBrandTranslations) {
       updateQuery((prevResult) => {
         return {
-          productTranslationsUploadRequests: [
-            newRequest.uploadProductTranslations,
-            ...(prevResult.productTranslationsUploadRequests ?? []),
+          brandTranslationsUploadRequests: [
+            newRequest.uploadBrandTranslations,
+            ...(prevResult.brandTranslationsUploadRequests ?? []),
           ],
         }
       })
@@ -180,7 +184,7 @@ const ProductImportModal = ({
     >
       <h3>
         <FormattedMessage
-          id="catalog-translation.import.modal.header"
+          id="catalog-translation.import.modal.brand-header"
           values={{
             selectedLocale,
           }}
@@ -231,21 +235,21 @@ const ProductImportModal = ({
                   <FormattedMessage id="catalog-translation.import.modal.total-entries" />
                 </li>
               ) : null}
-              {validtionWarnings.length ? (
+              {validationWarnings.length ? (
                 <li>
                   <ButtonPlain onClick={() => setWarningModal(true)}>
-                    {validtionWarnings.length}{' '}
+                    {validationWarnings.length}{' '}
                     <FormattedMessage id="catalog-translation.import.modal.total-warnings" />
                   </ButtonPlain>
                 </li>
               ) : null}
-              {validtionErrors.length ? (
+              {validationErrors.length ? (
                 <li>
                   <ButtonPlain
                     variation="danger"
                     onClick={() => setErrorModal(true)}
                   >
-                    {validtionErrors.length}{' '}
+                    {validationErrors.length}{' '}
                     <FormattedMessage id="catalog-translation.import.modal.total-errors" />
                   </ButtonPlain>
                 </li>
@@ -288,13 +292,13 @@ const ProductImportModal = ({
                 </tr>
               </thead>
               <tbody>
-                {data?.productTranslationsUploadRequests
+                {data?.brandTranslationsUploadRequests
                   ?.slice(0, UPLOAD_LIST_SIZE)
                   .map((requestId) => (
                     <ImportStatusList
                       requestId={requestId}
                       key={requestId}
-                      bucket="product-translation"
+                      bucket="brand-translation"
                     />
                   ))}
               </tbody>
@@ -306,16 +310,16 @@ const ProductImportModal = ({
         isOpen={warningModal}
         modalName="Warning Modal"
         handleClose={setWarningModal}
-        data={validtionWarnings}
+        data={validationWarnings}
       />
       <WarningAndErrorsImportModal
         isOpen={errorModal}
         modalName="Error Modal"
         handleClose={setErrorModal}
-        data={validtionErrors}
+        data={validationErrors}
       />
     </ModalDialog>
   )
 }
 
-export default ProductImportModal
+export default ImportEntriesModal

@@ -8,4 +8,12 @@ interface Message {
   missingFields: []
 }
 
-type EntryHeaders<EntryType> = Extract<keyof EntryType, string> | 'locale'
+type EntryHeadersBrand = Extract<keyof Brand, string>
+type EntryHeadersCategory = Extract<keyof Category, string>
+type EntryHeadersProduct = Extract<keyof Product, string>
+
+type EntryHeaders =
+  | EntryHeadersBrand
+  | EntryHeadersCategory
+  | EntryHeadersProduct
+  | 'locale'

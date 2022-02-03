@@ -10,7 +10,7 @@ import UPLOAD_BRAND_TRANSLATION from '../../graphql/uploadBrandTranslation.gql'
 import UPLOAD_BRAND_REQUESTS from '../../graphql/brandUploadRequests.gql'
 import ImportStatusList from '../ImportStatusList'
 
-const brandHeaders: Array<keyof Brand> = ['id', 'name', 'text', 'siteTitle']
+const brandHeaders: EntryHeadersBrand[] = ['id', 'name', 'text', 'siteTitle']
 
 const BRAND_DATA = 'brands_data'
 const UPLOAD_LIST_SIZE = 10
@@ -47,7 +47,7 @@ const BrandImportModal = ({
 
       setOriginalFile(fileParsed)
 
-      const [translations, { errors, warnings }] = sanitizeImportJSON<Brand>({
+      const [translations, { errors, warnings }] = sanitizeImportJSON({
         data: fileParsed,
         entryHeaders: brandHeaders,
         requiredHeaders: ['id'],
