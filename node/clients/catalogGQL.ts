@@ -29,6 +29,9 @@ const GET_CATEGORY_TRANSLATION_QUERY = `
     }
   }
 `
+const TRANSLATE_CATEGORY = `mutation translateCategory($category:CategoryInputTranslation!, $locale: Locale!) {
+  translateCategory(category: $category, locale: $locale)
+}`
 
 const GET_PRODUCT_TRANSLATION_QUERY = `
   query getProductTranslation($identifier: ProductUniqueIdentifier) {
@@ -137,6 +140,16 @@ export class CatalogGQL extends AppGraphQLClient {
         },
       }
     )
+  }
+
+  public translateCategory = <T>(translateCategory: T, locale: string) => {
+    return this.graphql.query({
+      query: TRANSLATE_CATEGORY,
+      variables: {
+        category: translateCategory,
+        locale,
+      },
+    })
   }
 
   public getProductTranslation = (id: string, locale: string) =>
