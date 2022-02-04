@@ -30,8 +30,8 @@ const ProductImportModal = ({
   const [loading, setLoading] = useState(false)
   const [errorModal, setErrorModal] = useState(false)
   const [warningModal, setWarningModal] = useState(false)
-  const [validtionErrors, setValidationErrors] = useState<Message[]>([])
-  const [validtionWarnings, setValidationWarnings] = useState<Message[]>([])
+  const [validationErrors, setValidationErrors] = useState<Message[]>([])
+  const [validationWarnings, setValidationWarnings] = useState<Message[]>([])
   const [originalFile, setOriginalFile] = useState<Array<{}>>([])
   const [formattedTranslations, setFormattedTranslations] = useState<
     Blob | undefined
@@ -231,21 +231,21 @@ const ProductImportModal = ({
                   <FormattedMessage id="catalog-translation.import.modal.total-entries" />
                 </li>
               ) : null}
-              {validtionWarnings.length ? (
+              {validationWarnings.length ? (
                 <li>
                   <ButtonPlain onClick={() => setWarningModal(true)}>
-                    {validtionWarnings.length}{' '}
+                    {validationWarnings.length}{' '}
                     <FormattedMessage id="catalog-translation.import.modal.total-warnings" />
                   </ButtonPlain>
                 </li>
               ) : null}
-              {validtionErrors.length ? (
+              {validationErrors.length ? (
                 <li>
                   <ButtonPlain
                     variation="danger"
                     onClick={() => setErrorModal(true)}
                   >
-                    {validtionErrors.length}{' '}
+                    {validationErrors.length}{' '}
                     <FormattedMessage id="catalog-translation.import.modal.total-errors" />
                   </ButtonPlain>
                 </li>
@@ -306,13 +306,13 @@ const ProductImportModal = ({
         isOpen={warningModal}
         modalName="Warning Modal"
         handleClose={setWarningModal}
-        data={validtionWarnings}
+        data={validationWarnings}
       />
       <WarningAndErrorsImportModal
         isOpen={errorModal}
         modalName="Error Modal"
         handleClose={setErrorModal}
-        data={validtionErrors}
+        data={validationErrors}
       />
     </ModalDialog>
   )

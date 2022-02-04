@@ -68,5 +68,6 @@
   "catalog-translation.export.modal.title-brand": "Exportar Traducciones de Marcas para",
   "catalog-translation.export.modal.confirmation-brands": "Exportar Marcas",
   "catalog-translation.export.modal.export-active-brands": "Exportar solo Marcas Activas",
-  "catalog-translation.import.modal.brand-header": "Importar Traducciones de Marcas para {selectedLocale}"
+  "catalog-translation.import.modal.brand-header": "Importar Traducciones de Marcas para {selectedLocale}",
+  "catalog-translation.import.modal.entryName-header": "Importar Traducciones de {entryName} para {selectedLocale}"
 }

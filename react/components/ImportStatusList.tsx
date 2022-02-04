@@ -11,7 +11,7 @@ const ImportStatusList = ({
   bucket,
 }: {
   requestId: string
-  bucket: 'brand-translation' | 'product-translation'
+  bucket: BucketName
 }) => {
   const [shouldHaveFinished, setShouldHaveFinished] = useState(false)
   const {

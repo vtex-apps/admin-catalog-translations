@@ -2,33 +2,37 @@ import React, { useState } from 'react'
 import { useMutation, useQuery } from 'react-apollo'
 import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
 import { FormattedMessage } from 'react-intl'
-import { DocumentNode } from 'graphql'
 
-import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../utils'
+import {
+  sanitizeImportJSON,
+  parseXLSToJSON,
+  parseJSONToXLS,
+  getValueByKey,
+} from '../utils'
 import WarningAndErrorsImportModal from './WarningAndErrorsImportModal'
-// import uploadEntryTranslation from '../graphql/uploadBrandTranslation.gql'
-// import uploadEntryRequest from '../graphql/brandUploadRequests.gql'
 import { useLocaleSelector } from './LocaleSelector'
 import ImportStatusList from './ImportStatusList'
 
-// const brandHeaders: Array<keyof Brand> = ['id', 'name', 'text', 'siteTitle']
-
-const BRAND_DATA = 'brands_data'
 const UPLOAD_LIST_SIZE = 10
-
-interface ImportEntriesModal extends ComponentProps {
-  uploadEntryTranslation: DocumentNode
-  uploadEntryRequest: DocumentNode
-  entryHeaders: EntryHeaders[]
-}
 
 const ImportEntriesModal = ({
   isImportOpen = false,
   handleOpenImport = () => {},
-  uploadEntryTranslation,
-  uploadEntryRequest,
-  entryHeaders,
-}: ImportEntriesModal) => {
+  settings,
+}: ImportEntries) => {
+  const {
+    uploadMutationFile,
+    entryQueryFile,
+    entryHeaders,
+    sheetName,
+    fileName,
+    paramEntryName,
+    entryQueryName,
+    uploadMutationName,
+    bucket,
+    entryName,
+  } = settings
+
   const [errorParsingFile, setErrorParsingFile] = useState('')
   const [loading, setLoading] = useState(false)
   const [errorModal, setErrorModal] = useState(false)
@@ -52,7 +56,7 @@ const ImportEntriesModal = ({
 
     try {
       const fileParsed = await parseXLSToJSON(files[0], {
-        sheetName: BRAND_DATA,
+        sheetName,
       })
 
       setOriginalFile(fileParsed)
@@ -107,46 +111,46 @@ const ImportEntriesModal = ({
       return obj
     }, {} as Record<typeof entryHeaders[number], string>)
 
-    // TODO: modify all Brand "entry"m change to dynamic entry
     parseJSONToXLS([headersObject], {
-      fileName: 'brand_translate_model',
-      sheetName: BRAND_DATA,
+      fileName,
+      sheetName,
     })
   }
 
-  const [startBrandUpload, { error: uploadError }] = useMutation<
+  const [startEntriesUpload, { error: uploadError }] = useMutation<
     {
-      uploadBrandTranslations: string
+      [key: string]: string
     },
     {
-      locale: string
-      brands: Blob
+      [key: string]: string | Blob
     }
-  >(uploadEntryTranslation)
+  >(uploadMutationFile)
 
   const { data, updateQuery } = useQuery<{
-    brandTranslationsUploadRequests: string[]
-  }>(uploadEntryRequest)
+    [key: string]: string[]
+  }>(entryQueryFile)
 
   const handleUploadRequest = async () => {
     if (!formattedTranslations) {
       return
     }
 
-    const { data: newRequest } = await startBrandUpload({
+    const { data: newRequest } = await startEntriesUpload({
       variables: {
         locale: selectedLocale,
-        brands: formattedTranslations,
+        [paramEntryName]: formattedTranslations,
       },
     })
+
+    const request = newRequest
+      ? getValueByKey(newRequest, uploadMutationName)
+      : null
+
     // eslint-disable-next-line vtex/prefer-early-return
-    if (newRequest?.uploadBrandTranslations) {
+    if (request) {
       updateQuery((prevResult) => {
         return {
-          brandTranslationsUploadRequests: [
-            newRequest.uploadBrandTranslations,
-            ...(prevResult.brandTranslationsUploadRequests ?? []),
-          ],
+          [entryQueryName]: [request, ...(prevResult[entryQueryName] ?? [])],
         }
       })
       setTabSelected(2)
@@ -184,9 +188,10 @@ const ImportEntriesModal = ({
     >
       <h3>
         <FormattedMessage
-          id="catalog-translation.import.modal.brand-header"
+          id="catalog-translation.import.modal.entryName-header"
           values={{
             selectedLocale,
+            entryName,
           }}
         />
       </h3>
@@ -292,13 +297,13 @@ const ImportEntriesModal = ({
                 </tr>
               </thead>
               <tbody>
-                {data?.brandTranslationsUploadRequests
+                {data?.[entryQueryName]
                   ?.slice(0, UPLOAD_LIST_SIZE)
                   .map((requestId) => (
                     <ImportStatusList
                       requestId={requestId}
                       key={requestId}
-                      bucket="brand-translation"
+                      bucket={bucket}
                     />
                   ))}
               </tbody>

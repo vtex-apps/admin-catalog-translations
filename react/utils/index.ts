@@ -69,10 +69,10 @@ export const filterLocales = (
  * @return {boolean} true if values have changed. false if not.
  */
 
-export function hasChanges<S>(formValues: S, orignalValues: S): boolean {
+export function hasChanges<S>(formValues: S, originalValues: S): boolean {
   const keys = Object.keys(formValues)
   for (const key of keys) {
-    if (formValues[key as keyof S] !== orignalValues[key as keyof S]) {
+    if (formValues[key as keyof S] !== originalValues[key as keyof S]) {
       return true
     }
   }
@@ -159,4 +159,18 @@ export const formatCollectionFromMessages = ({
     col[translation.lang] = { name: translation.translation, id: context }
     return col
   }, {} as Record<string, Collections>)
+}
+
+export const getValueByKey = (
+  obj: { [k: string]: string },
+  keyName: string
+) => {
+  let value = ''
+  Object.keys(obj).forEach((key) => {
+    if (key === keyName) {
+      value = obj[key]
+    }
+  })
+
+  return value
 }
