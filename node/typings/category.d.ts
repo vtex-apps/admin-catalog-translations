@@ -21,12 +21,11 @@ interface ResolvedPromise<Response> {
   data: Response
 }
 
-// TODO: check this properties
 interface CategoryTranslationInput {
   id: string
-  linkId: string
-  name: string
-  title: string
-  description: string
-  keywords: string[]
+  name?: string
+  title?: string
+  description?: string
+  locale?: string
+  linkId?: string
 }

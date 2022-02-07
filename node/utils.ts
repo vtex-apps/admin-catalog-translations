@@ -19,7 +19,7 @@ export const ALL_SKU_TRANSLATIONS_FILES = 'all-sku-translations'
 export const PRODUCT_TRANSLATION_UPLOAD = 'product-upload'
 export const BRAND_TRANSLATION_UPLOAD = 'brand-upload'
 export const BRAND_NAME = 'brand-translation'
-export const CATEGORY_NAME = 'category-translation'
+export const CATEGORY_NAME = 'category-transl'
 export const CATEGORY_TRANSLATION_UPLOAD = 'category-upload'
 
 export const statusToError = (e: AxiosError) => {

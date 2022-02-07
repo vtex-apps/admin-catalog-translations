@@ -1,3 +1,8 @@
+import {
+  mutations as uploadMutations,
+  queries as uploadQueries,
+} from './upload'
+
 export const Category = {
   locale: (
     _root: ResolvedPromise<CategoryTranslationResponse>,
@@ -60,4 +65,9 @@ const getCategoriesName = async (
 export const queries = {
   categoryTranslations,
   getCategoriesName,
+  ...uploadQueries,
+}
+
+export const mutations = {
+  ...uploadMutations,
 }

@@ -1,4 +1,7 @@
-type BucketName = 'brand-translation' | 'product-translation'
+type BucketName =
+  | 'brand-translation'
+  | 'product-translation'
+  | 'category-transl'
 
 interface ImportEntriesSettings {
   bucket: BucketName
