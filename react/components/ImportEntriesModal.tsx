@@ -188,7 +188,7 @@ const ImportEntriesModal = ({
     >
       <h3>
         <FormattedMessage
-          id="catalog-translation.import.modal.entryName-header"
+          id="catalog-translation.import.modal.entry-name-header"
           values={{
             selectedLocale,
             entryName,
