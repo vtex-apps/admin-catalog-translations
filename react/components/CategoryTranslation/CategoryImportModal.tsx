@@ -32,7 +32,7 @@ const settings: ImportEntriesSettings = {
   uploadMutationName,
 }
 
-const CategoryImport = ({
+const CategoryImportModal = ({
   isImportOpen = false,
   handleOpenImport = () => {},
 }: ComponentProps) => {
@@ -47,4 +47,4 @@ const CategoryImport = ({
   )
 }
 
-export default CategoryImport
+export default CategoryImportModal
