@@ -3,7 +3,6 @@ query getAllCollections($locale: String!, $active: Boolean) {
     @context(provider: "vtex.admin-catalog-translation") {
     id
     name
-    description
     locale
     status
   }

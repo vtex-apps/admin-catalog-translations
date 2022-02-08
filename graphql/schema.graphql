@@ -2,7 +2,6 @@ type Query {
   categoryTranslations(locale: String!, active: Boolean): [Category]
   collectionTranslations(locale: String!, active: Boolean): [Collection]
   getCategoriesName: [CategoryName]
-  getCollectionsName: [CollectionName]
   productTranslations(
     locale: String!
     categoryId: String!

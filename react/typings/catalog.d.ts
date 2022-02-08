@@ -96,7 +96,6 @@ interface Collection extends CollectionInputTranslation {
 }
 
 interface CollectionInputTranslation {
-  description: string
   name: string
 }
 

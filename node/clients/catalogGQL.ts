@@ -97,7 +97,6 @@ const GET_COLLECTION_TRANSLATION_QUERY = `
     collection(id: $id) {
       id
       name
-      description
       status
     }
   }

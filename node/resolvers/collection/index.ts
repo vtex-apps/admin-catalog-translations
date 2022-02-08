@@ -13,8 +13,6 @@ export const Collection = {
   },
   name: (root: ResolvedPromise<CollectionTranslationResponse>) =>
     root.data.collection.name,
-  description: (root: ResolvedPromise<CollectionTranslationResponse>) =>
-    root.data.collection.description,
   id: (root: ResolvedPromise<CollectionTranslationResponse>) =>
     root.data.collection.id,
   status: (root: ResolvedPromise<CollectionTranslationResponse>) =>
@@ -49,24 +47,11 @@ const collectionTranslations = async (
   return translations
 }
 
-const getCollectionsName = async (
-  _root: unknown,
-  _args: unknown,
-  ctx: Context
-) => {
-  const {
-    clients: { catalogGQL },
-  } = ctx
-
-  return catalogGQL.getCollections()
-}
-
 export const mutations = {
   ...uploadMutations,
 }
 
 export const queries = {
   collectionTranslations,
-  getCollectionsName,
   ...uploadQueries,
 }
