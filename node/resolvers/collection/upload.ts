@@ -8,7 +8,7 @@ import { CatalogGQL } from '../../clients/catalogGQL'
 import { Messages } from '../../clients/messages'
 import {
   pacer,
-  COLLECTION_NAME,
+  COLLECTION_BUCKET,
   calculateExportProcessTime,
   COLLECTION_TRANSLATION_UPLOAD,
   CALLS_PER_MINUTE,
@@ -32,7 +32,7 @@ const translateMessagesCollection = async (
   }: { messages: Messages; catalogGQL: CatalogGQL; vbase: VBase }
 ) => {
   const translationRequest = await vbase.getJSON<UploadRequest>(
-    COLLECTION_NAME,
+    COLLECTION_BUCKET,
     requestId,
     true
   )
@@ -57,7 +57,7 @@ const translateMessagesCollection = async (
 
       await pacer(CALLS_PER_MINUTE)
       if (breakPointsProgress.includes(i)) {
-        await vbase.saveJSON<UploadRequest>(COLLECTION_NAME, requestId, {
+        await vbase.saveJSON<UploadRequest>(COLLECTION_BUCKET, requestId, {
           ...translationRequest,
           progress: Math.ceil((i / totalEntries) * 100),
         })
@@ -69,17 +69,17 @@ const translateMessagesCollection = async (
       messages: messagesToTranslate,
     })
 
-    await vbase.saveJSON<UploadRequest>(COLLECTION_NAME, requestId, {
+    await vbase.saveJSON<UploadRequest>(COLLECTION_BUCKET, requestId, {
       ...translationRequest,
       progress: 100,
     })
   } catch (error) {
     const translationRequestUpdated = await vbase.getJSON<UploadRequest>(
-      COLLECTION_NAME,
+      COLLECTION_BUCKET,
       requestId,
       true
     )
-    await vbase.saveJSON<UploadRequest>(COLLECTION_NAME, requestId, {
+    await vbase.saveJSON<UploadRequest>(COLLECTION_BUCKET, requestId, {
       ...translationRequestUpdated,
       error: true,
     })
@@ -129,7 +129,7 @@ const uploadCollectionTranslations = async (
   } = await licenseManager.getTopbarData(adminUserAuthToken as string)
 
   const allTranslationsMade = await vbase.getJSON<string[]>(
-    COLLECTION_NAME,
+    COLLECTION_BUCKET,
     COLLECTION_TRANSLATION_UPLOAD,
     true
   )
@@ -139,7 +139,7 @@ const uploadCollectionTranslations = async (
     : [requestId]
 
   await vbase.saveJSON<string[]>(
-    COLLECTION_NAME,
+    COLLECTION_BUCKET,
     COLLECTION_TRANSLATION_UPLOAD,
     updateRequests
   )
@@ -155,7 +155,7 @@ const uploadCollectionTranslations = async (
     ),
   }
 
-  await vbase.saveJSON<UploadRequest>(COLLECTION_NAME, requestId, requestInfo)
+  await vbase.saveJSON<UploadRequest>(COLLECTION_BUCKET, requestId, requestInfo)
 
   translateMessagesCollection(
     { collections: collectionsParsed, requestId, locale },
@@ -171,7 +171,7 @@ const collectionTranslationsUploadRequests = async (
   ctx: Context
 ) =>
   ctx.clients.vbase.getJSON<string[]>(
-    COLLECTION_NAME,
+    COLLECTION_BUCKET,
     COLLECTION_TRANSLATION_UPLOAD,
     true
   )

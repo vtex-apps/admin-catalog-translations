@@ -13,14 +13,15 @@ import JSONStream from 'JSONStream'
 
 const ONE_MINUTE = 60 * 1000
 export const CALLS_PER_MINUTE = 1600
-export const BUCKET_NAME = 'product-translation'
-export const COLLECTION_NAME = 'collection-transl'
+export const PRODUCT_BUCKET = 'product-translation'
+export const COLLECTION_BUCKET = 'collection-transl'
 export const ALL_TRANSLATIONS_FILES = 'all-translations'
 export const ALL_SKU_TRANSLATIONS_FILES = 'all-sku-translations'
 export const PRODUCT_TRANSLATION_UPLOAD = 'product-upload'
 export const COLLECTION_TRANSLATION_UPLOAD = 'collection-upload'
 export const BRAND_TRANSLATION_UPLOAD = 'brand-upload'
-export const BRAND_NAME = 'brand-translation'
+export const BRAND_BUCKET = 'brand-translation'
+export const SKU_BUCKET = 'sku-translation'
 
 export const statusToError = (e: AxiosError) => {
   if (!e.response) {

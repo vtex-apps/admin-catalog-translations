@@ -3,7 +3,7 @@ import { VBase } from '@vtex/api'
 import { CatalogGQL } from '../../clients/catalogGQL'
 import {
   pacer,
-  BUCKET_NAME,
+  PRODUCT_BUCKET,
   ALL_TRANSLATIONS_FILES,
   calculateExportProcessTime,
   CALLS_PER_MINUTE,
@@ -44,7 +44,7 @@ const saveTranslationsToVBase = async (
   { catalogGQLClient, vbase }: { catalogGQLClient: CatalogGQL; vbase: VBase }
 ): Promise<void> => {
   const translationRequest = await vbase.getJSON<ProductTranslationRequest>(
-    BUCKET_NAME,
+    PRODUCT_BUCKET,
     requestId,
     true
   )
@@ -69,7 +69,7 @@ const saveTranslationsToVBase = async (
     }
 
     await vbase.saveJSON<ProductTranslationRequest>(
-      BUCKET_NAME,
+      PRODUCT_BUCKET,
       requestId,
       updateTranslation
     )
@@ -79,7 +79,7 @@ const saveTranslationsToVBase = async (
       error: true,
     }
     await vbase.saveJSON<ProductTranslationRequest>(
-      BUCKET_NAME,
+      PRODUCT_BUCKET,
       requestId,
       addError
     )
@@ -105,7 +105,7 @@ const productTranslations = async (
   const productIdCollection = await catalog.getAllProducts(categoryId)
 
   const allTranslationRequest = await vbase.getJSON<string[]>(
-    BUCKET_NAME,
+    PRODUCT_BUCKET,
     ALL_TRANSLATIONS_FILES,
     true
   )
@@ -115,7 +115,7 @@ const productTranslations = async (
     : [requestId]
 
   await vbase.saveJSON<string[]>(
-    BUCKET_NAME,
+    PRODUCT_BUCKET,
     ALL_TRANSLATIONS_FILES,
     updateRequests
   )
@@ -133,7 +133,7 @@ const productTranslations = async (
   }
 
   await vbase.saveJSON<ProductTranslationRequest>(
-    BUCKET_NAME,
+    PRODUCT_BUCKET,
     requestId,
     requestInfo
   )
@@ -153,13 +153,13 @@ const productTranslationRequests = (
   _root: unknown,
   _args: unknown,
   ctx: Context
-) => ctx.clients.vbase.getJSON(BUCKET_NAME, ALL_TRANSLATIONS_FILES, true)
+) => ctx.clients.vbase.getJSON(PRODUCT_BUCKET, ALL_TRANSLATIONS_FILES, true)
 
 const productTranslationRequestInfo = (
   _root: unknown,
   args: { requestId: string },
   ctx: Context
-) => ctx.clients.vbase.getJSON(BUCKET_NAME, args.requestId)
+) => ctx.clients.vbase.getJSON(PRODUCT_BUCKET, args.requestId)
 
 const downloadProductTranslation = async (
   _root: unknown,
@@ -172,7 +172,7 @@ const downloadProductTranslation = async (
 
   const { translations, locale } = await vbase.getJSON<
     ProductTranslationRequest
-  >(BUCKET_NAME, args.requestId, true)
+  >(PRODUCT_BUCKET, args.requestId, true)
 
   ctx.state.locale = locale
 
