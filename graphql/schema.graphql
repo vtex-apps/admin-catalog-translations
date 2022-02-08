@@ -9,7 +9,6 @@ type Query {
   productTranslationRequests: [String]
   productTranslationRequestInfo(requestId: String!): ProductTranslationRequest
   downloadProductTranslation(requestId: String!): [Product]
-  downloadCollectionTranslation(requestId: String!): [Collection]
   skuTranslations(locale: String!, categoryId: String!): SKUTranslationRequest
   skuTranslationRequests: [String]
   skuTranslationRequestInfo(requestId: String!): SKUTranslationRequest
@@ -26,6 +25,10 @@ type Query {
 
 type Mutation {
   uploadProductTranslations(products: Upload!, locale: String!): String
-  uploadCollectionTranslations(collections: Upload!, locale: String!): String
+  uploadCollectionTranslations(
+    collections: Upload!
+    locale: String!
+    xVtexTenant: String!
+  ): String
   uploadBrandTranslations(brands: Upload!, locale: String!): String
 }

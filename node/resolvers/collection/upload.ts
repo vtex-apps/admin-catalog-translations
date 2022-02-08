@@ -20,10 +20,12 @@ const translateMessagesCollection = async (
     collections,
     requestId,
     locale,
+    xVtexTenant,
   }: {
     collections: CollectionTranslationInput[]
     requestId: string
     locale: string
+    xVtexTenant: string
   },
   {
     messages,
@@ -45,11 +47,11 @@ const translateMessagesCollection = async (
     for (let i = 0; i < totalEntries; i++) {
       const { data } = await catalogGQL.getCollectionTranslation(
         collections[i].id,
-        'es-ES'
+        xVtexTenant
       )
 
       messagesToTranslate.push({
-        srcLang: 'es-ES',
+        srcLang: xVtexTenant,
         srcMessage: data?.collection.name ?? '',
         context: collections[i].id,
         targetMessage: collections[i].name ?? '',
@@ -64,15 +66,21 @@ const translateMessagesCollection = async (
       }
     }
 
-    messages.save({
+    const saveMessagedPromise = messages.save({
       to: locale,
       messages: messagesToTranslate,
     })
 
-    await vbase.saveJSON<UploadRequest>(COLLECTION_BUCKET, requestId, {
-      ...translationRequest,
-      progress: 100,
-    })
+    const updateProgressPromise = vbase.saveJSON<UploadRequest>(
+      COLLECTION_BUCKET,
+      requestId,
+      {
+        ...translationRequest,
+        progress: 100,
+      }
+    )
+
+    await Promise.all([saveMessagedPromise, updateProgressPromise])
   } catch (error) {
     const translationRequestUpdated = await vbase.getJSON<UploadRequest>(
       COLLECTION_BUCKET,
@@ -108,7 +116,12 @@ const uploadCollectionTranslations = async (
   {
     collections,
     locale,
-  }: { collections: UploadFile<ReadStream>; locale: string },
+    xVtexTenant,
+  }: {
+    collections: UploadFile<ReadStream>
+    locale: string
+    xVtexTenant: string
+  },
   ctx: Context
 ) => {
   const {
@@ -158,7 +171,7 @@ const uploadCollectionTranslations = async (
   await vbase.saveJSON<UploadRequest>(COLLECTION_BUCKET, requestId, requestInfo)
 
   translateMessagesCollection(
-    { collections: collectionsParsed, requestId, locale },
+    { collections: collectionsParsed, requestId, locale, xVtexTenant },
     { messages, catalogGQL, vbase }
   )
 

@@ -1,4 +1,11 @@
-mutation uploadCollectionTranslations($locale: String!, $collections: Upload!) {
-  uploadCollectionTranslations(locale: $locale, collections: $collections)
-    @context(provider: "vtex.admin-catalog-translation")
+mutation uploadCollectionTranslations(
+  $locale: String!
+  $collections: Upload!
+  $xVtexTenant: String!
+) {
+  uploadCollectionTranslations(
+    locale: $locale
+    collections: $collections
+    xVtexTenant: $xVtexTenant
+  ) @context(provider: "vtex.admin-catalog-translation")
 }

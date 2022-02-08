@@ -31,7 +31,7 @@ const CollectionImportModal = ({
   >(undefined)
 
   const [tabSelected, setTabSelected] = useState<1 | 2>(1)
-  const { selectedLocale } = useLocaleSelector()
+  const { selectedLocale, xVtexTenant } = useLocaleSelector()
 
   const handleFile = async (files: FileList) => {
     if (loading) {
@@ -112,6 +112,7 @@ const CollectionImportModal = ({
     {
       locale: string
       collections: Blob
+      xVtexTenant: string
     }
   >(UPLOAD_COLLECTION_TRANSLATION)
 
@@ -128,6 +129,7 @@ const CollectionImportModal = ({
       variables: {
         locale: selectedLocale,
         collections: formattedTranslations,
+        xVtexTenant,
       },
     })
     // eslint-disable-next-line vtex/prefer-early-return
