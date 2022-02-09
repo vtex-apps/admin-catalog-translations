@@ -4,47 +4,62 @@ import {
 } from './upload'
 
 export const Collection = {
-  locale: (
-    _root: ResolvedPromise<CollectionTranslationResponse>,
-    _args: unknown,
-    ctx: Context
-  ) => {
+  locale: (_root: unknown, _args: unknown, ctx: Context) => {
     return ctx.state.locale
   },
-  name: (root: ResolvedPromise<CollectionTranslationResponse>) =>
-    root.data.collection.name,
-  id: (root: ResolvedPromise<CollectionTranslationResponse>) =>
-    root.data.collection.id,
-  status: (root: ResolvedPromise<CollectionTranslationResponse>) =>
-    root.data.collection.status,
 }
 
 const collectionTranslations = async (
   _root: unknown,
-  args: { locale: string; active?: boolean },
+  args: { locale: string; active?: boolean; xVtexTenant: string },
   ctx: Context
 ) => {
   const {
-    clients: { catalogGQL },
+    clients: { catalogGQL, messagesGraphQL },
   } = ctx
 
-  const { active, locale } = args
+  const { active, locale, xVtexTenant } = args
 
   ctx.state.locale = locale
 
-  const ids = await catalogGQL.getCollections()
-  const translationsP = []
+  const collections = await catalogGQL.getCollections()
 
-  for (const collection of ids) {
-    if (!active || (active && collection.status === 'active')) {
-      const promise = catalogGQL.getCollectionTranslation(collection.id, locale)
-      translationsP.push(promise)
+  const originalTranslation = collections.reduce<Record<string, string>>(
+    (map, collection) => {
+      return {
+        [collection.id]: collection.name,
+        ...map,
+      }
+    },
+    {}
+  )
+
+  const messages = collections
+    .filter(({ status }) => (active ? status === 'active' : true))
+    .map(({ id, name }) => ({
+      content: name,
+      context: id,
+    }))
+
+  const userTranslations = await messagesGraphQL.userTranslations({
+    from: xVtexTenant,
+    messages,
+  })
+
+  const transformMessages = userTranslations.map(
+    ({ context, translations }) => {
+      const translatedName = translations.find(({ lang }) => lang === locale)
+        ?.translation
+      // If there is no translation, the value is set to be the original one, since
+      // this is the normal behavior for the store when autmoatic translation is off.
+      return {
+        id: context,
+        name: translatedName ?? originalTranslation[context as string],
+      }
     }
-  }
+  )
 
-  const translations = await Promise.all(translationsP)
-
-  return translations
+  return transformMessages
 }
 
 export const mutations = {

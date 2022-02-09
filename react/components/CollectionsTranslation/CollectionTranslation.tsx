@@ -125,7 +125,7 @@ const CollectionsTranslation = ({
 
   const [fetchCollections, { data, error }] = useLazyQuery<
     CollectionTranslations,
-    { locale: string; active?: boolean }
+    { locale: string; active?: boolean; xVtexTenant: string }
   >(getAllCollections, {
     context: {
       headers: {
@@ -139,7 +139,7 @@ const CollectionsTranslation = ({
     setHasError(false)
     setDownloading(true)
     fetchCollections({
-      variables: { active: onlyActive, locale: selectedLocale },
+      variables: { active: onlyActive, locale: selectedLocale, xVtexTenant },
     })
   }
 

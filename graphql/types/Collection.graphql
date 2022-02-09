@@ -2,7 +2,6 @@ type Collection {
   id: String
   name: String
   locale: String
-  status: String
 }
 
 type CollectionName {

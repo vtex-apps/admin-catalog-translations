@@ -15,7 +15,6 @@ interface CollectionTranslationResponse {
   collection: {
     id: string
     name: string
-    description: string
     status: string
   }
 }
@@ -27,5 +26,4 @@ interface ResolvedPromise<Response> {
 interface CollectionTranslationInput {
   id: string
   name?: string
-  description?: string
 }

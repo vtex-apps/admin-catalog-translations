@@ -1,9 +1,15 @@
-query getAllCollections($locale: String!, $active: Boolean) {
-  collectionTranslations(locale: $locale, active: $active)
-    @context(provider: "vtex.admin-catalog-translation") {
+query getAllCollections(
+  $locale: String!
+  $active: Boolean
+  $xVtexTenant: String!
+) {
+  collectionTranslations(
+    locale: $locale
+    active: $active
+    xVtexTenant: $xVtexTenant
+  ) @context(provider: "vtex.admin-catalog-translation") {
     id
     name
     locale
-    status
   }
 }

@@ -1,6 +1,10 @@
 type Query {
   categoryTranslations(locale: String!, active: Boolean): [Category]
-  collectionTranslations(locale: String!, active: Boolean): [Collection]
+  collectionTranslations(
+    locale: String!
+    active: Boolean
+    xVtexTenant: String!
+  ): [Collection]
   getCategoriesName: [CategoryName]
   productTranslations(
     locale: String!
