@@ -47,6 +47,7 @@
   "catalog-translation.import.modal.cancelation": "Cancel",
   "catalog-translation.import.modal.confirmation": "Send Translations",
   "catalog-translation.import.modal.header": "Import Product Translations for {selectedLocale}",
+  "catalog-translation.import.modal.header.collections": "Import Collection Translations for {selectedLocale}",
   "catalog-translation.import.modal.import-tab": "Import",
   "catalog-translation.import.modal.request-tab": "Requests",
   "catalog-translation.import.modal.download-button": "Download xlsx model",

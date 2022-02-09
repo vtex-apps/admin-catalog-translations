@@ -9,3 +9,8 @@ interface Message {
 }
 
 type EntryHeaders<EntryType> = Extract<keyof EntryType, string> | 'locale'
+
+type BucketType =
+  | 'brand-translation'
+  | 'product-translation'
+  | 'collection-transl'

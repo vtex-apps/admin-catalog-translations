@@ -22,7 +22,7 @@ interface CategoryTranslations {
 
 const CategoryTranslation = ({
   isExportOpen = false,
-  handleOpenExport = () => {},
+  handleOpenExport = () => { },
 }: ComponentProps) => {
   const [onlyActive, setOnlyActive] = useState(true)
   const [downloading, setDownloading] = useState(false)

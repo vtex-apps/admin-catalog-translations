@@ -1,7 +1,7 @@
 import { ReadStream } from 'fs'
 
 import {
-  BUCKET_NAME,
+  PRODUCT_BUCKET,
   calculateExportProcessTime,
   PRODUCT_TRANSLATION_UPLOAD,
   CALLS_PER_MINUTE,
@@ -32,7 +32,7 @@ const uploadProductTranslations = async (
   } = await licenseManager.getTopbarData(adminUserAuthToken as string)
 
   const allTranslationsMade = await vbase.getJSON<string[]>(
-    BUCKET_NAME,
+    PRODUCT_BUCKET,
     PRODUCT_TRANSLATION_UPLOAD,
     true
   )
@@ -42,7 +42,7 @@ const uploadProductTranslations = async (
     : [requestId]
 
   await vbase.saveJSON<string[]>(
-    BUCKET_NAME,
+    PRODUCT_BUCKET,
     PRODUCT_TRANSLATION_UPLOAD,
     updateRequests
   )
@@ -58,14 +58,14 @@ const uploadProductTranslations = async (
     ),
   }
 
-  await vbase.saveJSON<UploadRequest>(BUCKET_NAME, requestId, requestInfo)
+  await vbase.saveJSON<UploadRequest>(PRODUCT_BUCKET, requestId, requestInfo)
 
   uploadEntriesAsync<ProductTranslationInput>(
     {
       entries: productsParsed,
       requestId,
       locale,
-      bucket: BUCKET_NAME,
+      bucket: PRODUCT_BUCKET,
       translateEntry: catalogGQL?.translateProduct,
     },
     { vbase }
@@ -80,7 +80,7 @@ const productTranslationsUploadRequests = async (
   ctx: Context
 ) =>
   ctx.clients.vbase.getJSON<string[]>(
-    BUCKET_NAME,
+    PRODUCT_BUCKET,
     PRODUCT_TRANSLATION_UPLOAD,
     true
   )
