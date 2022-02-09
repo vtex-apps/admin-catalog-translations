@@ -1,11 +1,10 @@
 /* eslint-disable no-await-in-loop */
 import { ReadStream } from 'fs'
 
-import { VBase } from '@vtex/api'
+import { VBase, MessagesGraphQL, MessageSaveInput } from '@vtex/api'
 import JSONStream from 'JSONStream'
 
 import { CatalogGQL } from '../../clients/catalogGQL'
-import { Messages } from '../../clients/messages'
 import {
   pacer,
   COLLECTION_BUCKET,
@@ -31,7 +30,7 @@ const translateMessagesCollection = async (
     messages,
     catalogGQL,
     vbase,
-  }: { messages: Messages; catalogGQL: CatalogGQL; vbase: VBase }
+  }: { messages: MessagesGraphQL; catalogGQL: CatalogGQL; vbase: VBase }
 ) => {
   const translationRequest = await vbase.getJSON<UploadRequest>(
     COLLECTION_BUCKET,
@@ -66,7 +65,7 @@ const translateMessagesCollection = async (
       }
     }
 
-    const saveMessagedPromise = messages.save({
+    const saveMessagedPromise = messages.saveV2({
       to: locale,
       messages: messagesToTranslate,
     })
