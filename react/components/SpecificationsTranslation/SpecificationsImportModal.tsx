@@ -15,7 +15,7 @@ import UPLOAD_FIELD_TRANSLATION from '../../graphql/uploadFieldTranslationsImpor
 import FIELD_UPLOAD_REQUESTS from '../../graphql/fieldTranslationsUploadRequests.gql'
 import ImportStatusList from '../ImportStatusList'
 
-const ENTRY_HEADERS: Array<keyof Field> = ['fieldId', 'name']
+const SPECIFICATION_HEADERS: Array<keyof Field> = ['fieldId', 'name']
 const SPECIFICATION_DATA = 'specification_data'
 
 const SpecificationImportModal = ({
@@ -52,7 +52,7 @@ const SpecificationImportModal = ({
 
       const [translations, { errors, warnings }] = sanitizeImportJSON<Field>({
         data: fileParsed,
-        entryHeaders: ENTRY_HEADERS,
+        entryHeaders: SPECIFICATION_HEADERS,
         requiredHeaders: ['fieldId', 'name'],
       })
 
@@ -93,7 +93,7 @@ const SpecificationImportModal = ({
   }
 
   const handleCreateModel = () => {
-    createModel(ENTRY_HEADERS, SPECIFICATION_DATA, 'specification')
+    createModel(SPECIFICATION_HEADERS, SPECIFICATION_DATA, 'specification')
   }
 
   const [startTranslationUpload, { error: uploadError }] = useMutation<

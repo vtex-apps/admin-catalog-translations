@@ -16,7 +16,7 @@ import FIELD_UPLOAD_REQUESTS from '../../graphql/fieldTranslationsRequests.gql'
 import DOWNLOAD_FIELD_TRANSLATION from '../../graphql/downloadFieldTranslations.gql'
 import ExportListItem from '../ExportListItem'
 
-const ENTRY_HEADERS: Array<keyof Field> = ['fieldId']
+const SPECIFICATION_HEADERS: Array<keyof Field> = ['fieldId']
 const SPECIFICATION_DATA = 'specification_data'
 
 const SpecificationExportModal = ({
@@ -53,7 +53,7 @@ const SpecificationExportModal = ({
 
       const [translations, { errors, warnings }] = sanitizeImportJSON<Field>({
         data: fileParsed,
-        entryHeaders: ENTRY_HEADERS,
+        entryHeaders: SPECIFICATION_HEADERS,
         requiredHeaders: ['fieldId'],
       })
 
@@ -94,7 +94,7 @@ const SpecificationExportModal = ({
   }
 
   const handleCreateModel = () => {
-    createModel(ENTRY_HEADERS, SPECIFICATION_DATA, 'specification')
+    createModel(SPECIFICATION_HEADERS, SPECIFICATION_DATA, 'specification')
   }
 
   const [
