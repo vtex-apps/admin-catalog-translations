@@ -22,7 +22,7 @@ interface CategoryTranslations {
 
 const CategoryTranslation = ({
   isExportOpen = false,
-  handleOpenExport = () => { },
+  handleOpenExport = () => {},
 }: ComponentProps) => {
   const [onlyActive, setOnlyActive] = useState(true)
   const [downloading, setDownloading] = useState(false)
@@ -49,6 +49,7 @@ const CategoryTranslation = ({
         'x-vtex-locale': `${selectedLocale}`,
       },
     },
+    fetchPolicy: 'no-cache',
   })
 
   const handleSubmitCategoryId = (e: SyntheticEvent) => {

@@ -3,15 +3,14 @@ import { useMutation, useQuery } from 'react-apollo'
 import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
 import { FormattedMessage } from 'react-intl'
 
-import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../../utils'
+import { sanitizeImportJSON, parseXLSToJSON, createModel } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
 import UPLOAD_COLLECTION_TRANSLATION from '../../graphql/uploadCollectionTranslation.gql'
 import UPLOAD_COLLECTION_REQUESTS from '../../graphql/collectionUploadRequests.gql'
 import ImportStatusList from '../ImportStatusList'
 
-const collectionHeaders: Array<keyof Collection> = ['id', 'name']
-
+const COLLECTION_HEADERS: Array<keyof Collection> = ['id', 'name']
 const COLLECTION_DATA = 'collection_data'
 const UPLOAD_LIST_SIZE = 10
 
@@ -51,7 +50,7 @@ const CollectionImportModal = ({
         Collection
       >({
         data: fileParsed,
-        entryHeaders: collectionHeaders,
+        entryHeaders: COLLECTION_HEADERS,
         requiredHeaders: ['id'],
       })
 
@@ -91,18 +90,8 @@ const CollectionImportModal = ({
     cleanErrors()
   }
 
-  const createModel = () => {
-    const headersObject = collectionHeaders.reduce<
-      Record<typeof collectionHeaders[number], string>
-    >((obj, header) => {
-      obj[header] = ''
-      return obj
-    }, {} as Record<typeof collectionHeaders[number], string>)
-
-    parseJSONToXLS([headersObject], {
-      fileName: 'collection_translate_model',
-      sheetName: COLLECTION_DATA,
-    })
+  const handleCreateModel = () => {
+    createModel(COLLECTION_HEADERS, COLLECTION_DATA, 'collection')
   }
 
   const [startCollectionUpload, { error: uploadError }] = useMutation<
@@ -197,7 +186,7 @@ const CollectionImportModal = ({
           >
             <div>
               <div className="mv4">
-                <ButtonPlain onClick={createModel}>
+                <ButtonPlain onClick={handleCreateModel}>
                   <FormattedMessage id="catalog-translation.import.modal.download-button" />
                 </ButtonPlain>
               </div>

@@ -69,5 +69,14 @@
   "catalog-translation.export.modal.title-brand": "Exportar Traducciones de Marcas para",
   "catalog-translation.export.modal.confirmation-brands": "Exportar Marcas",
   "catalog-translation.export.modal.export-active-brands": "Exportar solo Marcas Activas",
-  "catalog-translation.import.modal.brand-header": "Importar Traducciones de Marcas para {selectedLocale}"
+  "catalog-translation.import.modal.brand-header": "Importar Traducciones de Marcas para {selectedLocale}",
+  "catalog-translation.export.modal.specification-header": "Exportación Especificaciones Traducciones para {selectedLocale}",
+  "catalog-translation.export.modal.download-button": "Descargar modelo xlsx",
+  "catalog-translation.export.modal.dropzone": "Deje aquí su XLSX o",
+  "catalog-translation.export.modal.dropzone-choose-file": "escoge un archivo",
+  "catalog-translation.export.modal.total-entries": "entradas totales",
+  "catalog-translation.export.modal.total-warnings": "advertencias",
+  "catalog-translation.export.modal.total-errors": "errores. Las entradas serán ignoradas",
+  "catalog-translation.export.modal.error-uploading": "Error al cargar las traducciones",
+  "catalog-translation.export.modal.confirmation": "Exportar traducciones"
 }

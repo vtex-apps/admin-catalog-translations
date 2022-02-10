@@ -14,3 +14,6 @@ type BucketType =
   | 'brand-translation'
   | 'product-translation'
   | 'collection-transl'
+  | 'field-translation'
+
+type typeItem = 'product' | 'sku' | 'field'

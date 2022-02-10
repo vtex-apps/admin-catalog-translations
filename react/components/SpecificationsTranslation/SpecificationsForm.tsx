@@ -1,5 +1,5 @@
 import React, { FC, SyntheticEvent } from 'react'
-import { Input, Textarea, Button } from 'vtex.styleguide'
+import { Input } from 'vtex.styleguide'
 import { useMutation } from 'react-apollo'
 
 import { useLocaleSelector } from '../LocaleSelector'
@@ -13,7 +13,7 @@ interface SpecificationsFormProps {
   specificationId: string
   updateMemoSpecifications: (
     value: React.SetStateAction<{
-      [Identifier: string]: SpecificationsData
+      [Identifier: string]: FieldsData
     }>
   ) => void
 }
@@ -34,7 +34,7 @@ const SpecificationsForm: FC<SpecificationsFormProps> = ({
   const { isXVtexTenant, selectedLocale } = useLocaleSelector()
   const [translateSpecification, { loading }] = useMutation<
     { translateField: boolean },
-    { args: Specifications; locale: string }
+    { args: Field; locale: string }
   >(translateSpecificationMutation)
 
   const { openAlert } = useAlert()

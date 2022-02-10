@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useMutation, useQuery } from 'react-apollo'
+import React, { useEffect, useState } from 'react'
+import { useLazyQuery, useQuery } from 'react-apollo'
 import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
 import { FormattedMessage } from 'react-intl'
 
@@ -7,28 +7,21 @@ import {
   sanitizeImportJSON,
   parseXLSToJSON,
   createModel,
-  UPLOAD_LIST_SIZE,
+  DOWNLOAD_LIST_SIZE,
 } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
-import UPLOAD_PRODUCT_TRANSLATION from '../../graphql/uploadProductTranslation.gql'
-import UPLOAD_PRODUCT_REQUESTS from '../../graphql/productUploadRequests.gql'
-import ImportStatusList from '../ImportStatusList'
+import FIELD_TRANSLATIONS from '../../graphql/fieldTranslations.gql'
+import FIELD_UPLOAD_REQUESTS from '../../graphql/fieldTranslationsRequests.gql'
+import DOWNLOAD_FIELD_TRANSLATION from '../../graphql/downloadFieldTranslations.gql'
+import ExportListItem from '../ExportListItem'
 
-const PRODUCT_HEADERS: Array<keyof Product> = [
-  'id',
-  'name',
-  'title',
-  'description',
-  'shortDescription',
-  'linkId',
-]
+const ENTRY_HEADERS: Array<keyof Field> = ['fieldId']
+const SPECIFICATION_DATA = 'specification_data'
 
-const PRODUCT_DATA = 'product_data'
-
-const ProductImportModal = ({
-  isImportOpen = false,
-  handleOpenImport = () => {},
+const SpecificationExportModal = ({
+  isExportOpen = false,
+  handleOpenExport = () => {},
 }: ComponentProps) => {
   const [errorParsingFile, setErrorParsingFile] = useState('')
   const [loading, setLoading] = useState(false)
@@ -53,15 +46,15 @@ const ProductImportModal = ({
 
     try {
       const fileParsed = await parseXLSToJSON(files[0], {
-        sheetName: PRODUCT_DATA,
+        sheetName: SPECIFICATION_DATA,
       })
 
       setOriginalFile(fileParsed)
 
-      const [translations, { errors, warnings }] = sanitizeImportJSON<Product>({
+      const [translations, { errors, warnings }] = sanitizeImportJSON<Field>({
         data: fileParsed,
-        entryHeaders: PRODUCT_HEADERS,
-        requiredHeaders: ['id'],
+        entryHeaders: ENTRY_HEADERS,
+        requiredHeaders: ['fieldId'],
       })
 
       if (errors.length) {
@@ -101,47 +94,69 @@ const ProductImportModal = ({
   }
 
   const handleCreateModel = () => {
-    createModel(PRODUCT_HEADERS, PRODUCT_DATA, 'product')
+    createModel(ENTRY_HEADERS, SPECIFICATION_DATA, 'specification')
   }
 
-  const [startProductUpload, { error: uploadError }] = useMutation<
+  const [
+    startTranslationUpload,
+    { data: newRequest, error: uploadError },
+  ] = useLazyQuery<
     {
-      uploadProductTranslations: string
+      fieldTranslations: {
+        requestId: string
+      }
     },
     {
       locale: string
-      products: Blob
+      fields: Blob
     }
-  >(UPLOAD_PRODUCT_TRANSLATION)
+  >(FIELD_TRANSLATIONS, {
+    context: {
+      headers: {
+        'x-vtex-locale': `${selectedLocale}`,
+      },
+    },
+    fetchPolicy: 'no-cache',
+  })
 
   const { data, updateQuery } = useQuery<{
-    productTranslationsUploadRequests: string[]
-  }>(UPLOAD_PRODUCT_REQUESTS)
+    fieldTranslationsRequests: string[]
+  }>(FIELD_UPLOAD_REQUESTS)
+
+  useEffect(() => {
+    const { requestId } = newRequest?.fieldTranslations ?? {}
+
+    if (!requestId) {
+      return
+    }
+    updateQuery((prevResult) => {
+      return {
+        fieldTranslationsRequests: [
+          requestId,
+          ...(prevResult.fieldTranslationsRequests ?? []),
+        ],
+      }
+    })
+    setTabSelected(2)
+  }, [newRequest, updateQuery])
 
   const handleUploadRequest = async () => {
     if (!formattedTranslations) {
       return
     }
 
-    const { data: newRequest } = await startProductUpload({
+    startTranslationUpload({
       variables: {
         locale: selectedLocale,
-        products: formattedTranslations,
+        fields: formattedTranslations,
       },
     })
-    // eslint-disable-next-line vtex/prefer-early-return
-    if (newRequest?.uploadProductTranslations) {
-      updateQuery((prevResult) => {
-        return {
-          productTranslationsUploadRequests: [
-            newRequest.uploadProductTranslations,
-            ...(prevResult.productTranslationsUploadRequests ?? []),
-          ],
-        }
-      })
-      setTabSelected(2)
-    }
   }
+
+  const [download, { data: downloadJson, error: downloadError }] = useLazyQuery<
+    TranslationDownload<Field>,
+    { requestId: string }
+  >(DOWNLOAD_FIELD_TRANSLATION)
 
   return (
     <ModalDialog
@@ -151,13 +166,13 @@ const ProductImportModal = ({
           <FormattedMessage id="catalog-translation.import.modal.cancelation" />
         ),
         onClick: () => {
-          handleOpenImport(false)
+          handleOpenExport(false)
           cleanErrors()
         },
       }}
       confirmation={{
         label: (
-          <FormattedMessage id="catalog-translation.import.modal.confirmation" />
+          <FormattedMessage id="catalog-translation.export.modal.confirmation" />
         ),
         onClick: () => {
           if (errorParsingFile) {
@@ -166,15 +181,15 @@ const ProductImportModal = ({
           handleUploadRequest()
         },
       }}
-      isOpen={isImportOpen}
+      isOpen={isExportOpen}
       onClose={() => {
-        handleOpenImport(false)
+        handleOpenExport(false)
         cleanErrors()
       }}
     >
       <h3>
         <FormattedMessage
-          id="catalog-translation.import.modal.header"
+          id="catalog-translation.export.modal.specification-header"
           values={{
             selectedLocale,
           }}
@@ -184,7 +199,7 @@ const ProductImportModal = ({
         <Tabs>
           <Tab
             label={
-              <FormattedMessage id="catalog-translation.import.modal.import-tab" />
+              <FormattedMessage id="catalog-translation.export.modal.export-tab" />
             }
             active={tabSelected === 1}
             onClick={() => {
@@ -195,7 +210,7 @@ const ProductImportModal = ({
             <div>
               <div className="mv4">
                 <ButtonPlain onClick={handleCreateModel}>
-                  <FormattedMessage id="catalog-translation.import.modal.download-button" />
+                  <FormattedMessage id="catalog-translation.export.modal.download-button" />
                 </ButtonPlain>
               </div>
               <div>
@@ -206,10 +221,10 @@ const ProductImportModal = ({
                 >
                   <div className="pt7">
                     <span className="f4">
-                      <FormattedMessage id="catalog-translation.import.modal.dropzone" />
+                      <FormattedMessage id="catalog-translation.export.modal.dropzone" />
                     </span>
                     <span className="f4 c-link" style={{ cursor: 'pointer' }}>
-                      <FormattedMessage id="catalog-translation.import.modal.dropzone-choose-file" />
+                      <FormattedMessage id="catalog-translation.export.modal.dropzone-choose-file" />
                     </span>
                   </div>
                 </Dropzone>
@@ -222,14 +237,14 @@ const ProductImportModal = ({
               {originalFile.length ? (
                 <li>
                   {originalFile?.length}{' '}
-                  <FormattedMessage id="catalog-translation.import.modal.total-entries" />
+                  <FormattedMessage id="catalog-translation.export.modal.total-entries" />
                 </li>
               ) : null}
               {validationWarnings.length ? (
                 <li>
                   <ButtonPlain onClick={() => setWarningModal(true)}>
                     {validationWarnings.length}{' '}
-                    <FormattedMessage id="catalog-translation.import.modal.total-warnings" />
+                    <FormattedMessage id="catalog-translation.export.modal.total-warnings" />
                   </ButtonPlain>
                 </li>
               ) : null}
@@ -240,55 +255,55 @@ const ProductImportModal = ({
                     onClick={() => setErrorModal(true)}
                   >
                     {validationErrors.length}{' '}
-                    <FormattedMessage id="catalog-translation.import.modal.total-errors" />
+                    <FormattedMessage id="catalog-translation.export.modal.total-errors" />
                   </ButtonPlain>
                 </li>
               ) : null}
             </ul>
             {uploadError ? (
               <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
-                <FormattedMessage id="catalog-translation.import.modal.error-uploading" />
+                <FormattedMessage id="catalog-translation.export.modal.error-uploading" />
               </p>
             ) : null}
           </Tab>
           <Tab
             label={
-              <FormattedMessage id="catalog-translation.import.modal.request-tab" />
+              <FormattedMessage id="catalog-translation.export.modal.see-files-tab" />
             }
             active={tabSelected === 2}
-            onClick={() => {
-              setTabSelected(2)
-              handleReset()
-            }}
+            onClick={() => setTabSelected(2)}
           >
+            <p className="i f7 tr">
+              <FormattedMessage id="catalog-translation.export.modal.long-process.warning" />
+            </p>
             <table className="w-100 mt7 tc">
               <thead>
                 <tr>
                   <th>
-                    <FormattedMessage id="catalog-translation.import.modal.table-header.locale" />
+                    <FormattedMessage id="catalog-translation.export.modal.table-header.locale" />
                   </th>
                   <th>
-                    <FormattedMessage id="catalog-translation.import.modal.table-header.translated-by" />
+                    <FormattedMessage id="catalog-translation.export.modal.table-header.requested.by" />
                   </th>
                   <th>
-                    <FormattedMessage id="catalog-translation.import.modal.table-header.created-at" />
+                    <FormattedMessage id="catalog-translation.export.modal.table-header.requested.at" />
                   </th>
                   <th>
-                    <FormattedMessage id="catalog-translation.import.modal.table-header.progress" />
-                  </th>
-                  <th>
-                    <FormattedMessage id="catalog-translation.import.modal.table-header.total-translated" />
+                    <FormattedMessage id="catalog-translation.export.modal.table-header.download" />
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {data?.productTranslationsUploadRequests
-                  ?.slice(0, UPLOAD_LIST_SIZE)
-                  .map((requestId) => (
-                    <ImportStatusList
-                      requestId={requestId}
+                {data?.fieldTranslationsRequests
+                  ?.slice(0, DOWNLOAD_LIST_SIZE)
+                  ?.map((requestId) => (
+                    <ExportListItem
                       key={requestId}
-                      bucket="product-translation"
+                      requestId={requestId}
+                      download={download}
+                      downloadJson={downloadJson?.downloadFieldTranslations}
+                      downloadError={downloadError}
+                      type="field"
                     />
                   ))}
               </tbody>
@@ -312,4 +327,4 @@ const ProductImportModal = ({
   )
 }
 
-export default ProductImportModal
+export default SpecificationExportModal
