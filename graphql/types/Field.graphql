@@ -1,4 +1,4 @@
 type Field {
-  fieldId: String!
+  fieldId: String
   name: String
 }

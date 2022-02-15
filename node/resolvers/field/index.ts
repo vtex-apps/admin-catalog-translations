@@ -6,9 +6,9 @@ import {
 
 export const Field = {
   fieldId: (root: ResolvedPromise<FieldTranslationResponse>) =>
-    root.data.field.fieldId,
+    root?.data?.field?.fieldId,
   name: (root: ResolvedPromise<FieldTranslationResponse>) =>
-    root.data.field.name,
+    root?.data?.field?.name,
 }
 
 const downloadFieldTranslations = async (
