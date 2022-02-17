@@ -51,10 +51,10 @@ interface ProductInputTranslation {
   linkId: string
 }
 
-interface SpecificationsData {
-  field: Specifications
+interface FieldsData {
+  field: Field
 }
-interface Specifications extends FieldInputTranslation {
+interface Field extends FieldInputTranslation {
   fieldId: string
 }
 interface FieldInputTranslation {
@@ -75,6 +75,17 @@ interface TranslationRequestByCategoryId {
   estimatedTime: number
 }
 
+interface TranslationRequest {
+  requestId: string
+  requestedBy: string
+  categoryId?: string
+  error: boolean
+  createdAt: string
+  locale: string
+  completedAt: string
+  estimatedTime: number
+}
+
 interface ProductTranslationRequest {
   productTranslations: TranslationRequestByCategoryId
 }
@@ -85,6 +96,10 @@ interface ProdTranslationRequests {
 
 interface ProdTransInfoReq {
   productTranslationRequestInfo: TranslationRequestByCategoryId
+}
+
+interface TransInfoReq {
+  [key: string]: TranslationRequest
 }
 
 interface ProductTranslationDownload {
@@ -137,4 +152,8 @@ interface UploadRequest {
   locale: string
   error?: boolean
   progress?: number
+}
+
+interface TranslationDownload<T> {
+  [key: string]: T[]
 }

@@ -9,12 +9,17 @@ import {
   queries as productQueries,
   mutations as productMutations,
 } from './product'
-import { SKU, queries as skuQueries } from './SKU'
+import { SKU, queries as skuQueries } from './sku'
 import {
   Brand,
   queries as brandQueries,
   mutations as brandMutations,
 } from './brand'
+import {
+  Field,
+  queries as fieldsQueries,
+  mutations as fieldMutations,
+} from './field'
 import { queries as translationUploadRequestInfo } from './translation'
 
 export const queries = {
@@ -24,6 +29,7 @@ export const queries = {
   ...brandQueries,
   ...translationUploadRequestInfo,
   ...collectionQueries,
+  ...fieldsQueries,
 }
 
 export const resolvers = {
@@ -32,10 +38,12 @@ export const resolvers = {
   SKU,
   Brand,
   Collection,
+  Field,
 }
 
 export const mutations = {
   ...productMutations,
   ...brandMutations,
   ...collectionMutations,
+  ...fieldMutations,
 }

@@ -1,12 +1,12 @@
 import { Logger, VBase } from '@vtex/api'
 
-import { CatalogGQL } from '../clients/catalogGQL'
+import { CatalogGQL } from '../../clients/catalogGQL'
 import {
   ALL_SKU_TRANSLATIONS_FILES,
   PRODUCT_BUCKET,
   calculateExportProcessTime,
   pacer,
-} from '../utils'
+} from '../../utils'
 
 const CALLS_PER_MINUTE = 350
 
@@ -81,6 +81,7 @@ const saveSkuTranslation = async (
   }
 }
 
+// TODO: refactor this fn, see node\resolvers\product\index.ts => productTranslations
 const skuTranslations = async (
   _root: unknown,
   args: { locale: string; categoryId: string },

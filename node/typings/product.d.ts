@@ -20,18 +20,6 @@ interface ProductTranslationResponse {
   }
 }
 
-interface ProductTranslationRequest {
-  requestId: string
-  translations?: Array<GraphQLResponse<ProductTranslationResponse>> | null
-  requestedBy: string
-  categoryId: string
-  error?: boolean
-  createdAt: Date
-  locale: string
-  completedAt?: Date
-  estimatedTime: number
-}
-
 interface ProductTranslationInput {
   id: string
   name?: string

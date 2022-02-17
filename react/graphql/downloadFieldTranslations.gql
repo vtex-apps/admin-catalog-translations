@@ -1,0 +1,7 @@
+query downloadFieldTranslations($requestId: String!) {
+  downloadFieldTranslations(requestId: $requestId)
+    @context(provider: "vtex.admin-catalog-translation") {
+    fieldId
+    name
+  }
+}

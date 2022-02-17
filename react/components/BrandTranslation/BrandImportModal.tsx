@@ -3,17 +3,20 @@ import { useMutation, useQuery } from 'react-apollo'
 import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
 import { FormattedMessage } from 'react-intl'
 
-import { sanitizeImportJSON, parseXLSToJSON, parseJSONToXLS } from '../../utils'
+import {
+  sanitizeImportJSON,
+  createModel,
+  parseXLSToJSON,
+  UPLOAD_LIST_SIZE,
+} from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
 import UPLOAD_BRAND_TRANSLATION from '../../graphql/uploadBrandTranslation.gql'
 import UPLOAD_BRAND_REQUESTS from '../../graphql/brandUploadRequests.gql'
 import ImportStatusList from '../ImportStatusList'
 
-const brandHeaders: Array<keyof Brand> = ['id', 'name', 'text', 'siteTitle']
-
+const BRAND_HEADERS: Array<keyof Brand> = ['id', 'name', 'text', 'siteTitle']
 const BRAND_DATA = 'brands_data'
-const UPLOAD_LIST_SIZE = 10
 
 const BrandImportModal = ({
   isImportOpen = false,
@@ -49,7 +52,7 @@ const BrandImportModal = ({
 
       const [translations, { errors, warnings }] = sanitizeImportJSON<Brand>({
         data: fileParsed,
-        entryHeaders: brandHeaders,
+        entryHeaders: BRAND_HEADERS,
         requiredHeaders: ['id'],
       })
 
@@ -89,18 +92,8 @@ const BrandImportModal = ({
     cleanErrors()
   }
 
-  const createModel = () => {
-    const headersObject = brandHeaders.reduce<
-      Record<typeof brandHeaders[number], string>
-    >((obj, header) => {
-      obj[header] = ''
-      return obj
-    }, {} as Record<typeof brandHeaders[number], string>)
-
-    parseJSONToXLS([headersObject], {
-      fileName: 'brand_translate_model',
-      sheetName: BRAND_DATA,
-    })
+  const handleCreateModel = () => {
+    createModel(BRAND_HEADERS, BRAND_DATA, 'brand')
   }
 
   const [startBrandUpload, { error: uploadError }] = useMutation<
@@ -193,7 +186,7 @@ const BrandImportModal = ({
           >
             <div>
               <div className="mv4">
-                <ButtonPlain onClick={createModel}>
+                <ButtonPlain onClick={handleCreateModel}>
                   <FormattedMessage id="catalog-translation.import.modal.download-button" />
                 </ButtonPlain>
               </div>

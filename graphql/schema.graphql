@@ -25,6 +25,14 @@ type Query {
   ): UploadRequest
   brandTranslations(locale: String!, active: Boolean): [Brand]
   brandTranslationsUploadRequests: [String]
+  fieldTranslations(fields: Upload!, locale: String!): TranslationRequest
+  fieldTranslationsRequests: [String]
+  fieldTranslationsUploadRequests: [String]
+  downloadFieldTranslations(requestId: String!): [Field]
+  translationRequestInfo(
+    requestId: String!
+    bucket: String!
+  ): TranslationRequest
 }
 
 type Mutation {
@@ -35,4 +43,5 @@ type Mutation {
     xVtexTenant: String!
   ): String
   uploadBrandTranslations(brands: Upload!, locale: String!): String
+  uploadFieldTranslationsImport(fields: Upload!, locale: String!): String
 }

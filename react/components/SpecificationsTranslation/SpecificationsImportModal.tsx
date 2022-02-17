@@ -11,22 +11,14 @@ import {
 } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
-import UPLOAD_PRODUCT_TRANSLATION from '../../graphql/uploadProductTranslation.gql'
-import UPLOAD_PRODUCT_REQUESTS from '../../graphql/productUploadRequests.gql'
+import UPLOAD_FIELD_TRANSLATION from '../../graphql/uploadFieldTranslationsImport.gql'
+import FIELD_UPLOAD_REQUESTS from '../../graphql/fieldTranslationsUploadRequests.gql'
 import ImportStatusList from '../ImportStatusList'
 
-const PRODUCT_HEADERS: Array<keyof Product> = [
-  'id',
-  'name',
-  'title',
-  'description',
-  'shortDescription',
-  'linkId',
-]
+const SPECIFICATION_HEADERS: Array<keyof Field> = ['fieldId', 'name']
+const SPECIFICATION_DATA = 'specification_data'
 
-const PRODUCT_DATA = 'product_data'
-
-const ProductImportModal = ({
+const SpecificationImportModal = ({
   isImportOpen = false,
   handleOpenImport = () => {},
 }: ComponentProps) => {
@@ -53,15 +45,15 @@ const ProductImportModal = ({
 
     try {
       const fileParsed = await parseXLSToJSON(files[0], {
-        sheetName: PRODUCT_DATA,
+        sheetName: SPECIFICATION_DATA,
       })
 
       setOriginalFile(fileParsed)
 
-      const [translations, { errors, warnings }] = sanitizeImportJSON<Product>({
+      const [translations, { errors, warnings }] = sanitizeImportJSON<Field>({
         data: fileParsed,
-        entryHeaders: PRODUCT_HEADERS,
-        requiredHeaders: ['id'],
+        entryHeaders: SPECIFICATION_HEADERS,
+        requiredHeaders: ['fieldId', 'name'],
       })
 
       if (errors.length) {
@@ -101,41 +93,41 @@ const ProductImportModal = ({
   }
 
   const handleCreateModel = () => {
-    createModel(PRODUCT_HEADERS, PRODUCT_DATA, 'product')
+    createModel(SPECIFICATION_HEADERS, SPECIFICATION_DATA, 'specification')
   }
 
-  const [startProductUpload, { error: uploadError }] = useMutation<
+  const [startTranslationUpload, { error: uploadError }] = useMutation<
     {
-      uploadProductTranslations: string
+      uploadFieldTranslationsImport: string
     },
     {
       locale: string
-      products: Blob
+      fields: Blob
     }
-  >(UPLOAD_PRODUCT_TRANSLATION)
+  >(UPLOAD_FIELD_TRANSLATION)
 
   const { data, updateQuery } = useQuery<{
-    productTranslationsUploadRequests: string[]
-  }>(UPLOAD_PRODUCT_REQUESTS)
+    fieldTranslationsUploadRequests: string[]
+  }>(FIELD_UPLOAD_REQUESTS)
 
   const handleUploadRequest = async () => {
     if (!formattedTranslations) {
       return
     }
 
-    const { data: newRequest } = await startProductUpload({
+    const { data: newRequest } = await startTranslationUpload({
       variables: {
         locale: selectedLocale,
-        products: formattedTranslations,
+        fields: formattedTranslations,
       },
     })
     // eslint-disable-next-line vtex/prefer-early-return
-    if (newRequest?.uploadProductTranslations) {
+    if (newRequest?.uploadFieldTranslationsImport) {
       updateQuery((prevResult) => {
         return {
-          productTranslationsUploadRequests: [
-            newRequest.uploadProductTranslations,
-            ...(prevResult.productTranslationsUploadRequests ?? []),
+          fieldTranslationsUploadRequests: [
+            newRequest.uploadFieldTranslationsImport,
+            ...(prevResult.fieldTranslationsUploadRequests ?? []),
           ],
         }
       })
@@ -282,13 +274,13 @@ const ProductImportModal = ({
                 </tr>
               </thead>
               <tbody>
-                {data?.productTranslationsUploadRequests
+                {data?.fieldTranslationsUploadRequests
                   ?.slice(0, UPLOAD_LIST_SIZE)
                   .map((requestId) => (
                     <ImportStatusList
                       requestId={requestId}
                       key={requestId}
-                      bucket="product-translation"
+                      bucket="field-translation"
                     />
                   ))}
               </tbody>
@@ -312,4 +304,4 @@ const ProductImportModal = ({
   )
 }
 
-export default ProductImportModal
+export default SpecificationImportModal
