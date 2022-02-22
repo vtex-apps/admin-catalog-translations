@@ -52,6 +52,7 @@ const CategoryTranslation = ({
         'x-vtex-locale': `${selectedLocale}`,
       },
     },
+    fetchPolicy: 'no-cache',
   })
 
   const handleSubmitCategoryId = (e: SyntheticEvent) => {

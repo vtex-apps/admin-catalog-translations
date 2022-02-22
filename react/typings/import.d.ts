@@ -1,10 +1,5 @@
-type BucketName =
-  | 'brand-translation'
-  | 'product-translation'
-  | 'category-transl'
-
 interface ImportEntriesSettings {
-  bucket: BucketName
+  bucket: BucketType
   entryHeaders: EntryHeaders[]
   entryQueryFile: DocumentNode
   entryQueryName: string

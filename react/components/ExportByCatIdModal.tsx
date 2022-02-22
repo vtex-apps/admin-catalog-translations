@@ -12,12 +12,11 @@ import {
 } from 'vtex.styleguide'
 
 import GET_CATEGORIES_NAME from '../graphql/getCategoriesName.gql'
-import { filterSearchCategories } from '../utils'
+import { DOWNLOAD_LIST_SIZE, filterSearchCategories } from '../utils'
 import { useLocaleSelector } from './LocaleSelector'
 import ExportListItem from './ExportListItem'
 
 const AUTOCOMPLETE_LIST_SIZE = 6
-const DOWNLOAD_LIST_SIZE = 6
 
 interface AutocompleteValue {
   label: string
@@ -30,6 +29,8 @@ interface Options {
   }
 }
 
+type typeItem = 'product' | 'sku'
+
 interface Props {
   isExportOpen: boolean
   setIsExportOpen: (open: boolean) => void
@@ -41,7 +42,7 @@ interface Props {
   download: (options: Options) => void
   downloadJson: any
   downloadError?: ApolloError
-  type: 'product' | 'sku'
+  type: typeItem
 }
 
 export const ExportByCategoryIdModal = ({

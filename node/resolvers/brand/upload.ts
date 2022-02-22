@@ -1,12 +1,9 @@
 import { ReadStream } from 'fs'
 
 import {
-  BRAND_NAME,
-  calculateExportProcessTime,
+  BRAND_BUCKET,
   BRAND_TRANSLATION_UPLOAD,
-  CALLS_PER_MINUTE,
-  parseStreamToJSON,
-  uploadEntriesAsync,
+  uploadTranslations,
 } from '../../utils'
 
 const uploadBrandTranslations = async (
@@ -14,64 +11,14 @@ const uploadBrandTranslations = async (
   { brands, locale }: { brands: UploadFile<ReadStream>; locale: string },
   ctx: Context
 ) => {
-  const {
-    clients: { catalogGQL, licenseManager, vbase },
-    vtex: { adminUserAuthToken, requestId },
-  } = ctx
-
-  const { createReadStream } = await brands
-
-  const brandStream = createReadStream()
-
-  const brandsParsed = await parseStreamToJSON<BrandTranslationInput>(
-    brandStream
-  )
-
-  const {
-    profile: { email },
-  } = await licenseManager.getTopbarData(adminUserAuthToken as string)
-
-  const allTranslationsMade = await vbase.getJSON<string[]>(
-    BRAND_NAME,
-    BRAND_TRANSLATION_UPLOAD,
-    true
-  )
-
-  const updateRequests = allTranslationsMade
-    ? [requestId, ...allTranslationsMade]
-    : [requestId]
-
-  await vbase.saveJSON<string[]>(
-    BRAND_NAME,
-    BRAND_TRANSLATION_UPLOAD,
-    updateRequests
-  )
-
-  const requestInfo = {
-    requestId,
+  const params: UploadTranslations<BrandTranslationInput> = {
+    entries: brands,
     locale,
-    translatedBy: email,
-    createdAt: new Date(),
-    estimatedTime: calculateExportProcessTime(
-      brandsParsed.length,
-      CALLS_PER_MINUTE
-    ),
+    bucket: BRAND_BUCKET,
+    path: BRAND_TRANSLATION_UPLOAD,
+    translateEntry: ctx?.clients?.catalogGQL?.translateBrand,
   }
-
-  await vbase.saveJSON<UploadRequest>(BRAND_NAME, requestId, requestInfo)
-
-  uploadEntriesAsync<BrandTranslationInput>(
-    {
-      entries: brandsParsed,
-      requestId,
-      locale,
-      bucket: BRAND_NAME,
-      translateEntry: catalogGQL?.translateBrand,
-    },
-    { vbase }
-  )
-
-  return requestId
+  return uploadTranslations(params, ctx)
 }
 
 const brandTranslationsUploadRequests = async (
@@ -80,7 +27,7 @@ const brandTranslationsUploadRequests = async (
   ctx: Context
 ) =>
   ctx.clients.vbase.getJSON<string[]>(
-    BRAND_NAME,
+    BRAND_BUCKET,
     BRAND_TRANSLATION_UPLOAD,
     true
   )

@@ -1,7 +1,12 @@
 import { Translation } from 'vtex.messages'
 
+import { parseJSONToXLS } from './fileParsers'
+
 export * from './fileParsers'
 export * from './sanitizeImportJSON'
+
+export const UPLOAD_LIST_SIZE = 10
+export const DOWNLOAD_LIST_SIZE = 6
 
 /**
  * Keep the xVtexTenant in the top of the dropdown button
@@ -173,4 +178,23 @@ export const getValueByKey = (
   })
 
   return value
+}
+
+export const createModel = <T>(
+  headers: Array<keyof T>,
+  sheetName: string,
+  type: string
+) => {
+  const headersObject = headers.reduce<Record<typeof headers[number], string>>(
+    (obj, header) => {
+      obj[header] = ''
+      return obj
+    },
+    {} as Record<typeof headers[number], string>
+  )
+
+  parseJSONToXLS([headersObject], {
+    fileName: `${type}_translate_model`,
+    sheetName,
+  })
 }

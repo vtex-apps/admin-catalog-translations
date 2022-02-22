@@ -47,6 +47,7 @@
   "catalog-translation.import.modal.cancelation": "Cancelar",
   "catalog-translation.import.modal.confirmation": "Enviar Traduções",
   "catalog-translation.import.modal.header": "Importar traducciones de productos para {selectedLocale}",
+  "catalog-translation.import.modal.header.collections": "Importar traduções de coleções para {selectedLocale}",
   "catalog-translation.import.modal.import-tab": "Importar",
   "catalog-translation.import.modal.request-tab": "Traduções",
   "catalog-translation.import.modal.download-button": "Download xlsx modelo",
@@ -69,5 +70,14 @@
   "catalog-translation.export.modal.confirmation-brands": "Exportação de Marcas",
   "catalog-translation.export.modal.export-active-brands": "Exportar apenas Marcas Ativas",
   "catalog-translation.import.modal.brand-header": "Importar Traduções de Marcas para {selectedLocale}",
-  "catalog-translation.import.modal.entry-name-header": "Importar Traduções de {entryName} para {selectedLocale}"
+  "catalog-translation.import.modal.entry-name-header": "Importar Traduções de {entryName} para {selectedLocale}",
+  "catalog-translation.export.modal.specification-header": "Exportar traduções de especificações para {selectedLocale}",
+  "catalog-translation.export.modal.download-button": "Baixar modelo xlsx",
+  "catalog-translation.export.modal.dropzone": "Deixe aqui seu XLSX ou",
+  "catalog-translation.export.modal.dropzone-choose-file": "escolha um arquivo",
+  "catalog-translation.export.modal.total-entries": "entradas totais",
+  "catalog-translation.export.modal.total-warnings": "advertências",
+  "catalog-translation.export.modal.total-errors": "erros. As entradas serão ignoradas",
+  "catalog-translation.export.modal.error-uploading": "Erro ao enviar traduções",
+  "catalog-translation.export.modal.confirmation": "Traduções de exportação"
 }

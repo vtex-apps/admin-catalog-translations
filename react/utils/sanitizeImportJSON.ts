@@ -52,7 +52,7 @@ function validateEntry(
   const warnings: string[] = []
   const errors: string[] = []
 
-  const optinalFields = entryHeaders.filter(
+  const optionalFields = entryHeaders.filter(
     (header) => !requiredHeaders.includes(header as string)
   )
 
@@ -63,7 +63,7 @@ function validateEntry(
     }
   })
 
-  optinalFields.forEach((field) => {
+  optionalFields.forEach((field) => {
     if (entryFields.indexOf(field) === -1) {
       warnings.push(field)
     }

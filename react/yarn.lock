@@ -499,10 +499,9 @@ typescript@3.9.7:
   resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.catalog-graphql@1.97.0/public/@types/vtex.catalog-graphql"
   integrity sha512-pf2zA2Q7ae7KCkZKFmFTQC9UYospZuN+540fQXvLyaO3rpVnKBVfNig/i3JvOen4C3dMNPnKiHLC3DTaUiWT2w==
 
-"vtex.messages@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.messages@1.64.0/public/@types/vtex.messages":
-  version "1.64.0"
-  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.messages@1.64.0/public/@types/vtex.messages"
-  integrity sha512-NWueITCKc0dwF1LOaEanIPxU65bjMNxRURvuKT0A+wpeEkZAzNzCrGm1a7+O5e9piN+YyaMPj312AGBTe2A5Cg==
+"vtex.messages@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.messages@1.65.0/public/@types/vtex.messages":
+  version "1.65.0"
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.messages@1.65.0/public/@types/vtex.messages#b54773248bbeddaa65eb0236091767c88fdb2798"
 
 "vtex.render-runtime@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.132.3/public/@types/vtex.render-runtime":
   version "8.132.3"

@@ -75,8 +75,44 @@ const BRAND_QUERY = `
     }
   }
 `
+
 const TRANSLATE_BRAND = `mutation translateBrand($brand:BrandInputTranslation!, $locale: Locale!) {
   translateBrand(brand: $brand, locale: $locale)
+}`
+
+const COLLECTIONS_QUERY = `
+  query GetCollections ($page: Int!) {
+    collections(searchKey:"", page: $page, pageSize: 50) {
+      items {
+        id
+        name
+        status
+      }
+      paging {
+        pages
+      }
+    }
+  }
+`
+
+const GET_COLLECTION_TRANSLATION_QUERY = `
+  query getTranslation($id:ID!) {
+    collection(id: $id) {
+      id
+      name
+      status
+    }
+  }
+`
+const GET_FIELD_TRANSLATION_QUERY = `query field($id:ID!) {
+  field(id: $id){
+    fieldId
+    name
+  }
+}`
+
+const TRANSLATE_FIELD = `mutation translateField($field: FieldInputTranslation!, $locale: Locale!) {
+  translateField(field: $field, locale: $locale)
 }`
 
 export class CatalogGQL extends AppGraphQLClient {
@@ -142,20 +178,22 @@ export class CatalogGQL extends AppGraphQLClient {
     )
   }
 
-  public translateCategory = <T>(translateCategory: T, locale: string) => {
+  public translateCategory = <T>(params: TranslateEntry<T>) => {
+    const { entry: category, locale } = params
     return this.graphql.query({
       query: TRANSLATE_CATEGORY,
       variables: {
-        category: translateCategory,
+        category,
         locale,
       },
     })
   }
 
-  public getProductTranslation = (id: string, locale: string) =>
-    this.graphql.query<
+  public getProductTranslation = <T>(params: TranslateEntry<T>) => {
+    const { entry: id, locale } = params
+    return this.graphql.query<
       ProductTranslationResponse,
-      { identifier: { value: string; field: 'id' } }
+      { identifier: { value: T; field: 'id' } }
     >(
       {
         query: GET_PRODUCT_TRANSLATION_QUERY,
@@ -172,6 +210,7 @@ export class CatalogGQL extends AppGraphQLClient {
         },
       }
     )
+  }
 
   public getSKUTranslation = (id: string, locale: string) =>
     this.graphql.query<
@@ -194,11 +233,12 @@ export class CatalogGQL extends AppGraphQLClient {
       }
     )
 
-  public translateProduct = <T>(translateProduct: T, locale: string) => {
+  public translateProduct = <T>(params: TranslateEntry<T>) => {
+    const { entry: product, locale } = params
     return this.graphql.query({
       query: TRANSLATE_PRODUCT,
       variables: {
-        product: translateProduct,
+        product,
         locale,
       },
     })
@@ -267,13 +307,101 @@ export class CatalogGQL extends AppGraphQLClient {
     }
   }
 
-  public translateBrand = <T>(translateBrand: T, locale: string) => {
+  public translateBrand = <T>(params: TranslateEntry<T>) => {
+    const { entry: brand, locale } = params
     return this.graphql.query({
       query: TRANSLATE_BRAND,
       variables: {
-        brand: translateBrand,
+        brand,
         locale,
       },
     })
+  }
+
+  public getFields = async (fields: FieldTranslationInput[]) => {
+    try {
+      return [`fields${fields.length}`]
+    } catch (error) {
+      return statusToError(error)
+    }
+  }
+
+  public getFieldTranslation = <T>(params: TranslateEntry<T>) => {
+    const { entry: id, locale } = params
+    return this.graphql.query<FieldTranslationResponse, { id: T }>(
+      {
+        query: GET_FIELD_TRANSLATION_QUERY,
+        variables: {
+          id,
+        },
+      },
+      {
+        headers: {
+          'x-vtex-locale': `${locale}`,
+        },
+      }
+    )
+  }
+
+  public translateField = <T>(params: TranslateEntry<T>) => {
+    const { entry: field, locale } = params
+    return this.graphql.query({
+      query: TRANSLATE_FIELD,
+      variables: {
+        field,
+        locale,
+      },
+    })
+  }
+
+  public getCollections = async () => {
+    try {
+      const response = await this.getCollectionsPerPage({ page: 1 })
+      const {
+        items,
+        paging: { pages },
+      } = (response.data as CollectionResponse).collections
+      const collectItems = items
+      const responsePromises = []
+
+      for (let i = 2; i <= pages; i++) {
+        const promise = this.getCollectionsPerPage({ page: i })
+        responsePromises.push(promise)
+      }
+
+      const resolvedPromises = await Promise.all(responsePromises)
+
+      const flattenResponse = resolvedPromises.reduce((acc, curr) => {
+        return [...acc, ...(curr.data as CollectionResponse).collections.items]
+      }, collectItems)
+
+      return flattenResponse
+    } catch (error) {
+      return statusToError(error)
+    }
+  }
+
+  private getCollectionsPerPage = ({ page }: { page: number }) =>
+    this.graphql.query<CollectionResponse, { page: number }>({
+      query: COLLECTIONS_QUERY,
+      variables: {
+        page,
+      },
+    })
+
+  public getCollectionTranslation = (id: string, locale: string) => {
+    return this.graphql.query<CollectionTranslationResponse, { id: string }>(
+      {
+        query: GET_COLLECTION_TRANSLATION_QUERY,
+        variables: {
+          id,
+        },
+      },
+      {
+        headers: {
+          'x-vtex-locale': `${locale}`,
+        },
+      }
+    )
   }
 }

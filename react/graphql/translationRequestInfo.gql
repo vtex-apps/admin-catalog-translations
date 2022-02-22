@@ -1,0 +1,12 @@
+query translationRequestInfo($requestId: String!, $bucket: String!) {
+  translationRequestInfo(requestId: $requestId, bucket: $bucket) {
+    requestId
+    requestedBy
+    categoryId
+    error
+    createdAt
+    locale
+    completedAt
+    estimatedTime
+  }
+}

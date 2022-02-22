@@ -1,5 +1,10 @@
 type Query {
   categoryTranslations(locale: String!, active: Boolean): [Category]
+  collectionTranslations(
+    locale: String!
+    active: Boolean
+    xVtexTenant: String!
+  ): [Collection]
   getCategoriesName: [CategoryName]
   productTranslations(
     locale: String!
@@ -13,6 +18,7 @@ type Query {
   skuTranslationRequestInfo(requestId: String!): SKUTranslationRequest
   downloadSKUTranslation(requestId: String!): [SKU]
   productTranslationsUploadRequests: [String]
+  collectionTranslationsUploadRequests: [String]
   translationUploadRequestInfo(
     requestId: String!
     bucket: String!
@@ -20,10 +26,24 @@ type Query {
   brandTranslations(locale: String!, active: Boolean): [Brand]
   brandTranslationsUploadRequests: [String]
   categoryTranslationsUploadRequests: [String]
+  fieldTranslations(fields: Upload!, locale: String!): TranslationRequest
+  fieldTranslationsRequests: [String]
+  fieldTranslationsUploadRequests: [String]
+  downloadFieldTranslations(requestId: String!): [Field]
+  translationRequestInfo(
+    requestId: String!
+    bucket: String!
+  ): TranslationRequest
 }
 
 type Mutation {
   uploadProductTranslations(products: Upload!, locale: String!): String
+  uploadCollectionTranslations(
+    collections: Upload!
+    locale: String!
+    xVtexTenant: String!
+  ): String
   uploadBrandTranslations(brands: Upload!, locale: String!): String
+  uploadFieldTranslationsImport(fields: Upload!, locale: String!): String
   uploadCategoryTranslations(categories: Upload!, locale: String!): String
 }
