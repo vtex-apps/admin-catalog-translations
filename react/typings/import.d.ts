@@ -6,6 +6,7 @@ interface ImportEntriesSettings {
   entryName: string
   fileName: string
   paramEntryName: string
+  sheetHeaders?: string[]
   sheetName: string
   uploadMutationFile: DocumentNode
   uploadMutationName: string

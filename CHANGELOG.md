@@ -9,7 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - Bulk import and export for `Collections`
 - Import all `Categories` translations in batch
-- Apply `ImportEntriesModal` for import translations in `Brand` & `Product` process
+- Apply `ImportEntriesModal` for import translations in:
+  - `Brand`
+  - `Product`
+  - `Specifications`
 
 ## [1.3.1] - 2021-12-14
 ### Added

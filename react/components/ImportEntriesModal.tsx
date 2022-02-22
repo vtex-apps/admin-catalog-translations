@@ -21,16 +21,17 @@ const ImportEntriesModal = ({
   settings,
 }: ImportEntries) => {
   const {
-    uploadMutationFile,
-    entryQueryFile,
+    bucket,
     entryHeaders,
-    sheetName,
+    entryQueryFile,
+    entryQueryName,
+    entryName,
     fileName,
     paramEntryName,
-    entryQueryName,
+    sheetHeaders: requiredHeaders = ['id'],
+    sheetName,
+    uploadMutationFile,
     uploadMutationName,
-    bucket,
-    entryName,
   } = settings
 
   const [errorParsingFile, setErrorParsingFile] = useState('')
@@ -64,7 +65,7 @@ const ImportEntriesModal = ({
       const [translations, { errors, warnings }] = sanitizeImportJSON({
         data: fileParsed,
         entryHeaders,
-        requiredHeaders: ['id'],
+        requiredHeaders,
       })
 
       if (errors.length) {
