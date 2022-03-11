@@ -25,6 +25,8 @@ export const BRAND_TRANSLATION_UPLOAD = 'brand-upload'
 export const FIELD_BUCKET = 'field-translation'
 export const FIELD_TRANSLATION_EXPORT_UPLOAD = 'field-export-upload'
 export const FIELD_TRANSLATION_IMPORT_UPLOAD = 'field-import-upload'
+export const CATEGORY_NAME = 'category-transl'
+export const CATEGORY_TRANSLATION_UPLOAD = 'category-upload'
 
 export const statusToError = (e: AxiosError) => {
   if (!e.response) {

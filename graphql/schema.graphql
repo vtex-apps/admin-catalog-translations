@@ -25,6 +25,7 @@ type Query {
   ): UploadRequest
   brandTranslations(locale: String!, active: Boolean): [Brand]
   brandTranslationsUploadRequests: [String]
+  categoryTranslationsUploadRequests: [String]
   fieldTranslations(fields: Upload!, locale: String!): TranslationRequest
   fieldTranslationsRequests: [String]
   fieldTranslationsUploadRequests: [String]
@@ -44,4 +45,5 @@ type Mutation {
   ): String
   uploadBrandTranslations(brands: Upload!, locale: String!): String
   uploadFieldTranslationsImport(fields: Upload!, locale: String!): String
+  uploadCategoryTranslations(categories: Upload!, locale: String!): String
 }

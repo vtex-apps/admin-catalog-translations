@@ -1,10 +1,10 @@
 import React from 'react'
 
-import uploadMutationFile from '../../graphql/uploadBrandTranslation.gql'
-import entryQueryFile from '../../graphql/brandUploadRequests.gql'
 import ImportEntriesModal from '../ImportEntriesModal'
+import uploadMutationFile from '../../graphql/uploadCategoryTranslations.gql'
+import entryQueryFile from '../../graphql/categoryTranslationsUploadRequests.gql'
 
-const bucket = 'brand-translation'
+const bucket = 'category-transl'
 const entryHeaders: EntryHeadersCategory[] = [
   'id',
   'name',
@@ -12,12 +12,12 @@ const entryHeaders: EntryHeadersCategory[] = [
   'linkId',
   'title',
 ]
-const entryQueryName = 'brandTranslationsUploadRequests'
-const entryName = 'Brand'
-const fileName = 'brand_translate_model'
-const paramEntryName = 'brands'
-const sheetName = 'brands_data'
-const uploadMutationName = 'uploadBrandTranslations'
+const entryQueryName = 'categoryTranslationsUploadRequests'
+const entryName = 'Category'
+const fileName = 'category_translate_model'
+const paramEntryName = 'categories'
+const sheetName = 'category_data'
+const uploadMutationName = 'uploadCategoryTranslations'
 
 const settings: ImportEntriesSettings = {
   bucket,
@@ -32,7 +32,7 @@ const settings: ImportEntriesSettings = {
   uploadMutationName,
 }
 
-const BrandImportModal = ({
+const CategoryImportModal = ({
   isImportOpen = false,
   handleOpenImport = () => {},
 }: ComponentProps) => {
@@ -47,4 +47,4 @@ const BrandImportModal = ({
   )
 }
 
-export default BrandImportModal
+export default CategoryImportModal

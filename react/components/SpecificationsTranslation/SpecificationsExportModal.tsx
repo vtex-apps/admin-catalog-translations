@@ -51,7 +51,7 @@ const SpecificationExportModal = ({
 
       setOriginalFile(fileParsed)
 
-      const [translations, { errors, warnings }] = sanitizeImportJSON<Field>({
+      const [translations, { errors, warnings }] = sanitizeImportJSON({
         data: fileParsed,
         entryHeaders: SPECIFICATION_HEADERS,
         requiredHeaders: ['fieldId'],

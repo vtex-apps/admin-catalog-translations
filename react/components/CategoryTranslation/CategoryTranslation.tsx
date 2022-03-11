@@ -15,6 +15,7 @@ import CategoryForm from './CategoryForm'
 import useCatalogQuery from '../../hooks/useCatalogQuery'
 import getAllCategories from '../../graphql/getAllCategories.gql'
 import { parseJSONToXLS } from '../../utils'
+import CategoryImportModal from './CategoryImportModal'
 
 interface CategoryTranslations {
   categoryTranslations: Category[]
@@ -23,6 +24,8 @@ interface CategoryTranslations {
 const CategoryTranslation = ({
   isExportOpen = false,
   handleOpenExport = () => {},
+  isImportOpen = false,
+  handleOpenImport = () => {},
 }: ComponentProps) => {
   const [onlyActive, setOnlyActive] = useState(true)
   const [downloading, setDownloading] = useState(false)
@@ -166,6 +169,10 @@ const CategoryTranslation = ({
           </p>
         ) : null}
       </ModalDialog>
+      <CategoryImportModal
+        isImportOpen={isImportOpen}
+        handleOpenImport={handleOpenImport}
+      />
     </>
   )
 }

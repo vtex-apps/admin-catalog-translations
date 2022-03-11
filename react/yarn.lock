@@ -501,8 +501,7 @@ typescript@3.9.7:
 
 "vtex.messages@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.messages@1.65.0/public/@types/vtex.messages":
   version "1.65.0"
-  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.messages@1.65.0/public/@types/vtex.messages"
-  integrity sha512-uOrsAwooqNpmHtPlfIFbXBzkxVBdRoZaGOJZ1Eh7Secz9qyA4Gp6qu1XYTvHoDvRtjH8wsJigq9D9lmpxP23IQ==
+  resolved "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.messages@1.65.0/public/@types/vtex.messages#b54773248bbeddaa65eb0236091767c88fdb2798"
 
 "vtex.render-runtime@http://vtex.vtexassets.com/_v/public/typings/v1/vtex.render-runtime@8.132.3/public/@types/vtex.render-runtime":
   version "8.132.3"

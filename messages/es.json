@@ -70,6 +70,7 @@
   "catalog-translation.export.modal.confirmation-brands": "Exportar Marcas",
   "catalog-translation.export.modal.export-active-brands": "Exportar solo Marcas Activas",
   "catalog-translation.import.modal.brand-header": "Importar Traducciones de Marcas para {selectedLocale}",
+  "catalog-translation.import.modal.entry-name-header": "Importar Traducciones de {entryName} para {selectedLocale}",
   "catalog-translation.export.modal.specification-header": "Exportación Especificaciones Traducciones para {selectedLocale}",
   "catalog-translation.export.modal.download-button": "Descargar modelo xlsx",
   "catalog-translation.export.modal.dropzone": "Deje aquí su XLSX o",

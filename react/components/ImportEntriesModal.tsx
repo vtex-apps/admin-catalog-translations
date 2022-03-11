@@ -3,34 +3,50 @@ import { useMutation, useQuery } from 'react-apollo'
 import { ModalDialog, ButtonPlain, Dropzone, Tabs, Tab } from 'vtex.styleguide'
 import { FormattedMessage } from 'react-intl'
 
-import { sanitizeImportJSON, parseXLSToJSON, createModel } from '../../utils'
-import { useLocaleSelector } from '../LocaleSelector'
-import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
-import UPLOAD_COLLECTION_TRANSLATION from '../../graphql/uploadCollectionTranslation.gql'
-import UPLOAD_COLLECTION_REQUESTS from '../../graphql/collectionUploadRequests.gql'
-import ImportStatusList from '../ImportStatusList'
+import {
+  sanitizeImportJSON,
+  parseXLSToJSON,
+  parseJSONToXLS,
+  getValueByKey,
+} from '../utils'
+import WarningAndErrorsImportModal from './WarningAndErrorsImportModal'
+import { useLocaleSelector } from './LocaleSelector'
+import ImportStatusList from './ImportStatusList'
 
-const COLLECTION_HEADERS: Array<keyof Collection> = ['id', 'name']
-const COLLECTION_DATA = 'collection_data'
 const UPLOAD_LIST_SIZE = 10
 
-const CollectionImportModal = ({
+const ImportEntriesModal = ({
   isImportOpen = false,
   handleOpenImport = () => {},
-}: ComponentProps) => {
+  settings,
+}: ImportEntries) => {
+  const {
+    bucket,
+    entryHeaders,
+    entryQueryFile,
+    entryQueryName,
+    entryName,
+    fileName,
+    paramEntryName,
+    sheetHeaders: requiredHeaders = ['id'],
+    sheetName,
+    uploadMutationFile,
+    uploadMutationName,
+  } = settings
+
   const [errorParsingFile, setErrorParsingFile] = useState('')
   const [loading, setLoading] = useState(false)
   const [errorModal, setErrorModal] = useState(false)
   const [warningModal, setWarningModal] = useState(false)
-  const [validtionErrors, setValidationErrors] = useState<Message[]>([])
-  const [validtionWarnings, setValidationWarnings] = useState<Message[]>([])
+  const [validationErrors, setValidationErrors] = useState<Message[]>([])
+  const [validationWarnings, setValidationWarnings] = useState<Message[]>([])
   const [originalFile, setOriginalFile] = useState<Array<{}>>([])
   const [formattedTranslations, setFormattedTranslations] = useState<
     Blob | undefined
   >(undefined)
 
   const [tabSelected, setTabSelected] = useState<1 | 2>(1)
-  const { selectedLocale, xVtexTenant } = useLocaleSelector()
+  const { selectedLocale } = useLocaleSelector()
 
   const handleFile = async (files: FileList) => {
     if (loading) {
@@ -41,15 +57,15 @@ const CollectionImportModal = ({
 
     try {
       const fileParsed = await parseXLSToJSON(files[0], {
-        sheetName: COLLECTION_DATA,
+        sheetName,
       })
 
       setOriginalFile(fileParsed)
 
       const [translations, { errors, warnings }] = sanitizeImportJSON({
         data: fileParsed,
-        entryHeaders: COLLECTION_HEADERS,
-        requiredHeaders: ['id'],
+        entryHeaders,
+        requiredHeaders,
       })
 
       if (errors.length) {
@@ -88,45 +104,54 @@ const CollectionImportModal = ({
     cleanErrors()
   }
 
-  const handleCreateModel = () => {
-    createModel(COLLECTION_HEADERS, COLLECTION_DATA, 'collection')
+  const createModel = () => {
+    const headersObject = entryHeaders.reduce<
+      Record<typeof entryHeaders[number], string>
+    >((obj, header) => {
+      obj[header] = ''
+      return obj
+    }, {} as Record<typeof entryHeaders[number], string>)
+
+    parseJSONToXLS([headersObject], {
+      fileName,
+      sheetName,
+    })
   }
 
-  const [startCollectionUpload, { error: uploadError }] = useMutation<
+  const [startEntriesUpload, { error: uploadError }] = useMutation<
     {
-      uploadCollectionTranslations: string
+      [key: string]: string
     },
     {
-      locale: string
-      collections: Blob
-      xVtexTenant: string
+      [key: string]: string | Blob
     }
-  >(UPLOAD_COLLECTION_TRANSLATION)
+  >(uploadMutationFile)
 
   const { data, updateQuery } = useQuery<{
-    collectionTranslationsUploadRequests: string[]
-  }>(UPLOAD_COLLECTION_REQUESTS)
+    [key: string]: string[]
+  }>(entryQueryFile)
 
   const handleUploadRequest = async () => {
     if (!formattedTranslations) {
       return
     }
 
-    const { data: newRequest } = await startCollectionUpload({
+    const { data: newRequest } = await startEntriesUpload({
       variables: {
         locale: selectedLocale,
-        collections: formattedTranslations,
-        xVtexTenant,
+        [paramEntryName]: formattedTranslations,
       },
     })
+
+    const request = newRequest
+      ? getValueByKey(newRequest, uploadMutationName)
+      : null
+
     // eslint-disable-next-line vtex/prefer-early-return
-    if (newRequest?.uploadCollectionTranslations) {
+    if (request) {
       updateQuery((prevResult) => {
         return {
-          collectionTranslationsUploadRequests: [
-            newRequest.uploadCollectionTranslations,
-            ...(prevResult.collectionTranslationsUploadRequests ?? []),
-          ],
+          [entryQueryName]: [request, ...(prevResult[entryQueryName] ?? [])],
         }
       })
       setTabSelected(2)
@@ -164,9 +189,10 @@ const CollectionImportModal = ({
     >
       <h3>
         <FormattedMessage
-          id="catalog-translation.import.modal.header.collections"
+          id="catalog-translation.import.modal.entry-name-header"
           values={{
             selectedLocale,
+            entryName,
           }}
         />
       </h3>
@@ -184,7 +210,7 @@ const CollectionImportModal = ({
           >
             <div>
               <div className="mv4">
-                <ButtonPlain onClick={handleCreateModel}>
+                <ButtonPlain onClick={createModel}>
                   <FormattedMessage id="catalog-translation.import.modal.download-button" />
                 </ButtonPlain>
               </div>
@@ -215,21 +241,21 @@ const CollectionImportModal = ({
                   <FormattedMessage id="catalog-translation.import.modal.total-entries" />
                 </li>
               ) : null}
-              {validtionWarnings.length ? (
+              {validationWarnings.length ? (
                 <li>
                   <ButtonPlain onClick={() => setWarningModal(true)}>
-                    {validtionWarnings.length}{' '}
+                    {validationWarnings.length}{' '}
                     <FormattedMessage id="catalog-translation.import.modal.total-warnings" />
                   </ButtonPlain>
                 </li>
               ) : null}
-              {validtionErrors.length ? (
+              {validationErrors.length ? (
                 <li>
                   <ButtonPlain
                     variation="danger"
                     onClick={() => setErrorModal(true)}
                   >
-                    {validtionErrors.length}{' '}
+                    {validationErrors.length}{' '}
                     <FormattedMessage id="catalog-translation.import.modal.total-errors" />
                   </ButtonPlain>
                 </li>
@@ -272,13 +298,13 @@ const CollectionImportModal = ({
                 </tr>
               </thead>
               <tbody>
-                {data?.collectionTranslationsUploadRequests
+                {data?.[entryQueryName]
                   ?.slice(0, UPLOAD_LIST_SIZE)
                   .map((requestId) => (
                     <ImportStatusList
                       requestId={requestId}
                       key={requestId}
-                      bucket="collection-transl"
+                      bucket={bucket}
                     />
                   ))}
               </tbody>
@@ -290,16 +316,16 @@ const CollectionImportModal = ({
         isOpen={warningModal}
         modalName="Warning Modal"
         handleClose={setWarningModal}
-        data={validtionWarnings}
+        data={validationWarnings}
       />
       <WarningAndErrorsImportModal
         isOpen={errorModal}
         modalName="Error Modal"
         handleClose={setErrorModal}
-        data={validtionErrors}
+        data={validationErrors}
       />
     </ModalDialog>
   )
 }
 
-export default CollectionImportModal
+export default ImportEntriesModal
