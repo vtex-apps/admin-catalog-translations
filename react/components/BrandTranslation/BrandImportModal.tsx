@@ -1,7 +1,7 @@
 import React from 'react'
 
-import uploadMutationFile from '../../graphql/uploadBrandTranslation.gql'
-import entryQueryFile from '../../graphql/brandUploadRequests.gql'
+import uploadMutationFile from './graphql/uploadBrandTranslation.gql'
+import entryQueryFile from './graphql/brandUploadRequests.gql'
 import ImportEntriesModal from '../ImportEntriesModal'
 
 const bucket = 'brand-translation'

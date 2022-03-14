@@ -2,7 +2,7 @@ import React, { FC, SyntheticEvent } from 'react'
 import { Input } from 'vtex.styleguide'
 import { useMutation } from 'react-apollo'
 
-import translateBrandMutation from '../../graphql/translateBrand.gql'
+import translateBrandMutation from './graphql/translateBrand.gql'
 import { useAlert } from '../../providers/AlertProvider'
 import { useLocaleSelector } from '../LocaleSelector'
 import useFormTranslation from '../../hooks/useFormTranslation'
