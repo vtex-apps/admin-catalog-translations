@@ -34,10 +34,19 @@ const ErrorHandler: FC<ErrorHandlerProps> = ({
         </p>
       </EmptyState>
     ) : (
-      <EmptyState title={`Error getting ${entry} information`}>
+      <EmptyState
+        title={
+          <FormattedMessage
+            id="catalog-translation.errors.error-header"
+            values={{ entry }}
+          />
+        }
+      >
         <p>
-          {`There was an error getting the ${entry} information you searched for.
-          Please try again`}
+          <FormattedMessage
+            id="catalog-translation.errors.error-message"
+            values={{ entry }}
+          />
         </p>
       </EmptyState>
     )}
