@@ -66,7 +66,14 @@ const CollectionImportModal = ({
 
       setFormattedTranslations(blob)
     } catch (e) {
-      setErrorParsingFile(e)
+      // The errors being handled on parseXLSToJSON are thrown as strings.
+      if (typeof e === 'string') {
+        setErrorParsingFile(e)
+      } else if (e instanceof Error) {
+        setErrorParsingFile(e.message)
+      } else {
+        setErrorParsingFile('An unknown error occurred')
+      }
     } finally {
       setLoading(false)
     }
