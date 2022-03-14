@@ -5,13 +5,7 @@ import entryQueryFile from './graphql/brandUploadRequests.gql'
 import ImportEntriesModal from '../ImportEntriesModal'
 
 const bucket = 'brand_translation'
-const entryHeaders: EntryHeadersCategory[] = [
-  'id',
-  'name',
-  'description',
-  'linkId',
-  'title',
-]
+const entryHeaders: EntryHeadersBrand[] = ['id', 'name', 'text', 'siteTitle']
 const entryQueryName = 'brandTranslationsUploadRequests'
 const entryName = 'Brand'
 const fileName = 'brand_translate_model'
