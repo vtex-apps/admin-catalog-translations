@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { useLazyQuery, useQuery } from 'react-apollo'
 
 import { useLocaleSelector } from '../LocaleSelector'
-import START_PRODUCT_TRANSLATION from '../../graphql/startProductTranslations.gql'
-import PROD_TRANSLATION_REQUESTS from '../../graphql/getProductTranslationRequests.gql'
+import START_PRODUCT_TRANSLATION from './graphql/startProductTranslations.gql'
+import PROD_TRANSLATION_REQUESTS from './graphql/getProductTranslationRequests.gql'
 import ExportByCategoryIdModal from '../ExportByCatIdModal'
-import DOWNLOAD_PRODUCT_TRANSLATION from '../../graphql/downloadProductTranslations.gql'
+import DOWNLOAD_PRODUCT_TRANSLATION from './graphql/downloadProductTranslations.gql'
 
 interface Props {
   isExportOpen: boolean
