@@ -1,119 +1,22 @@
 import { AppGraphQLClient, InstanceOptions, IOContext } from '@vtex/api'
 
 import { statusToError } from '../utils'
+import {
+  CATEGORIES_QUERY,
+  GET_CATEGORY_TRANSLATION_QUERY,
+  TRANSLATE_CATEGORY,
+  GET_PRODUCT_TRANSLATION_QUERY,
+  GET_SKU_TRANSLATION_QUERY,
+  TRANSLATE_PRODUCT,
+  BRAND_QUERY,
+  TRANSLATE_BRAND,
+  GET_FIELD_TRANSLATION_QUERY,
+  TRANSLATE_FIELD,
+  COLLECTIONS_QUERY,
+  GET_COLLECTION_TRANSLATION_QUERY,
+} from './utils/catalogGQLQueries'
 
 const CATALOG_GRAPHQL_APP = 'vtex.catalog-graphql@1.x'
-
-const CATEGORIES_QUERY = `
-  query GetCategories ($active: Boolean, $page: Int!) {
-    categories(term:"*", page: $page, pageSize: 50, active: $active) {
-      items {
-        id
-        name
-      }
-      paging {
-        pages
-      }
-    }
-  }
-`
-
-const GET_CATEGORY_TRANSLATION_QUERY = `
-  query getTranslation($id:ID!) {
-    category(id: $id) {
-      id
-      name
-      title
-      description
-      linkId
-    }
-  }
-`
-const TRANSLATE_CATEGORY = `mutation translateCategory($category:CategoryInputTranslation!, $locale: Locale!) {
-  translateCategory(category: $category, locale: $locale)
-}`
-
-const GET_PRODUCT_TRANSLATION_QUERY = `
-  query getProductTranslation($identifier: ProductUniqueIdentifier) {
-    product(identifier: $identifier) {
-      id
-      name
-      description
-      shortDescription
-      title
-      linkId
-    }
-  }
-`
-
-const GET_SKU_TRANSLATION_QUERY = `
-  query getSKUTranslation($identifier: SKUUniqueIdentifier) {
-    sku(identifier: $identifier) {
-      id
-      name
-    }
-  }
-`
-
-const TRANSLATE_PRODUCT = `mutation translateProduct($product:ProductInputTranslation!, $locale: Locale!) {
-  translateProduct(product: $product, locale: $locale)
-}`
-
-const BRAND_QUERY = `
-  query GetBrands ($page: Int!) {
-    brands(term:"*", page: $page, pageSize: 50) {
-      items {
-        id
-        name
-        text
-        siteTitle
-        active
-      }
-      paging {
-        pages
-      }
-    }
-  }
-`
-
-const TRANSLATE_BRAND = `mutation translateBrand($brand:BrandInputTranslation!, $locale: Locale!) {
-  translateBrand(brand: $brand, locale: $locale)
-}`
-
-const COLLECTIONS_QUERY = `
-  query GetCollections ($page: Int!) {
-    collections(searchKey:"", page: $page, pageSize: 50) {
-      items {
-        id
-        name
-        status
-      }
-      paging {
-        pages
-      }
-    }
-  }
-`
-
-const GET_COLLECTION_TRANSLATION_QUERY = `
-  query getTranslation($id:ID!) {
-    collection(id: $id) {
-      id
-      name
-      status
-    }
-  }
-`
-const GET_FIELD_TRANSLATION_QUERY = `query field($id:ID!) {
-  field(id: $id){
-    fieldId
-    name
-  }
-}`
-
-const TRANSLATE_FIELD = `mutation translateField($field: FieldInputTranslation!, $locale: Locale!) {
-  translateField(field: $field, locale: $locale)
-}`
 
 export class CatalogGQL extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
