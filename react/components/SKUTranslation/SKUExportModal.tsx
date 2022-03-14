@@ -3,9 +3,9 @@ import { useLazyQuery, useQuery } from 'react-apollo'
 
 import ExportByCategoryIdModal from '../ExportByCatIdModal'
 import { useLocaleSelector } from '../LocaleSelector'
-import START_SKU_TRANSLATION from '../../graphql/startSkuTranslations.gql'
-import SKU_TRANSLATION_REQUESTS from '../../graphql/getSkuTranslationRequests.gql'
-import DOWNLOAD_SKU_TRANSLATION from '../../graphql/downloadSkuTranslations.gql'
+import START_SKU_TRANSLATION from './graphql/startSkuTranslations.gql'
+import SKU_TRANSLATION_REQUESTS from './graphql/getSkuTranslationRequests.gql'
+import DOWNLOAD_SKU_TRANSLATION from './graphql/downloadSkuTranslations.gql'
 
 interface Props {
   isExportOpen: boolean

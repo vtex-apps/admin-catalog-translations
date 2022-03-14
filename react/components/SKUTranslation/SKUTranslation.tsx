@@ -3,7 +3,7 @@ import { InputSearch, PageBlock, Spinner } from 'vtex.styleguide'
 
 import useCatalogQuery from '../../hooks/useCatalogQuery'
 import { useLocaleSelector } from '../LocaleSelector'
-import getSKUQuery from '../../graphql/getSKU.gql'
+import getSKUQuery from './graphql/getSKU.gql'
 import ErrorHandler from '../ErrorHandler'
 import SKUForm from './SKUForm'
 import SKUExportModal from './SKUExportModal'
