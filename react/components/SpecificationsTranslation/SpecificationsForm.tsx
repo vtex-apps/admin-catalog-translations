@@ -3,7 +3,7 @@ import { Input } from 'vtex.styleguide'
 import { useMutation } from 'react-apollo'
 
 import { useLocaleSelector } from '../LocaleSelector'
-import translateSpecificationMutation from '../../graphql/translateSpecification.gql'
+import translateSpecificationMutation from './graphql/translateSpecification.gql'
 import { useAlert } from '../../providers/AlertProvider'
 import useFormTranslation from '../../hooks/useFormTranslation'
 import ActionButtons from '../ActionButtons'

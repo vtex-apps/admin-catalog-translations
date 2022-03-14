@@ -11,9 +11,9 @@ import {
 } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
-import FIELD_TRANSLATIONS from '../../graphql/fieldTranslations.gql'
-import FIELD_UPLOAD_REQUESTS from '../../graphql/fieldTranslationsRequests.gql'
-import DOWNLOAD_FIELD_TRANSLATION from '../../graphql/downloadFieldTranslations.gql'
+import FIELD_TRANSLATIONS from './graphql/fieldTranslations.gql'
+import FIELD_UPLOAD_REQUESTS from './graphql/fieldTranslationsRequests.gql'
+import DOWNLOAD_FIELD_TRANSLATION from './graphql/downloadFieldTranslations.gql'
 import ExportListItem from '../ExportListItem'
 
 const SPECIFICATION_HEADERS: Array<keyof Field> = ['fieldId']

@@ -1,7 +1,7 @@
 import React from 'react'
 
-import uploadMutationFile from '../../graphql/uploadFieldTranslationsImport.gql'
-import entryQueryFile from '../../graphql/fieldTranslationsUploadRequests.gql'
+import uploadMutationFile from './graphql/uploadFieldTranslationsImport.gql'
+import entryQueryFile from './graphql/fieldTranslationsUploadRequests.gql'
 import ImportEntriesModal from '../ImportEntriesModal'
 
 const bucket = 'field-translation'

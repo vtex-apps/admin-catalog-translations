@@ -3,7 +3,7 @@ import { InputSearch, PageBlock, Spinner } from 'vtex.styleguide'
 
 import useCatalogQuery from '../../hooks/useCatalogQuery'
 import { useLocaleSelector } from '../LocaleSelector'
-import getSpecificationById from '../../graphql/getSpecification.gql'
+import getSpecificationById from './graphql/getSpecification.gql'
 import ErrorHandler from '../ErrorHandler'
 import SpecificationsForm from './SpecificationsForm'
 import SpecificationExportModal from './SpecificationsExportModal'
