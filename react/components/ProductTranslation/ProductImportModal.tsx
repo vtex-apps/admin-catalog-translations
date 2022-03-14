@@ -4,7 +4,7 @@ import uploadMutationFile from './graphql/uploadProductTranslation.gql'
 import entryQueryFile from './graphql/productUploadRequests.gql'
 import ImportEntriesModal from '../ImportEntriesModal'
 
-const bucket = 'product-translation'
+const bucket = 'product_translation'
 const entryHeaders: EntryHeadersProduct[] = [
   'id',
   'name',

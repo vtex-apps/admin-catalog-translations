@@ -1,5 +1,5 @@
 interface ImportEntriesSettings {
-  bucket: BucketType
+  bucket: UploadBucket
   entryHeaders: EntryHeaders[]
   entryQueryFile: DocumentNode
   entryQueryName: string

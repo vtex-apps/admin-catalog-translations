@@ -20,11 +20,16 @@ type EntryHeaders =
   | EntryHeadersSpecifications
   | 'locale'
 
-type BucketType =
-  | 'brand-translation'
-  | 'product-translation'
-  | 'collection-transl'
-  | 'field-translation'
-  | 'category-transl'
+type UploadBucket =
+  | 'brand_translation'
+  | 'product_translation'
+  | 'collection_transl'
+  | 'field_translation'
+  | 'category_transl'
+
+type DownloadBucket =
+  | 'product_translation'
+  | 'field_translation'
+  | 'sku_translation'
 
 type typeItem = 'product' | 'sku' | 'field'

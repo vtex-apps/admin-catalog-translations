@@ -285,7 +285,7 @@ const CollectionImportModal = ({
                     <ImportStatusList
                       requestId={requestId}
                       key={requestId}
-                      bucket="collection-transl"
+                      bucket="collection_transl"
                     />
                   ))}
               </tbody>

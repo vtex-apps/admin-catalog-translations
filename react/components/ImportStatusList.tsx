@@ -11,7 +11,7 @@ const ImportStatusList = ({
   bucket,
 }: {
   requestId: string
-  bucket: BucketType
+  bucket: UploadBucket
 }) => {
   const [shouldHaveFinished, setShouldHaveFinished] = useState(false)
   const {
@@ -21,7 +21,7 @@ const ImportStatusList = ({
     stopPolling,
   } = useQuery<
     { translationUploadRequestInfo: UploadRequest },
-    { requestId: string; bucket: BucketType }
+    { requestId: string; bucket: UploadBucket }
   >(TRANSLATION_UPLOAD_REQUEST_INFO, {
     variables: {
       requestId,

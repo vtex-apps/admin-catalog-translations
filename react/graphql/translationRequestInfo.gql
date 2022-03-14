@@ -1,4 +1,4 @@
-query translationRequestInfo($requestId: String!, $bucket: String!) {
+query translationRequestInfo($requestId: String!, $bucket: DownloadBucket!) {
   translationRequestInfo(requestId: $requestId, bucket: $bucket) {
     requestId
     requestedBy

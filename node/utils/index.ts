@@ -13,19 +13,19 @@ import { CatalogGQL } from '../clients/catalogGQL'
 
 const ONE_MINUTE = 60 * 1000
 export const CALLS_PER_MINUTE = 1600
-export const PRODUCT_BUCKET = 'product-translation'
+export const PRODUCT_BUCKET = 'product_translation'
 export const PRODUCT_TRANSLATION_UPLOAD = 'product-upload'
-export const COLLECTION_BUCKET = 'collection-transl'
+export const COLLECTION_BUCKET = 'collection_transl'
 export const COLLECTION_TRANSLATION_UPLOAD = 'collection-upload'
-export const SKU_BUCKET = 'sku-translation'
+export const SKU_BUCKET = 'sku_translation'
 export const ALL_TRANSLATIONS_FILES = 'all-translations'
 export const ALL_SKU_TRANSLATIONS_FILES = 'all-sku-translations'
-export const BRAND_BUCKET = 'brand-translation'
+export const BRAND_BUCKET = 'brand_translation'
 export const BRAND_TRANSLATION_UPLOAD = 'brand-upload'
-export const FIELD_BUCKET = 'field-translation'
+export const FIELD_BUCKET = 'field_translation'
 export const FIELD_TRANSLATION_EXPORT_UPLOAD = 'field-export-upload'
 export const FIELD_TRANSLATION_IMPORT_UPLOAD = 'field-import-upload'
-export const CATEGORY_NAME = 'category-transl'
+export const CATEGORY_BUCKET = 'category_transl'
 export const CATEGORY_TRANSLATION_UPLOAD = 'category-upload'
 
 export const statusToError = (e: AxiosError) => {

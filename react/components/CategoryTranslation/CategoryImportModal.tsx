@@ -4,7 +4,7 @@ import ImportEntriesModal from '../ImportEntriesModal'
 import uploadMutationFile from './graphql/uploadCategoryTranslations.gql'
 import entryQueryFile from './graphql/categoryTranslationsUploadRequests.gql'
 
-const bucket = 'category-transl'
+const bucket = 'category_transl'
 const entryHeaders: EntryHeadersCategory[] = [
   'id',
   'name',

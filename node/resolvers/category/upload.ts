@@ -1,7 +1,7 @@
 import { ReadStream } from 'fs'
 
 import {
-  CATEGORY_NAME,
+  CATEGORY_BUCKET,
   calculateExportProcessTime,
   CATEGORY_TRANSLATION_UPLOAD,
   CALLS_PER_MINUTE,
@@ -35,7 +35,7 @@ const uploadCategoryTranslations = async (
   } = await licenseManager.getTopbarData(adminUserAuthToken as string)
 
   const allTranslationsMade = await vbase.getJSON<string[]>(
-    CATEGORY_NAME,
+    CATEGORY_BUCKET,
     CATEGORY_TRANSLATION_UPLOAD,
     true
   )
@@ -45,7 +45,7 @@ const uploadCategoryTranslations = async (
     : [requestId]
 
   await vbase.saveJSON<string[]>(
-    CATEGORY_NAME,
+    CATEGORY_BUCKET,
     CATEGORY_TRANSLATION_UPLOAD,
     updateRequests
   )
@@ -61,14 +61,14 @@ const uploadCategoryTranslations = async (
     ),
   }
 
-  await vbase.saveJSON<UploadRequest>(CATEGORY_NAME, requestId, requestInfo)
+  await vbase.saveJSON<UploadRequest>(CATEGORY_BUCKET, requestId, requestInfo)
 
   uploadEntriesAsync<CategoryTranslationInput>(
     {
       entries: categoriesParsed,
       requestId,
       locale,
-      bucket: CATEGORY_NAME,
+      bucket: CATEGORY_BUCKET,
       translateEntry: catalogGQL?.translateCategory,
     },
     { vbase }
@@ -83,7 +83,7 @@ const categoryTranslationsUploadRequests = async (
   ctx: Context
 ) =>
   ctx.clients.vbase.getJSON<string[]>(
-    CATEGORY_NAME,
+    CATEGORY_BUCKET,
     CATEGORY_TRANSLATION_UPLOAD,
     true
   )

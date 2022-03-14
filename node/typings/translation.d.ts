@@ -15,7 +15,7 @@ interface TranslateEntry<T> {
 }
 
 interface ParamsTranslationsToVBase extends EntryParams {
-  bucket: string
+  bucket: UploadBucket
   requestId: string
   locale: string
 }
@@ -32,7 +32,7 @@ interface UploadEntriesAsync<T> {
   entries: T[]
   requestId: string
   locale: string
-  bucket: string
+  bucket: UploadBucket
   translateEntry: <T>(
     params: TranslateEntry<T>
   ) => Promise<GraphQLResponse<Serializable>>
@@ -41,7 +41,7 @@ interface UploadEntriesAsync<T> {
 interface UploadTranslations<T> {
   entries: UploadFile<ReadStream>
   locale: string
-  bucket: string
+  bucket: UploadBucket
   path: string
   translateEntry: <T>(
     params: TranslateEntry<T>
@@ -51,3 +51,15 @@ interface EntryTranslations<T> extends UploadEntriesAsync<T> {
   path: string
   categoryId?: string
 }
+
+type UploadBucket =
+  | 'brand_translation'
+  | 'product_translation'
+  | 'collection_transl'
+  | 'field_translation'
+  | 'category_transl'
+
+type DownloadBucket =
+  | 'product_translation'
+  | 'field_translation'
+  | 'sku_translation'

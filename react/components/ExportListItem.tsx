@@ -7,12 +7,8 @@ import { ApolloError } from 'apollo-client'
 import TRANSLATION_REQUEST_INFO from '../graphql/translationRequestInfo.gql'
 import { shouldHaveCompleted, remainingTime, parseJSONToXLS } from '../utils'
 
-const getBucket = (type: typeItem) => {
-  if (type === 'sku') {
-    return 'product-translation'
-  }
-
-  return `${type}-translation`
+const getBucket = (type: typeItem): DownloadBucket => {
+  return `${type}_translation`
 }
 
 const getFileParams = (
@@ -59,7 +55,7 @@ const ExportListItem = ({
     startPolling,
     stopPolling,
     refetch,
-  } = useQuery<TransInfoReq, { requestId: string; bucket: string }>(
+  } = useQuery<TransInfoReq, { requestId: string; bucket: DownloadBucket }>(
     TRANSLATION_REQUEST_INFO,
     {
       variables: {

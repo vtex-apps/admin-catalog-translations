@@ -4,7 +4,7 @@ import uploadMutationFile from './graphql/uploadFieldTranslationsImport.gql'
 import entryQueryFile from './graphql/fieldTranslationsUploadRequests.gql'
 import ImportEntriesModal from '../ImportEntriesModal'
 
-const bucket = 'field-translation'
+const bucket = 'field_translation'
 const entryHeaders: EntryHeadersSpecifications[] = ['fieldId', 'name']
 const entryQueryName = 'fieldTranslationsUploadRequests'
 const entryName = 'Specification'

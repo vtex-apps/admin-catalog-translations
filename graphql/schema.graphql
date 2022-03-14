@@ -1,3 +1,17 @@
+enum DownloadBucket {
+  product_translation
+  sku_translation
+  field_translation
+}
+
+enum UploadBucket {
+  brand_translation
+  product_translation
+  collection_transl
+  field_translation
+  category_transl
+}
+
 type Query {
   """
   Returns a list with the translations for all categories. The translation happens during the request.
@@ -58,7 +72,7 @@ type Query {
   """
   translationUploadRequestInfo(
     requestId: String!
-    bucket: String!
+    bucket: UploadBucket!
   ): UploadRequest
   """
   Returns a list with the translations for all brands. The translation happens during the request.
@@ -91,11 +105,10 @@ type Query {
   downloadFieldTranslations(requestId: String!): [Field]
   """
   Returns status of a request made to download translations. It works for downloads that are managed async - Product, SKU and specification fields.
-  Bucket type: product-translation or field-translation
   """
   translationRequestInfo(
     requestId: String!
-    bucket: String!
+    bucket: DownloadBucket!
   ): TranslationRequest
 }
 

@@ -4,7 +4,7 @@ import uploadMutationFile from './graphql/uploadBrandTranslation.gql'
 import entryQueryFile from './graphql/brandUploadRequests.gql'
 import ImportEntriesModal from '../ImportEntriesModal'
 
-const bucket = 'brand-translation'
+const bucket = 'brand_translation'
 const entryHeaders: EntryHeadersCategory[] = [
   'id',
   'name',
