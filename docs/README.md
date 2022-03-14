@@ -8,7 +8,7 @@ The catalog translation app provides a way to read and update SEO relevant infor
 | Product | Single entries, bulk export and bulk import |
 | SKU | Single entries and bulk export |
 | Brand | Single entries, bulk export and bulk import |
-| Specification | Single entries |
+| Specification | Single entries, bulk export and bulk import |
 | Collection | Single entries, bulk export and bulk import |
 
 
