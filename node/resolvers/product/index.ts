@@ -62,12 +62,6 @@ const productTranslationRequests = (
   ctx: Context
 ) => ctx.clients.vbase.getJSON(PRODUCT_BUCKET, ALL_TRANSLATIONS_FILES, true)
 
-const productTranslationRequestInfo = (
-  _root: unknown,
-  args: { requestId: string },
-  ctx: Context
-) => ctx.clients.vbase.getJSON(PRODUCT_BUCKET, args.requestId)
-
 const downloadProductTranslation = async (
   _root: unknown,
   args: { requestId: string },
@@ -93,7 +87,6 @@ export const mutations = {
 export const queries = {
   productTranslations,
   productTranslationRequests,
-  productTranslationRequestInfo,
   downloadProductTranslation,
   ...uploadQueries,
 }

@@ -153,12 +153,6 @@ const skuTranslations = async (
 const skuTranslationRequests = (_root: unknown, _args: unknown, ctx: Context) =>
   ctx.clients.vbase.getJSON(PRODUCT_BUCKET, ALL_SKU_TRANSLATIONS_FILES, true)
 
-const skuTranslationRequestInfo = (
-  _root: unknown,
-  args: { requestId: string },
-  ctx: Context
-) => ctx.clients.vbase.getJSON(PRODUCT_BUCKET, args.requestId)
-
 const downloadSKUTranslation = async (
   _root: unknown,
   args: { requestId: string },
@@ -182,6 +176,5 @@ const downloadSKUTranslation = async (
 export const queries = {
   skuTranslations,
   skuTranslationRequests,
-  skuTranslationRequestInfo,
   downloadSKUTranslation,
 }

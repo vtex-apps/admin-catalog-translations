@@ -1,35 +1,98 @@
 type Query {
+  """
+  Returns a list with the translations for all categories. The translation happens during the request.
+  """
   categoryTranslations(locale: String!, active: Boolean): [Category]
+  """
+  Returns a list with the translations for all collections. The translation happens during the request.
+  """
   collectionTranslations(
     locale: String!
     active: Boolean
     xVtexTenant: String!
   ): [Collection]
+  """
+  Returns a list with all the categories names.
+  """
   getCategoriesName: [CategoryName]
+  """
+  Starts the async process to get product translations given a category id and locale.
+  Returns an object with the request information.
+  """
   productTranslations(
     locale: String!
     categoryId: String!
   ): ProductTranslationRequest
+  """
+  Returns a list of IDs for requests made to download product translations. The id can be used to check the request status and download the translations.
+  """
   productTranslationRequests: [String]
-  productTranslationRequestInfo(requestId: String!): ProductTranslationRequest
+  """
+  Returns a list of product translations related to the given requestId that were saved on VBASE.
+  """
   downloadProductTranslation(requestId: String!): [Product]
+  """
+  Starts the async process to get the SKUs translations given a category id and locale.
+  Returns an object with the request information.
+  """
   skuTranslations(locale: String!, categoryId: String!): SKUTranslationRequest
+  """
+  Returns a list of IDs for requests made to download SKU translations. The id can be used to check the request status and download the translations.
+  """
   skuTranslationRequests: [String]
-  skuTranslationRequestInfo(requestId: String!): SKUTranslationRequest
+  """
+  Returns a list of SKU translations related to the given requestId that were saved on VBASE.
+  """
   downloadSKUTranslation(requestId: String!): [SKU]
+  """
+  Returns a list of IDs for requests made to upload product translations.
+  """
   productTranslationsUploadRequests: [String]
+  """
+  Returns a list of IDs for requests made to upload collection translations.
+  """
   collectionTranslationsUploadRequests: [String]
+  """
+  Returns the upload request status for a given requestId - generated when a file is sent to be uploaded.
+  Bucket types: brand-translation, product-translation, collection-transl, field-translation, category-transl
+  """
   translationUploadRequestInfo(
     requestId: String!
     bucket: String!
   ): UploadRequest
+  """
+  Returns a list with the translations for all brands. The translation happens during the request.
+  """
   brandTranslations(locale: String!, active: Boolean): [Brand]
+  """
+  Returns a list of IDs for requests made to upload brand translations.
+  """
   brandTranslationsUploadRequests: [String]
+  """
+  Returns a list of IDs for requests made to upload category translations.
+  """
   categoryTranslationsUploadRequests: [String]
+  """
+  Starts the async process to translate specification field given a locale.
+  Returns an object with the request information.
+  """
   fieldTranslations(fields: Upload!, locale: String!): TranslationRequest
+  """
+  Returns a list of IDs for requests made to download specification field translations. The id can be used to check the request status and download the translations.
+  """
   fieldTranslationsRequests: [String]
+  """
+  Returns a list of IDs for requests made to upload specification field translations.
+  """
   fieldTranslationsUploadRequests: [String]
+  """
+  Returns a list of specification field translations related to the given requestId that were saved on VBASE.
+  """
   downloadFieldTranslations(requestId: String!): [Field]
+  """
+  Returns status of a request made to download translations. It works for downloads that are managed async - Product, SKU and specification fields.
+  Bucket type: product-translation or field-translation
+  """
   translationRequestInfo(
     requestId: String!
     bucket: String!

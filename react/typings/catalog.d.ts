@@ -94,10 +94,6 @@ interface ProdTranslationRequests {
   productTranslationRequests: string[]
 }
 
-interface ProdTransInfoReq {
-  productTranslationRequestInfo: TranslationRequestByCategoryId
-}
-
 interface TransInfoReq {
   [key: string]: TranslationRequest
 }

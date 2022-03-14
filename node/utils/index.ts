@@ -169,7 +169,7 @@ export const uploadEntriesAsync = async <T>(
   }
 }
 
-export const saveTranslationsEntriesToVBase = async <T, X>(
+const saveTranslationsEntriesToVBase = async <T, X>(
   {
     entries,
     params,
