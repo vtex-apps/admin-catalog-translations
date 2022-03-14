@@ -6,8 +6,8 @@ import { FormattedMessage } from 'react-intl'
 import { sanitizeImportJSON, parseXLSToJSON, createModel } from '../../utils'
 import { useLocaleSelector } from '../LocaleSelector'
 import WarningAndErrorsImportModal from '../WarningAndErrorsImportModal'
-import UPLOAD_COLLECTION_TRANSLATION from '../../graphql/uploadCollectionTranslation.gql'
-import UPLOAD_COLLECTION_REQUESTS from '../../graphql/collectionUploadRequests.gql'
+import UPLOAD_COLLECTION_TRANSLATION from './graphql/uploadCollectionTranslation.gql'
+import UPLOAD_COLLECTION_REQUESTS from './graphql/collectionUploadRequests.gql'
 import ImportStatusList from '../ImportStatusList'
 
 const COLLECTION_HEADERS: Array<keyof Collection> = ['id', 'name']
