@@ -8,7 +8,20 @@ import TRANSLATION_REQUEST_INFO from '../graphql/translationRequestInfo.gql'
 import { shouldHaveCompleted, remainingTime, parseJSONToXLS } from '../utils'
 
 const getBucket = (type: typeItem): DownloadBucket => {
-  return `${type}_translation`
+  switch (type) {
+    case 'product': {
+      return 'product_translation'
+    }
+    case 'field': {
+      return 'field_translation'
+    }
+    case 'sku': {
+      return 'sku_translation'
+    }
+    default: {
+      throw new Error('Invalid type')
+    }
+  }
 }
 
 const getFileParams = (
