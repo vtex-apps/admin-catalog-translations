@@ -4,7 +4,7 @@ The catalog translation app provides a way to read and update SEO relevant infor
 
 | Entry Type | Available Translation option |
 | ---------|-------------|
-| Category | Single entries and bulk export
+| Category | Single entries, bulk export and bulk import |
 | Product | Single entries, bulk export and bulk import |
 | SKU | Single entries and bulk export |
 | Brand | Single entries, bulk export and bulk import |
@@ -39,6 +39,7 @@ $ vtex install vtex.admin-catalog-translation
 
 ---
 
-## Knowing issue
+## Knowing issues
 
-It's not possible to add content for a specific field if there is no content for that same field in the `X-Vtex-Tenant` (default) binding.
+- It's not possible to add content for a specific field if there is no content for that same field in the `X-Vtex-Tenant` (default) binding.
+- If different fields have the same value (e.g. product name and product description are equals) for the main language, translating one of them will also translate the other one. This is due to the behavior of VTEX message center.
