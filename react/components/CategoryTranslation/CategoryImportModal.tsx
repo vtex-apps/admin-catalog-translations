@@ -1,8 +1,8 @@
 import React from 'react'
 
 import ImportEntriesModal from '../ImportEntriesModal'
-import uploadMutationFile from '../../graphql/uploadCategoryTranslations.gql'
-import entryQueryFile from '../../graphql/categoryTranslationsUploadRequests.gql'
+import uploadMutationFile from './graphql/uploadCategoryTranslations.gql'
+import entryQueryFile from './graphql/categoryTranslationsUploadRequests.gql'
 
 const bucket = 'category-transl'
 const entryHeaders: EntryHeadersCategory[] = [

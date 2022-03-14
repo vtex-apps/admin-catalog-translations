@@ -2,7 +2,7 @@ import React, { FC, SyntheticEvent } from 'react'
 import { Input, Textarea } from 'vtex.styleguide'
 import { useMutation } from 'react-apollo'
 
-import translateCategoryMutation from '../../graphql/translateCategory.gql'
+import translateCategoryMutation from './graphql/translateCategory.gql'
 import { useAlert } from '../../providers/AlertProvider'
 import { useLocaleSelector } from '../LocaleSelector'
 import useFormTranslation from '../../hooks/useFormTranslation'

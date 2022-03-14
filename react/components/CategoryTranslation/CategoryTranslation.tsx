@@ -8,12 +8,12 @@ import {
 } from 'vtex.styleguide'
 import { useLazyQuery } from 'react-apollo'
 
-import getCategory from '../../graphql/getCategory.gql'
+import getCategory from './graphql/getCategory.gql'
 import { useLocaleSelector } from '../LocaleSelector'
 import ErrorHandler from '../ErrorHandler'
 import CategoryForm from './CategoryForm'
 import useCatalogQuery from '../../hooks/useCatalogQuery'
-import getAllCategories from '../../graphql/getAllCategories.gql'
+import getAllCategories from './graphql/getAllCategories.gql'
 import { parseJSONToXLS } from '../../utils'
 import CategoryImportModal from './CategoryImportModal'
 
