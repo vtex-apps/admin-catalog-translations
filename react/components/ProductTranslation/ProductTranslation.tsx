@@ -2,7 +2,7 @@ import React, { SyntheticEvent } from 'react'
 import { InputSearch, PageBlock, Spinner } from 'vtex.styleguide'
 
 import { useLocaleSelector } from '../LocaleSelector'
-import getProductQuery from '../../graphql/getProduct.gql'
+import getProductQuery from './graphql/getProduct.gql'
 import ProductForm from './ProductForm'
 import ErrorHandler from '../ErrorHandler'
 import useCatalogQuery from '../../hooks/useCatalogQuery'

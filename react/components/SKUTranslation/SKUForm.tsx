@@ -1,11 +1,11 @@
 import React, { FC, SyntheticEvent } from 'react'
 import { useMutation } from 'react-apollo'
-import { Input, Textarea, Button } from 'vtex.styleguide'
+import { Input } from 'vtex.styleguide'
 
 import { useAlert } from '../../providers/AlertProvider'
 import useFormTranslation from '../../hooks/useFormTranslation'
 import { useLocaleSelector } from '../LocaleSelector'
-import translateSKUMutation from '../../graphql/translateSKU.gql'
+import translateSKUMutation from './graphql/translateSKU.gql'
 import ActionButtons from '../ActionButtons'
 
 interface SKUFormProps {

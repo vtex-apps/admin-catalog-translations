@@ -1,7 +1,7 @@
 import React, { SyntheticEvent } from 'react'
 import { PageBlock, Spinner, InputSearch } from 'vtex.styleguide'
 
-import getBrand from '../../graphql/getBrand.gql'
+import getBrand from './graphql/getBrand.gql'
 import { useLocaleSelector } from '../LocaleSelector'
 import ErrorHandler from '../ErrorHandler'
 import BrandForm from './BrandForm'

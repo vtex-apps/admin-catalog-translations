@@ -8,7 +8,7 @@ import { useLocaleSelector } from '../LocaleSelector'
 import { useAlert } from '../../providers/AlertProvider'
 import useFormTranslation from '../../hooks/useFormTranslation'
 import ActionButtons from '../ActionButtons'
-import TRANSLATE_MESSAGES from '../../graphql/translateMessages.gql'
+import TRANSLATE_MESSAGES from './graphql/translateMessages.gql'
 
 interface CollectionsFormProps {
   collectionInfo: Collections

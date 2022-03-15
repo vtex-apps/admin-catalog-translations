@@ -4,20 +4,52 @@ import { FormattedDate, FormattedTime, FormattedMessage } from 'react-intl'
 import { Progress, ButtonPlain } from 'vtex.styleguide'
 import { ApolloError } from 'apollo-client'
 
-import PROD_INFO_REQUEST from '../graphql/getProdTranslationInfoReq.gql'
+import TRANSLATION_REQUEST_INFO from '../graphql/translationRequestInfo.gql'
 import { shouldHaveCompleted, remainingTime, parseJSONToXLS } from '../utils'
 
+const getBucket = (type: typeItem): DownloadBucket => {
+  switch (type) {
+    case 'product': {
+      return 'product_translation'
+    }
+    case 'field': {
+      return 'field_translation'
+    }
+    case 'sku': {
+      return 'sku_translation'
+    }
+    default: {
+      throw new Error('Invalid type')
+    }
+  }
+}
+
+const getFileParams = (
+  type: typeItem,
+  categoryId?: string,
+  locale?: string
+) => {
+  const name = type === 'field' ? 'specification' : type
+
+  const fileName = categoryId
+    ? `category-${categoryId}-${name}-data-${locale}`
+    : `${name}-data-${locale}`
+
+  const sheetName = `${name}_data`
+  return { fileName, sheetName }
+}
 interface Options {
   variables: {
     requestId: string
   }
 }
+
 interface Props {
   requestId: string
   download: (options: Options) => void
   downloadJson: any
   downloadError?: ApolloError
-  type: 'product' | 'sku'
+  type: typeItem
 }
 
 const ExportListItem = ({
@@ -29,18 +61,22 @@ const ExportListItem = ({
 }: Props) => {
   const [longTimeAgo, setLongTimeAgo] = useState(false)
   const [downloading, setDownloading] = useState(false)
-  const [errorDonwloading, setErrorDownloading] = useState(false)
+  const [errorDownloading, setErrorDownloading] = useState(false)
   const {
     data,
     error: errorFetching,
     startPolling,
     stopPolling,
     refetch,
-  } = useQuery<ProdTransInfoReq, { requestId: string }>(PROD_INFO_REQUEST, {
-    variables: {
-      requestId,
-    },
-  })
+  } = useQuery<TransInfoReq, { requestId: string; bucket: DownloadBucket }>(
+    TRANSLATION_REQUEST_INFO,
+    {
+      variables: {
+        requestId,
+        bucket: getBucket(type),
+      },
+    }
+  )
 
   const {
     categoryId,
@@ -50,15 +86,15 @@ const ExportListItem = ({
     completedAt,
     error,
     estimatedTime,
-  } = data?.productTranslationRequestInfo ?? {}
+  } = data?.translationRequestInfo ?? {}
 
   const tooLongRef = useRef<any>()
 
   useEffect(() => {
     if (!completedAt) {
-      refetch({ requestId })
+      refetch({ requestId, bucket: getBucket(type) })
     }
-  }, [completedAt, refetch, requestId])
+  }, [completedAt, refetch, requestId, type])
 
   useEffect(() => {
     if (!completedAt && !error && createdAt && estimatedTime) {
@@ -85,9 +121,10 @@ const ExportListItem = ({
   useEffect(() => {
     // eslint-disable-next-line vtex/prefer-early-return
     if (downloadJson && downloading) {
+      const { fileName, sheetName } = getFileParams(type, categoryId, locale)
       parseJSONToXLS(downloadJson, {
-        fileName: `category-${categoryId}-${type}-data-${locale}`,
-        sheetName: `${type}_data`,
+        fileName,
+        sheetName,
       })
       setDownloading(false)
     }
@@ -103,9 +140,11 @@ const ExportListItem = ({
 
   return !data || errorFetching ? null : (
     <tr>
-      <td>
-        <p>{categoryId}</p>
-      </td>
+      {!!categoryId && (
+        <td>
+          <p>{categoryId}</p>
+        </td>
+      )}
       <td>
         <p>{locale}</p>
       </td>
@@ -124,7 +163,7 @@ const ExportListItem = ({
         ) : null}
       </td>
       <td>
-        {error || longTimeAgo || errorDonwloading ? (
+        {error || longTimeAgo || errorDownloading ? (
           <p className="c-danger i f7">
             <FormattedMessage id="catalog-translation.export.modal.download-list.error" />
           </p>

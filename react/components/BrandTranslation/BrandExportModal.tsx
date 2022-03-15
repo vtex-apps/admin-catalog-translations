@@ -4,7 +4,7 @@ import { defineMessages, useIntl } from 'react-intl'
 import { ModalDialog, Checkbox } from 'vtex.styleguide'
 
 import { useLocaleSelector } from '../LocaleSelector'
-import getAllBrands from '../../graphql/getAllBrands.gql'
+import getAllBrands from './graphql/getAllBrands.gql'
 import { parseJSONToXLS } from '../../utils'
 
 const modalMessage = defineMessages({
@@ -49,6 +49,7 @@ const BrandExportModal = ({
         'x-vtex-locale': `${selectedLocale}`,
       },
     },
+    fetchPolicy: 'no-cache',
   })
 
   const downloadTranslations = () => {

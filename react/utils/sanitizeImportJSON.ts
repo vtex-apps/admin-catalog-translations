@@ -1,19 +1,19 @@
-export function sanitizeImportJSON<EntryType>({
+export function sanitizeImportJSON({
   data,
   entryHeaders,
   requiredHeaders,
 }: {
   data: Array<{}>
-  entryHeaders: Array<EntryHeaders<EntryType>>
+  entryHeaders: EntryHeaders[]
   requiredHeaders: string[]
-}): [Array<Record<EntryHeaders<EntryType>, string>>, Messages] {
+}): [Array<Record<EntryHeaders, string>>, Messages] {
   const warningList = []
   const errorList = []
-  const entryList = []
+  const entryList: Array<Record<EntryHeaders, string>> = []
 
   for (let i = 0; i < data.length; i++) {
     const entry = data[i]
-    const { warnings, errors } = validateEntry<EntryType>(entry, {
+    const { warnings, errors } = validateEntry(entry, {
       entryHeaders,
       requiredHeaders,
     })
@@ -24,7 +24,7 @@ export function sanitizeImportJSON<EntryType>({
         missingFields: errors,
       } as Message)
     } else {
-      const entrySanitize = createEntry<EntryType>(entry, entryHeaders)
+      const entrySanitize = createEntry(entry, entryHeaders)
       entryList.push(entrySanitize)
 
       if (warnings.length) {
@@ -39,20 +39,20 @@ export function sanitizeImportJSON<EntryType>({
   return [entryList, { warnings: warningList, errors: errorList }]
 }
 
-function validateEntry<EntryType>(
+function validateEntry(
   entry: {},
   {
     entryHeaders,
     requiredHeaders,
   }: {
-    entryHeaders: Array<EntryHeaders<EntryType>>
+    entryHeaders: EntryHeaders[]
     requiredHeaders: string[]
   }
 ) {
   const warnings: string[] = []
   const errors: string[] = []
 
-  const optinalFields = entryHeaders.filter(
+  const optionalFields = entryHeaders.filter(
     (header) => !requiredHeaders.includes(header as string)
   )
 
@@ -63,7 +63,7 @@ function validateEntry<EntryType>(
     }
   })
 
-  optinalFields.forEach((field) => {
+  optionalFields.forEach((field) => {
     if (entryFields.indexOf(field) === -1) {
       warnings.push(field)
     }
@@ -72,11 +72,11 @@ function validateEntry<EntryType>(
   return { warnings, errors }
 }
 
-function createEntry<EntryType>(
+function createEntry(
   entry: Record<string, string>,
-  entryHeaders: Array<EntryHeaders<EntryType>>
+  entryHeaders: EntryHeaders[]
 ) {
-  const entrySanitized = {} as Record<EntryHeaders<EntryType>, string>
+  const entrySanitized = {} as Record<EntryHeaders, string>
   entryHeaders.forEach((header) => {
     if (entry[header]) {
       entrySanitized[header] = entry[header]

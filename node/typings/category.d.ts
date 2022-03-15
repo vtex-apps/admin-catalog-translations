@@ -20,3 +20,12 @@ interface CategoryTranslationResponse {
 interface ResolvedPromise<Response> {
   data: Response
 }
+
+interface CategoryTranslationInput {
+  id: string
+  name?: string
+  title?: string
+  description?: string
+  locale?: string
+  linkId?: string
+}

@@ -1,7 +1,12 @@
 import { Translation } from 'vtex.messages'
 
+import { parseJSONToXLS } from './fileParsers'
+
 export * from './fileParsers'
 export * from './sanitizeImportJSON'
+
+export const UPLOAD_LIST_SIZE = 10
+export const DOWNLOAD_LIST_SIZE = 6
 
 /**
  * Keep the xVtexTenant in the top of the dropdown button
@@ -69,10 +74,10 @@ export const filterLocales = (
  * @return {boolean} true if values have changed. false if not.
  */
 
-export function hasChanges<S>(formValues: S, orignalValues: S): boolean {
+export function hasChanges<S>(formValues: S, originalValues: S): boolean {
   const keys = Object.keys(formValues)
   for (const key of keys) {
-    if (formValues[key as keyof S] !== orignalValues[key as keyof S]) {
+    if (formValues[key as keyof S] !== originalValues[key as keyof S]) {
       return true
     }
   }
@@ -159,4 +164,37 @@ export const formatCollectionFromMessages = ({
     col[translation.lang] = { name: translation.translation, id: context }
     return col
   }, {} as Record<string, Collections>)
+}
+
+export const getValueByKey = (
+  obj: { [k: string]: string },
+  keyName: string
+) => {
+  let value = ''
+  Object.keys(obj).forEach((key) => {
+    if (key === keyName) {
+      value = obj[key]
+    }
+  })
+
+  return value
+}
+
+export const createModel = <T>(
+  headers: Array<keyof T>,
+  sheetName: string,
+  type: string
+) => {
+  const headersObject = headers.reduce<Record<typeof headers[number], string>>(
+    (obj, header) => {
+      obj[header] = ''
+      return obj
+    },
+    {} as Record<typeof headers[number], string>
+  )
+
+  parseJSONToXLS([headersObject], {
+    fileName: `${type}_translate_model`,
+    sheetName,
+  })
 }

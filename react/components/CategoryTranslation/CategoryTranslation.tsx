@@ -8,13 +8,14 @@ import {
 } from 'vtex.styleguide'
 import { useLazyQuery } from 'react-apollo'
 
-import getCategory from '../../graphql/getCategory.gql'
+import getCategory from './graphql/getCategory.gql'
 import { useLocaleSelector } from '../LocaleSelector'
 import ErrorHandler from '../ErrorHandler'
 import CategoryForm from './CategoryForm'
 import useCatalogQuery from '../../hooks/useCatalogQuery'
-import getAllCategories from '../../graphql/getAllCategories.gql'
+import getAllCategories from './graphql/getAllCategories.gql'
 import { parseJSONToXLS } from '../../utils'
+import CategoryImportModal from './CategoryImportModal'
 
 interface CategoryTranslations {
   categoryTranslations: Category[]
@@ -23,6 +24,8 @@ interface CategoryTranslations {
 const CategoryTranslation = ({
   isExportOpen = false,
   handleOpenExport = () => {},
+  isImportOpen = false,
+  handleOpenImport = () => {},
 }: ComponentProps) => {
   const [onlyActive, setOnlyActive] = useState(true)
   const [downloading, setDownloading] = useState(false)
@@ -49,6 +52,7 @@ const CategoryTranslation = ({
         'x-vtex-locale': `${selectedLocale}`,
       },
     },
+    fetchPolicy: 'no-cache',
   })
 
   const handleSubmitCategoryId = (e: SyntheticEvent) => {
@@ -165,6 +169,10 @@ const CategoryTranslation = ({
           </p>
         ) : null}
       </ModalDialog>
+      <CategoryImportModal
+        isImportOpen={isImportOpen}
+        handleOpenImport={handleOpenImport}
+      />
     </>
   )
 }

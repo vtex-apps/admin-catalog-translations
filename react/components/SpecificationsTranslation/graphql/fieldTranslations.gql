@@ -1,0 +1,6 @@
+query fieldTranslations($locale: String!, $fields: Upload!) {
+  fieldTranslations(locale: $locale, fields: $fields)
+    @context(provider: "vtex.admin-catalog-translation") {
+    requestId
+  }
+}

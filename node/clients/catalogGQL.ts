@@ -1,80 +1,22 @@
 import { AppGraphQLClient, InstanceOptions, IOContext } from '@vtex/api'
 
 import { statusToError } from '../utils'
+import {
+  CATEGORIES_QUERY,
+  GET_CATEGORY_TRANSLATION_QUERY,
+  TRANSLATE_CATEGORY,
+  GET_PRODUCT_TRANSLATION_QUERY,
+  GET_SKU_TRANSLATION_QUERY,
+  TRANSLATE_PRODUCT,
+  BRAND_QUERY,
+  TRANSLATE_BRAND,
+  GET_FIELD_TRANSLATION_QUERY,
+  TRANSLATE_FIELD,
+  COLLECTIONS_QUERY,
+  GET_COLLECTION_TRANSLATION_QUERY,
+} from './utils/catalogGQLQueries'
 
 const CATALOG_GRAPHQL_APP = 'vtex.catalog-graphql@1.x'
-
-const CATEGORIES_QUERY = `
-  query GetCategories ($active: Boolean, $page: Int!) {
-    categories(term:"*", page: $page, pageSize: 50, active: $active) {
-      items {
-        id
-        name
-      }
-      paging {
-        pages
-      }
-    }
-  }
-`
-
-const GET_CATEGORY_TRANSLATION_QUERY = `
-  query getTranslation($id:ID!) {
-    category(id: $id) {
-      id
-      name
-      title
-      description
-      linkId
-    }
-  }
-`
-
-const GET_PRODUCT_TRANSLATION_QUERY = `
-  query getProductTranslation($identifier: ProductUniqueIdentifier) {
-    product(identifier: $identifier) {
-      id
-      name
-      description
-      shortDescription
-      title
-      linkId
-    }
-  }
-`
-
-const GET_SKU_TRANSLATION_QUERY = `
-  query getSKUTranslation($identifier: SKUUniqueIdentifier) {
-    sku(identifier: $identifier) {
-      id
-      name
-    }
-  }
-`
-
-const TRANSLATE_PRODUCT = `mutation translateProduct($product:ProductInputTranslation!, $locale: Locale!) {
-  translateProduct(product: $product, locale: $locale)
-}`
-
-const BRAND_QUERY = `
-  query GetBrands ($page: Int!) {
-    brands(term:"*", page: $page, pageSize: 50) {
-      items {
-        id
-        name
-        text
-        siteTitle
-        active
-      }
-      paging {
-        pages
-      }
-    }
-  }
-`
-const TRANSLATE_BRAND = `mutation translateBrand($brand:BrandInputTranslation!, $locale: Locale!) {
-  translateBrand(brand: $brand, locale: $locale)
-}`
 
 export class CatalogGQL extends AppGraphQLClient {
   constructor(ctx: IOContext, opts?: InstanceOptions) {
@@ -139,10 +81,22 @@ export class CatalogGQL extends AppGraphQLClient {
     )
   }
 
-  public getProductTranslation = (id: string, locale: string) =>
-    this.graphql.query<
+  public translateCategory = <T>(params: TranslateEntry<T>) => {
+    const { entry: category, locale } = params
+    return this.graphql.query({
+      query: TRANSLATE_CATEGORY,
+      variables: {
+        category,
+        locale,
+      },
+    })
+  }
+
+  public getProductTranslation = <T>(params: TranslateEntry<T>) => {
+    const { entry: id, locale } = params
+    return this.graphql.query<
       ProductTranslationResponse,
-      { identifier: { value: string; field: 'id' } }
+      { identifier: { value: T; field: 'id' } }
     >(
       {
         query: GET_PRODUCT_TRANSLATION_QUERY,
@@ -159,6 +113,7 @@ export class CatalogGQL extends AppGraphQLClient {
         },
       }
     )
+  }
 
   public getSKUTranslation = (id: string, locale: string) =>
     this.graphql.query<
@@ -181,11 +136,12 @@ export class CatalogGQL extends AppGraphQLClient {
       }
     )
 
-  public translateProduct = <T>(translateProduct: T, locale: string) => {
+  public translateProduct = <T>(params: TranslateEntry<T>) => {
+    const { entry: product, locale } = params
     return this.graphql.query({
       query: TRANSLATE_PRODUCT,
       variables: {
-        product: translateProduct,
+        product,
         locale,
       },
     })
@@ -254,13 +210,101 @@ export class CatalogGQL extends AppGraphQLClient {
     }
   }
 
-  public translateBrand = <T>(translateBrand: T, locale: string) => {
+  public translateBrand = <T>(params: TranslateEntry<T>) => {
+    const { entry: brand, locale } = params
     return this.graphql.query({
       query: TRANSLATE_BRAND,
       variables: {
-        brand: translateBrand,
+        brand,
         locale,
       },
     })
+  }
+
+  public getFields = async (fields: FieldTranslationInput[]) => {
+    try {
+      return [`fields${fields.length}`]
+    } catch (error) {
+      return statusToError(error)
+    }
+  }
+
+  public getFieldTranslation = <T>(params: TranslateEntry<T>) => {
+    const { entry: id, locale } = params
+    return this.graphql.query<FieldTranslationResponse, { id: T }>(
+      {
+        query: GET_FIELD_TRANSLATION_QUERY,
+        variables: {
+          id,
+        },
+      },
+      {
+        headers: {
+          'x-vtex-locale': `${locale}`,
+        },
+      }
+    )
+  }
+
+  public translateField = <T>(params: TranslateEntry<T>) => {
+    const { entry: field, locale } = params
+    return this.graphql.query({
+      query: TRANSLATE_FIELD,
+      variables: {
+        field,
+        locale,
+      },
+    })
+  }
+
+  public getCollections = async () => {
+    try {
+      const response = await this.getCollectionsPerPage({ page: 1 })
+      const {
+        items,
+        paging: { pages },
+      } = (response.data as CollectionResponse).collections
+      const collectItems = items
+      const responsePromises = []
+
+      for (let i = 2; i <= pages; i++) {
+        const promise = this.getCollectionsPerPage({ page: i })
+        responsePromises.push(promise)
+      }
+
+      const resolvedPromises = await Promise.all(responsePromises)
+
+      const flattenResponse = resolvedPromises.reduce((acc, curr) => {
+        return [...acc, ...(curr.data as CollectionResponse).collections.items]
+      }, collectItems)
+
+      return flattenResponse
+    } catch (error) {
+      return statusToError(error)
+    }
+  }
+
+  private getCollectionsPerPage = ({ page }: { page: number }) =>
+    this.graphql.query<CollectionResponse, { page: number }>({
+      query: COLLECTIONS_QUERY,
+      variables: {
+        page,
+      },
+    })
+
+  public getCollectionTranslation = (id: string, locale: string) => {
+    return this.graphql.query<CollectionTranslationResponse, { id: string }>(
+      {
+        query: GET_COLLECTION_TRANSLATION_QUERY,
+        variables: {
+          id,
+        },
+      },
+      {
+        headers: {
+          'x-vtex-locale': `${locale}`,
+        },
+      }
+    )
   }
 }

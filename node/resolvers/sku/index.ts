@@ -1,12 +1,12 @@
 import { Logger, VBase } from '@vtex/api'
 
-import { CatalogGQL } from '../clients/catalogGQL'
+import { CatalogGQL } from '../../clients/catalogGQL'
 import {
   ALL_SKU_TRANSLATIONS_FILES,
-  BUCKET_NAME,
+  SKU_BUCKET,
   calculateExportProcessTime,
   pacer,
-} from '../utils'
+} from '../../utils'
 
 const CALLS_PER_MINUTE = 350
 
@@ -33,7 +33,7 @@ const saveSkuTranslation = async (
   }: { catalogGQLClient: CatalogGQL; vbase: VBase; logger: Logger }
 ): Promise<void> => {
   const translationRequest = await vbase.getJSON<SKUTranslationRequest>(
-    BUCKET_NAME,
+    SKU_BUCKET,
     requestId,
     true
   )
@@ -59,7 +59,7 @@ const saveSkuTranslation = async (
     }
 
     await vbase.saveJSON<SKUTranslationRequest>(
-      BUCKET_NAME,
+      SKU_BUCKET,
       requestId,
       updateTranslation
     )
@@ -73,14 +73,11 @@ const saveSkuTranslation = async (
       ...translationRequest,
       error: true,
     }
-    await vbase.saveJSON<SKUTranslationRequest>(
-      BUCKET_NAME,
-      requestId,
-      addError
-    )
+    await vbase.saveJSON<SKUTranslationRequest>(SKU_BUCKET, requestId, addError)
   }
 }
 
+// TODO: refactor this fn, see node\resolvers\product\index.ts => productTranslations
 const skuTranslations = async (
   _root: unknown,
   args: { locale: string; categoryId: string },
@@ -100,7 +97,7 @@ const skuTranslations = async (
   const skuIdColletion = await catalog.getAllSKUs(categoryId)
 
   const allSkuTranslationsRequest = await vbase.getJSON<string[]>(
-    BUCKET_NAME,
+    SKU_BUCKET,
     ALL_SKU_TRANSLATIONS_FILES,
     true
   )
@@ -110,7 +107,7 @@ const skuTranslations = async (
     : [requestId]
 
   await vbase.saveJSON<string[]>(
-    BUCKET_NAME,
+    SKU_BUCKET,
     ALL_SKU_TRANSLATIONS_FILES,
     updateRequests
   )
@@ -128,7 +125,7 @@ const skuTranslations = async (
   }
 
   await vbase.saveJSON<SKUTranslationRequest>(
-    BUCKET_NAME,
+    SKU_BUCKET,
     requestId,
     requestInfo
   )
@@ -150,13 +147,7 @@ const skuTranslations = async (
 }
 
 const skuTranslationRequests = (_root: unknown, _args: unknown, ctx: Context) =>
-  ctx.clients.vbase.getJSON(BUCKET_NAME, ALL_SKU_TRANSLATIONS_FILES, true)
-
-const skuTranslationRequestInfo = (
-  _root: unknown,
-  args: { requestId: string },
-  ctx: Context
-) => ctx.clients.vbase.getJSON(BUCKET_NAME, args.requestId)
+  ctx.clients.vbase.getJSON(SKU_BUCKET, ALL_SKU_TRANSLATIONS_FILES, true)
 
 const downloadSKUTranslation = async (
   _root: unknown,
@@ -168,7 +159,7 @@ const downloadSKUTranslation = async (
   } = ctx
 
   const { translations, locale } = await vbase.getJSON<SKUTranslationRequest>(
-    BUCKET_NAME,
+    SKU_BUCKET,
     args.requestId,
     true
   )
@@ -181,6 +172,5 @@ const downloadSKUTranslation = async (
 export const queries = {
   skuTranslations,
   skuTranslationRequests,
-  skuTranslationRequestInfo,
   downloadSKUTranslation,
 }

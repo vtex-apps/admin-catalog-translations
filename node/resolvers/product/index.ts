@@ -1,12 +1,7 @@
-import { VBase } from '@vtex/api'
-
-import { CatalogGQL } from '../../clients/catalogGQL'
 import {
-  pacer,
-  BUCKET_NAME,
+  PRODUCT_BUCKET,
   ALL_TRANSLATIONS_FILES,
-  calculateExportProcessTime,
-  CALLS_PER_MINUTE,
+  entryTranslations,
 } from '../../utils'
 import {
   mutations as uploadMutations,
@@ -35,131 +30,37 @@ export const Product = {
     root.data.product.linkId,
 }
 
-const saveTranslationsToVBase = async (
-  {
-    productIds,
-    locale,
-    requestId,
-  }: { productIds: string[]; locale: string; requestId: string },
-  { catalogGQLClient, vbase }: { catalogGQLClient: CatalogGQL; vbase: VBase }
-): Promise<void> => {
-  const translationRequest = await vbase.getJSON<ProductTranslationRequest>(
-    BUCKET_NAME,
-    requestId,
-    true
-  )
-  const productTranslationPromises = []
-  try {
-    for (const productId of productIds) {
-      const translationPromise = catalogGQLClient.getProductTranslation(
-        productId,
-        locale
-      )
-      productTranslationPromises.push(translationPromise)
-      // eslint-disable-next-line no-await-in-loop
-      await pacer(CALLS_PER_MINUTE)
-    }
-
-    const translations = await Promise.all(productTranslationPromises)
-
-    const updateTranslation = {
-      ...translationRequest,
-      translations,
-      completedAt: new Date(),
-    }
-
-    await vbase.saveJSON<ProductTranslationRequest>(
-      BUCKET_NAME,
-      requestId,
-      updateTranslation
-    )
-  } catch {
-    const addError = {
-      ...translationRequest,
-      error: true,
-    }
-    await vbase.saveJSON<ProductTranslationRequest>(
-      BUCKET_NAME,
-      requestId,
-      addError
-    )
-  }
-}
-
 const productTranslations = async (
   _root: unknown,
   args: { locale: string; categoryId: string },
   ctx: Context
 ) => {
   const {
-    clients: { catalog, catalogGQL, vbase, licenseManager },
-    vtex: { adminUserAuthToken, requestId },
+    clients: { catalog, catalogGQL },
+    vtex: { requestId },
   } = ctx
-
-  const {
-    profile: { email },
-  } = await licenseManager.getTopbarData(adminUserAuthToken as string)
 
   const { locale, categoryId } = args
 
   const productIdCollection = await catalog.getAllProducts(categoryId)
 
-  const allTranslationRequest = await vbase.getJSON<string[]>(
-    BUCKET_NAME,
-    ALL_TRANSLATIONS_FILES,
-    true
-  )
-
-  const updateRequests = allTranslationRequest
-    ? [requestId, ...allTranslationRequest]
-    : [requestId]
-
-  await vbase.saveJSON<string[]>(
-    BUCKET_NAME,
-    ALL_TRANSLATIONS_FILES,
-    updateRequests
-  )
-
-  const requestInfo: ProductTranslationRequest = {
+  const params: EntryTranslations<string> = {
+    entries: productIdCollection,
     requestId,
-    requestedBy: email,
     categoryId,
     locale,
-    createdAt: new Date(),
-    estimatedTime: calculateExportProcessTime(
-      productIdCollection.length,
-      CALLS_PER_MINUTE
-    ),
+    bucket: PRODUCT_BUCKET,
+    path: ALL_TRANSLATIONS_FILES,
+    translateEntry: catalogGQL.getProductTranslation,
   }
-
-  await vbase.saveJSON<ProductTranslationRequest>(
-    BUCKET_NAME,
-    requestId,
-    requestInfo
-  )
-
-  saveTranslationsToVBase(
-    { productIds: productIdCollection, locale, requestId },
-    {
-      catalogGQLClient: catalogGQL,
-      vbase,
-    }
-  )
-
-  return requestInfo
+  return entryTranslations<string, ProductTranslationResponse>(params, ctx)
 }
 
 const productTranslationRequests = (
   _root: unknown,
   _args: unknown,
   ctx: Context
-) => ctx.clients.vbase.getJSON(BUCKET_NAME, ALL_TRANSLATIONS_FILES, true)
-
-const productTranslationRequestInfo = (
-  _root: unknown,
-  args: { requestId: string },
-  ctx: Context
-) => ctx.clients.vbase.getJSON(BUCKET_NAME, args.requestId)
+) => ctx.clients.vbase.getJSON(PRODUCT_BUCKET, ALL_TRANSLATIONS_FILES, true)
 
 const downloadProductTranslation = async (
   _root: unknown,
@@ -171,8 +72,8 @@ const downloadProductTranslation = async (
   } = ctx
 
   const { translations, locale } = await vbase.getJSON<
-    ProductTranslationRequest
-  >(BUCKET_NAME, args.requestId, true)
+    TranslationRequest<ProductTranslationResponse>
+  >(PRODUCT_BUCKET, args.requestId, true)
 
   ctx.state.locale = locale
 
@@ -186,7 +87,6 @@ export const mutations = {
 export const queries = {
   productTranslations,
   productTranslationRequests,
-  productTranslationRequestInfo,
   downloadProductTranslation,
   ...uploadQueries,
 }
