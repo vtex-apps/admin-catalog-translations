@@ -68,7 +68,6 @@ type Query {
   collectionTranslationsUploadRequests: [String]
   """
   Returns the upload request status for a given requestId - generated when a file is sent to be uploaded.
-  Bucket types: brand-translation, product-translation, collection-transl, field-translation, category-transl
   """
   translationUploadRequestInfo(
     requestId: String!
