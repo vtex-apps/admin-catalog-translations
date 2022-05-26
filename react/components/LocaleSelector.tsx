@@ -11,11 +11,15 @@ import { Spinner, Dropdown } from 'vtex.styleguide'
 import accountLocalesQuery from '../graphql/accountLocales.gql'
 import { convertToDropDownOptions, filterLocales } from '../utils'
 
+interface DropDownProps {
+  label: string
+  value: string
+}
 interface BindingContextInterface {
   xVtexTenant: string
   isXVtexTenant: boolean
   selectedLocale: string
-  bindings: Binding[]
+  dropDownOptions: DropDownProps[]
   loading: boolean
   handleLocaleSelection: (localeSelected: string) => void
 }
@@ -25,7 +29,7 @@ const BindingContext = createContext<BindingContextInterface>(
 )
 
 const BindingProvider: FC = ({ children }) => {
-  const [bindings, setBindings] = useState<Binding[]>([])
+  const [dropDownOptions, setDropDownOptions] = useState<DropDownProps[]>([])
   const [selectedLocale, setSelectedLocale] = useState<string>('')
   const [xVtexTenant, setXVtexTenant] = useState('')
 
@@ -38,7 +42,7 @@ const BindingProvider: FC = ({ children }) => {
     if (bindingData) {
       const { defaultLocale, bindings: fetchedLocales } = bindingData.tenantInfo
       const filteredLocales = filterLocales(fetchedLocales, defaultLocale)
-      setBindings(filteredLocales)
+      setDropDownOptions(convertToDropDownOptions(filteredLocales))
       setSelectedLocale(defaultLocale)
       setXVtexTenant(defaultLocale)
     }
@@ -55,7 +59,7 @@ const BindingProvider: FC = ({ children }) => {
         xVtexTenant,
         selectedLocale,
         isXVtexTenant,
-        bindings,
+        dropDownOptions,
         loading,
         handleLocaleSelection,
       }}
@@ -67,7 +71,7 @@ const BindingProvider: FC = ({ children }) => {
 
 const LocaleSelector: FC = () => {
   const {
-    bindings = [],
+    dropDownOptions = [],
     selectedLocale,
     handleLocaleSelection,
     loading,
@@ -81,7 +85,7 @@ const LocaleSelector: FC = () => {
         label="Available Language"
         placeholder="Select a language"
         value={selectedLocale}
-        options={convertToDropDownOptions(bindings)}
+        options={dropDownOptions}
         onChange={(_: unknown, value: string) => handleLocaleSelection(value)}
       />
     </div>

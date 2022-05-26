@@ -27,7 +27,7 @@ const sortBindings = (bindings: Binding[], xVtexTenant: string): Binding[] => {
 }
 
 /**
- * Returns all the unique binding locales, excluding the first one provided by the api (admin)
+ * Returns all the unique binding locales
  *
  * @param {array} Array received from api graphql
  * @return {array} Array with only unique locales and without the admin binding.
@@ -37,13 +37,14 @@ export const filterLocales = (
   bindings: Binding[],
   xVtexTenant: string
 ): Binding[] => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [admin, ...otherBindings] = bindings
+  const storeFrontBindings = bindings.filter(
+    (binding) => binding.targetProduct === 'vtex-storefront'
+  )
   const uniqueBindings: { [id: string]: boolean } = {}
   const filteredBindings: Binding[] = []
   const supportedLocales: string[] = []
 
-  for (const binding of otherBindings) {
+  for (const binding of storeFrontBindings) {
     if (!uniqueBindings[binding.defaultLocale]) {
       filteredBindings.push(binding)
       supportedLocales.push(...binding.supportedLocales)
@@ -61,6 +62,16 @@ export const filterLocales = (
       })
       uniqueBindings[supportedLocale] = true
     }
+  }
+
+  // in case the xVtexTenant is not in the bindings, we add it
+  if (!uniqueBindings[xVtexTenant]) {
+    filteredBindings.push({
+      id: xVtexTenant,
+      defaultLocale: xVtexTenant,
+      supportedLocales: [],
+    })
+    uniqueBindings[xVtexTenant] = true
   }
 
   return sortBindings(filteredBindings, xVtexTenant)
