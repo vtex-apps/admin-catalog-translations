@@ -5,6 +5,7 @@ query accountLocales {
       id
       defaultLocale
       supportedLocales
+      targetProduct
     }
   }
 }
