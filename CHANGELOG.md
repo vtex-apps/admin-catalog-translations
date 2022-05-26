@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+- Use `targetProduct` key to filter `vtex-storefront` bindings. Before, it was always considering the first one as admin.
+
 ## [2.0.0] - 2022-03-15
 ### Added
 - Bulk import and export for `Collections`
