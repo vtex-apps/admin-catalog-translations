@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.2] - 2022-06-03
+
 ### Added
 
 - Include public folder and subfolders to be able submit the app in the appstore.
