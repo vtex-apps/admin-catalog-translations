@@ -1,0 +1,13 @@
+{
+  "name": "Traducción del catálogo",
+  "headline": "La aplicación de traducción de catálogos ofrece una forma de leer y actualizar la información relevante para el SEO.",
+  "overview": "La aplicación se puede utilizar para todos los enlaces asociados a una cuenta para las siguientes entradas del catálogo: Categoría, Producto, SKU, Marca, Especificación y Colección\\\\n Esta aplicación está dirigida a las tiendas con una arquitectura de vinculación múltiple de una cuenta.\\\\n Cada tipo de entrada tiene su propia página para manejar las traducciones.Muestran automáticamente la lista de todos los idiomas (por defecto y soportados) para todas las vinculaciones del escaparate configuradas para la tienda.",
+  "features": [
+    "Mejorar SEO",
+    "Traducción de Categoría, Producto, SKU, Marca, Especificación y Colección"
+  ],
+  "websiteURL": "https://vtex.com/",
+  "support": {
+    "url": "https://support.vtex.com/hc/requests"
+  }
+}

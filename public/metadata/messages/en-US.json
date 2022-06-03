@@ -1,0 +1,13 @@
+{
+  "name": "Catalog translation",
+  "headline": "The catalog translation app provides a way to read and update SEO relevant information.",
+  "overview": "The app can be use for for all bindings associated to an account for the following catalog entries: Category, Product, SKU, Brand, Specification and Collection\\\\n This app is aimed towards stores with a one account multiple binding architecture.\\\\n Every entry type has its own page to handle translations.They automatically display the list of all languages (default and supported ones) for all storefront bindings configured for the store.",
+  "features": [
+    "Improve SEO",
+    "Translation of Category, Product, SKU, Brand, Specification and Collection"
+  ],
+  "websiteURL": "https://vtex.com/",
+  "support": {
+    "url": "https://support.vtex.com/hc/requests"
+  }
+}
