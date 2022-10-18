@@ -12,6 +12,7 @@ const entryHeaders: EntryHeadersProduct[] = [
   'description',
   'shortDescription',
   'linkId',
+  'metaTagDescription',
 ]
 const entryQueryName = 'productTranslationsUploadRequests'
 const entryName = 'Product'
