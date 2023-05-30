@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix messages standardization to fit localization process as set in the [developers portal](https://developers.vtex.com/docs/guides/vtex-io-documentation-8-translating-the-component)
+
 ## [2.1.1] - 2022-10-18
 ### Fixed
 - Add product meta tag description into entry header to enable this field into the bulk import for products

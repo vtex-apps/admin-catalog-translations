@@ -8,7 +8,7 @@ const BrandTranslationWrapper: FC = () => {
   return (
     <CatalogTranslationWrapper
       titleComponent={
-        <FormattedMessage id="catalog-translation.brand.header" />
+        <FormattedMessage id="admin/catalog-translation.brand.header" />
       }
       hasExport
       hasImport

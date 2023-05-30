@@ -170,7 +170,7 @@ const ImportEntriesModal = ({
       loading={loading}
       cancelation={{
         label: (
-          <FormattedMessage id="catalog-translation.import.modal.cancelation" />
+          <FormattedMessage id="admin/catalog-translation.import.modal.cancelation" />
         ),
         onClick: () => {
           handleOpenImport(false)
@@ -179,7 +179,7 @@ const ImportEntriesModal = ({
       }}
       confirmation={{
         label: (
-          <FormattedMessage id="catalog-translation.import.modal.confirmation" />
+          <FormattedMessage id="admin/catalog-translation.import.modal.confirmation" />
         ),
         onClick: () => {
           if (errorParsingFile) {
@@ -196,7 +196,7 @@ const ImportEntriesModal = ({
     >
       <h3>
         <FormattedMessage
-          id="catalog-translation.import.modal.entry-name-header"
+          id="admin/catalog-translation.import.modal.entry-name-header"
           values={{
             selectedLocale,
             entryName,
@@ -207,7 +207,7 @@ const ImportEntriesModal = ({
         <Tabs>
           <Tab
             label={
-              <FormattedMessage id="catalog-translation.import.modal.import-tab" />
+              <FormattedMessage id="admin/catalog-translation.import.modal.import-tab" />
             }
             active={tabSelected === 1}
             onClick={() => {
@@ -218,7 +218,7 @@ const ImportEntriesModal = ({
             <div>
               <div className="mv4">
                 <ButtonPlain onClick={createModel}>
-                  <FormattedMessage id="catalog-translation.import.modal.download-button" />
+                  <FormattedMessage id="admin/catalog-translation.import.modal.download-button" />
                 </ButtonPlain>
               </div>
               <div>
@@ -229,10 +229,10 @@ const ImportEntriesModal = ({
                 >
                   <div className="pt7">
                     <span className="f4">
-                      <FormattedMessage id="catalog-translation.import.modal.dropzone" />
+                      <FormattedMessage id="admin/catalog-translation.import.modal.dropzone" />
                     </span>
                     <span className="f4 c-link" style={{ cursor: 'pointer' }}>
-                      <FormattedMessage id="catalog-translation.import.modal.dropzone-choose-file" />
+                      <FormattedMessage id="admin/catalog-translation.import.modal.dropzone-choose-file" />
                     </span>
                   </div>
                 </Dropzone>
@@ -245,14 +245,14 @@ const ImportEntriesModal = ({
               {originalFile.length ? (
                 <li>
                   {originalFile?.length}{' '}
-                  <FormattedMessage id="catalog-translation.import.modal.total-entries" />
+                  <FormattedMessage id="admin/catalog-translation.import.modal.total-entries" />
                 </li>
               ) : null}
               {validationWarnings.length ? (
                 <li>
                   <ButtonPlain onClick={() => setWarningModal(true)}>
                     {validationWarnings.length}{' '}
-                    <FormattedMessage id="catalog-translation.import.modal.total-warnings" />
+                    <FormattedMessage id="admin/catalog-translation.import.modal.total-warnings" />
                   </ButtonPlain>
                 </li>
               ) : null}
@@ -263,20 +263,20 @@ const ImportEntriesModal = ({
                     onClick={() => setErrorModal(true)}
                   >
                     {validationErrors.length}{' '}
-                    <FormattedMessage id="catalog-translation.import.modal.total-errors" />
+                    <FormattedMessage id="admin/catalog-translation.import.modal.total-errors" />
                   </ButtonPlain>
                 </li>
               ) : null}
             </ul>
             {uploadError ? (
               <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
-                <FormattedMessage id="catalog-translation.import.modal.error-uploading" />
+                <FormattedMessage id="admin/catalog-translation.import.modal.error-uploading" />
               </p>
             ) : null}
           </Tab>
           <Tab
             label={
-              <FormattedMessage id="catalog-translation.import.modal.request-tab" />
+              <FormattedMessage id="admin/catalog-translation.import.modal.request-tab" />
             }
             active={tabSelected === 2}
             onClick={() => {
@@ -288,19 +288,19 @@ const ImportEntriesModal = ({
               <thead>
                 <tr>
                   <th>
-                    <FormattedMessage id="catalog-translation.import.modal.table-header.locale" />
+                    <FormattedMessage id="admin/catalog-translation.import.modal.table-header.locale" />
                   </th>
                   <th>
-                    <FormattedMessage id="catalog-translation.import.modal.table-header.translated-by" />
+                    <FormattedMessage id="admin/catalog-translation.import.modal.table-header.translated-by" />
                   </th>
                   <th>
-                    <FormattedMessage id="catalog-translation.import.modal.table-header.created-at" />
+                    <FormattedMessage id="admin/catalog-translation.import.modal.table-header.created-at" />
                   </th>
                   <th>
-                    <FormattedMessage id="catalog-translation.import.modal.table-header.progress" />
+                    <FormattedMessage id="admin/catalog-translation.import.modal.table-header.progress" />
                   </th>
                   <th>
-                    <FormattedMessage id="catalog-translation.import.modal.table-header.total-translated" />
+                    <FormattedMessage id="admin/catalog-translation.import.modal.table-header.total-translated" />
                   </th>
                 </tr>
               </thead>

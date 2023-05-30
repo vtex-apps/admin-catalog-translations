@@ -134,7 +134,7 @@ export const ExportByCategoryIdModal = ({
       loading={loadingTranslations}
       cancelation={{
         label: (
-          <FormattedMessage id="catalog-translation.export.modal.cancelation" />
+          <FormattedMessage id="admin/catalog-translation.export.modal.cancelation" />
         ),
         onClick: handleClose,
       }}
@@ -154,7 +154,7 @@ export const ExportByCategoryIdModal = ({
         <div className="relative">
           <div className="w-100 absolute z-max overflow-hidden top-0 left-0">
             <Alert type="warning" onClose={() => setShowMissingCatId(false)}>
-              <FormattedMessage id="catalog-translation.export.modal.missing-category-id" />
+              <FormattedMessage id="admin/catalog-translation.export.modal.missing-category-id" />
             </Alert>
           </div>
         </div>
@@ -162,7 +162,7 @@ export const ExportByCategoryIdModal = ({
       <div style={{ minHeight: '420px' }}>
         <h3>
           <FormattedMessage
-            id="catalog-translation.export.modal.header"
+            id="admin/catalog-translation.export.modal.header"
             values={{
               selectedLocale,
               entry: intl.formatMessage(headerEntityMessage[type]),
@@ -175,14 +175,14 @@ export const ExportByCategoryIdModal = ({
           <Tabs>
             <Tab
               label={
-                <FormattedMessage id="catalog-translation.export.modal.export-tab" />
+                <FormattedMessage id="admin/catalog-translation.export.modal.export-tab" />
               }
               active={tabSelected === 1}
               onClick={() => setTabSelected(1)}
             >
               <div>
                 <h4>
-                  <FormattedMessage id="catalog-translation.export.modal.search-header" />
+                  <FormattedMessage id="admin/catalog-translation.export.modal.search-header" />
                 </h4>
                 <AutocompleteInput
                   input={{
@@ -210,38 +210,38 @@ export const ExportByCategoryIdModal = ({
                 />
                 {hasError ? (
                   <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
-                    <FormattedMessage id="catalog-translation.export.modal.error-exporting" />
+                    <FormattedMessage id="admin/catalog-translation.export.modal.error-exporting" />
                   </p>
                 ) : null}
               </div>
             </Tab>
             <Tab
               label={
-                <FormattedMessage id="catalog-translation.export.modal.see-files-tab" />
+                <FormattedMessage id="admin/catalog-translation.export.modal.see-files-tab" />
               }
               active={tabSelected === 2}
               onClick={() => setTabSelected(2)}
             >
               <p className="i f7 tr">
-                <FormattedMessage id="catalog-translation.export.modal.long-process.warning" />
+                <FormattedMessage id="admin/catalog-translation.export.modal.long-process.warning" />
               </p>
               <table className="w-100 mt7 tc">
                 <thead>
                   <tr>
                     <th>
-                      <FormattedMessage id="catalog-translation.export.modal.table-header.catId" />
+                      <FormattedMessage id="admin/catalog-translation.export.modal.table-header.catId" />
                     </th>
                     <th>
-                      <FormattedMessage id="catalog-translation.export.modal.table-header.locale" />
+                      <FormattedMessage id="admin/catalog-translation.export.modal.table-header.locale" />
                     </th>
                     <th>
-                      <FormattedMessage id="catalog-translation.export.modal.table-header.requested.by" />
+                      <FormattedMessage id="admin/catalog-translation.export.modal.table-header.requested.by" />
                     </th>
                     <th>
-                      <FormattedMessage id="catalog-translation.export.modal.table-header.requested.at" />
+                      <FormattedMessage id="admin/catalog-translation.export.modal.table-header.requested.at" />
                     </th>
                     <th>
-                      <FormattedMessage id="catalog-translation.export.modal.table-header.download" />
+                      <FormattedMessage id="admin/catalog-translation.export.modal.table-header.download" />
                     </th>
                   </tr>
                 </thead>

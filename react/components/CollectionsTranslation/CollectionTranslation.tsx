@@ -172,7 +172,7 @@ const CollectionsTranslation = ({
             value={entryId}
             placeholder="Search collections..."
             label={
-              <FormattedMessage id="catalog-translation.collections.search-label" />
+              <FormattedMessage id="admin/catalog-translation.collections.search-label" />
             }
             size="regular"
             onChange={handleEntryIdInput}
@@ -189,7 +189,7 @@ const CollectionsTranslation = ({
             variation="full"
             title={
               <FormattedMessage
-                id="catalog-translation.collections.block-header"
+                id="admin/catalog-translation.collections.block-header"
                 values={{ selectedLocale }}
               />
             }
@@ -199,7 +199,7 @@ const CollectionsTranslation = ({
                 errorMessage={errorMessage || (errorMessages?.message ?? '')}
                 entryId={entryId}
                 entry={intl.formatMessage({
-                  id: 'catalog-translation.entry-type.collection',
+                  id: 'admin/catalog-translation.entry-type.collection',
                 })}
               />
             ) : isLoadingOrRefetching || loadingMessages ? (

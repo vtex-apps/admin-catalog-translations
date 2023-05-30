@@ -18,14 +18,14 @@ const ErrorHandler: FC<ErrorHandlerProps> = ({
       <EmptyState
         title={
           <FormattedMessage
-            id="catalog-translation.errors.not-found-header"
+            id="admin/catalog-translation.errors.not-found-header"
             values={{ entry }}
           />
         }
       >
         <p>
           <FormattedMessage
-            id="catalog-translation.errors.not-found-message"
+            id="admin/catalog-translation.errors.not-found-message"
             values={{
               entry,
               entryId,
@@ -37,14 +37,14 @@ const ErrorHandler: FC<ErrorHandlerProps> = ({
       <EmptyState
         title={
           <FormattedMessage
-            id="catalog-translation.errors.error-header"
+            id="admin/catalog-translation.errors.error-header"
             values={{ entry }}
           />
         }
       >
         <p>
           <FormattedMessage
-            id="catalog-translation.errors.error-message"
+            id="admin/catalog-translation.errors.error-message"
             values={{ entry }}
           />
         </p>

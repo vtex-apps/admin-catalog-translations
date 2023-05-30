@@ -170,7 +170,7 @@ const SpecificationExportModal = ({
       loading={loading}
       cancelation={{
         label: (
-          <FormattedMessage id="catalog-translation.import.modal.cancelation" />
+          <FormattedMessage id="admin/catalog-translation.import.modal.cancelation" />
         ),
         onClick: () => {
           handleOpenExport(false)
@@ -179,7 +179,7 @@ const SpecificationExportModal = ({
       }}
       confirmation={{
         label: (
-          <FormattedMessage id="catalog-translation.export.modal.confirmation" />
+          <FormattedMessage id="admin/catalog-translation.export.modal.confirmation" />
         ),
         onClick: () => {
           if (errorParsingFile) {
@@ -196,7 +196,7 @@ const SpecificationExportModal = ({
     >
       <h3>
         <FormattedMessage
-          id="catalog-translation.export.modal.specification-header"
+          id="admin/catalog-translation.export.modal.specification-header"
           values={{
             selectedLocale,
           }}
@@ -206,7 +206,7 @@ const SpecificationExportModal = ({
         <Tabs>
           <Tab
             label={
-              <FormattedMessage id="catalog-translation.export.modal.export-tab" />
+              <FormattedMessage id="admin/catalog-translation.export.modal.export-tab" />
             }
             active={tabSelected === 1}
             onClick={() => {
@@ -217,7 +217,7 @@ const SpecificationExportModal = ({
             <div>
               <div className="mv4">
                 <ButtonPlain onClick={handleCreateModel}>
-                  <FormattedMessage id="catalog-translation.export.modal.download-button" />
+                  <FormattedMessage id="admin/catalog-translation.export.modal.download-button" />
                 </ButtonPlain>
               </div>
               <div>
@@ -228,10 +228,10 @@ const SpecificationExportModal = ({
                 >
                   <div className="pt7">
                     <span className="f4">
-                      <FormattedMessage id="catalog-translation.export.modal.dropzone" />
+                      <FormattedMessage id="admin/catalog-translation.export.modal.dropzone" />
                     </span>
                     <span className="f4 c-link" style={{ cursor: 'pointer' }}>
-                      <FormattedMessage id="catalog-translation.export.modal.dropzone-choose-file" />
+                      <FormattedMessage id="admin/catalog-translation.export.modal.dropzone-choose-file" />
                     </span>
                   </div>
                 </Dropzone>
@@ -244,14 +244,14 @@ const SpecificationExportModal = ({
               {originalFile.length ? (
                 <li>
                   {originalFile?.length}{' '}
-                  <FormattedMessage id="catalog-translation.export.modal.total-entries" />
+                  <FormattedMessage id="admin/catalog-translation.export.modal.total-entries" />
                 </li>
               ) : null}
               {validationWarnings.length ? (
                 <li>
                   <ButtonPlain onClick={() => setWarningModal(true)}>
                     {validationWarnings.length}{' '}
-                    <FormattedMessage id="catalog-translation.export.modal.total-warnings" />
+                    <FormattedMessage id="admin/catalog-translation.export.modal.total-warnings" />
                   </ButtonPlain>
                 </li>
               ) : null}
@@ -262,41 +262,41 @@ const SpecificationExportModal = ({
                     onClick={() => setErrorModal(true)}
                   >
                     {validationErrors.length}{' '}
-                    <FormattedMessage id="catalog-translation.export.modal.total-errors" />
+                    <FormattedMessage id="admin/catalog-translation.export.modal.total-errors" />
                   </ButtonPlain>
                 </li>
               ) : null}
             </ul>
             {uploadError ? (
               <p className="absolute c-danger i-s bottom-0-m right-0-m mr8">
-                <FormattedMessage id="catalog-translation.export.modal.error-uploading" />
+                <FormattedMessage id="admin/catalog-translation.export.modal.error-uploading" />
               </p>
             ) : null}
           </Tab>
           <Tab
             label={
-              <FormattedMessage id="catalog-translation.export.modal.see-files-tab" />
+              <FormattedMessage id="admin/catalog-translation.export.modal.see-files-tab" />
             }
             active={tabSelected === 2}
             onClick={() => setTabSelected(2)}
           >
             <p className="i f7 tr">
-              <FormattedMessage id="catalog-translation.export.modal.long-process.warning" />
+              <FormattedMessage id="admin/catalog-translation.export.modal.long-process.warning" />
             </p>
             <table className="w-100 mt7 tc">
               <thead>
                 <tr>
                   <th>
-                    <FormattedMessage id="catalog-translation.export.modal.table-header.locale" />
+                    <FormattedMessage id="admin/catalog-translation.export.modal.table-header.locale" />
                   </th>
                   <th>
-                    <FormattedMessage id="catalog-translation.export.modal.table-header.requested.by" />
+                    <FormattedMessage id="admin/catalog-translation.export.modal.table-header.requested.by" />
                   </th>
                   <th>
-                    <FormattedMessage id="catalog-translation.export.modal.table-header.requested.at" />
+                    <FormattedMessage id="admin/catalog-translation.export.modal.table-header.requested.at" />
                   </th>
                   <th>
-                    <FormattedMessage id="catalog-translation.export.modal.table-header.download" />
+                    <FormattedMessage id="admin/catalog-translation.export.modal.table-header.download" />
                   </th>
                 </tr>
               </thead>

@@ -1,30 +1,30 @@
 {
   "section": "products",
-  "titleId": "catalog-translation.navigation.label",
-  "searchKeyWordsHelpers": "catalog-translation.navigation.search.kws",
+  "titleId": "admin/catalog-translation.navigation.label",
+  "searchKeyWordsHelpers": "admin/catalog-translation.navigation.search.kws",
   "subSectionItems": [
     {
-      "labelId": "catalog-translation.navigation.category",
+      "labelId": "admin/catalog-translation.navigation.category",
       "path": "/admin/catalog-translation/category"
     },
     {
-      "labelId": "catalog-translation.navigation.product",
+      "labelId": "admin/catalog-translation.navigation.product",
       "path": "/admin/catalog-translation/product"
     },
     {
-      "labelId": "catalog-translation.navigation.sku",
+      "labelId": "admin/catalog-translation.navigation.sku",
       "path": "/admin/catalog-translation/sku"
     },
     {
-      "labelId": "catalog-translation.navigation.brand",
+      "labelId": "admin/catalog-translation.navigation.brand",
       "path": "/admin/catalog-translation/brand"
     },
     {
-      "labelId": "catalog-translation.navigation.specifications",
+      "labelId": "admin/catalog-translation.navigation.specifications",
       "path": "/admin/catalog-translation/specifications"
     },
     {
-      "labelId": "catalog-translation.navigation.collections",
+      "labelId": "admin/catalog-translation.navigation.collections",
       "path": "/admin/catalog-translation/collections"
     }
   ]

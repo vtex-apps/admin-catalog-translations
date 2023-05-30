@@ -165,7 +165,7 @@ const ExportListItem = ({
       <td>
         {error || longTimeAgo || errorDownloading ? (
           <p className="c-danger i f7">
-            <FormattedMessage id="catalog-translation.export.modal.download-list.error" />
+            <FormattedMessage id="admin/catalog-translation.export.modal.download-list.error" />
           </p>
         ) : completedAt ? (
           <ButtonPlain
@@ -178,7 +178,7 @@ const ExportListItem = ({
               setDownloading(true)
             }}
           >
-            <FormattedMessage id="catalog-translation.export.modal.download-list.download-btn" />
+            <FormattedMessage id="admin/catalog-translation.export.modal.download-list.download-btn" />
           </ButtonPlain>
         ) : (
           <Progress type="steps" steps={['inProgress']} />

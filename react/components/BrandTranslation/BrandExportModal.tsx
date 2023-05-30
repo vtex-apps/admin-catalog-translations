@@ -9,19 +9,19 @@ import { parseJSONToXLS } from '../../utils'
 
 const modalMessage = defineMessages({
   export: {
-    id: 'catalog-translation.export.modal.title-brand',
+    id: 'admin/catalog-translation.export.modal.title-brand',
   },
   confirmation: {
-    id: 'catalog-translation.export.modal.confirmation-brands',
+    id: 'admin/catalog-translation.export.modal.confirmation-brands',
   },
   active: {
-    id: 'catalog-translation.export.modal.export-active-brands',
+    id: 'admin/catalog-translation.export.modal.export-active-brands',
   },
   cancel: {
-    id: 'catalog-translation.action-buttons.cancel',
+    id: 'admin/catalog-translation.action-buttons.cancel',
   },
   error: {
-    id: 'catalog-translation.export.modal.error-exporting',
+    id: 'admin/catalog-translation.export.modal.error-exporting',
   },
 })
 interface BrandTranslations {
