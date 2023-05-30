@@ -65,19 +65,19 @@ export const ExportByCategoryIdModal = ({
 
   const headerEntityMessage = defineMessages({
     product: {
-      id: 'catalog-translation.export.modal.header-product',
+      id: 'admin/catalog-translation.export.modal.header-product',
     },
     sku: {
-      id: 'catalog-translation.export.modal.header-sku',
+      id: 'admin/catalog-translation.export.modal.header-sku',
     },
   })
 
   const confirmationButtonLabel = defineMessages({
     product: {
-      id: 'catalog-translation.export.modal.confirmation-products',
+      id: 'admin/catalog-translation.export.modal.confirmation-products',
     },
     sku: {
-      id: 'catalog-translation.export.modal.confirmation-skus',
+      id: 'admin/catalog-translation.export.modal.confirmation-skus',
     },
   })
 
@@ -188,7 +188,7 @@ export const ExportByCategoryIdModal = ({
                   input={{
                     placeholder: intl.formatMessage({
                       id:
-                        'catalog-translation.export.modal.category-search-placeholder',
+                        'admin/catalog-translation.export.modal.category-search-placeholder',
                     }),
                     onChange: (term: string) => setSearchTerm(term),
                     onClear: () => {
