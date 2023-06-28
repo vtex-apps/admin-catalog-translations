@@ -76,7 +76,7 @@ const CollectionsForm = ({
         <div className="mb5">
           <Input
             label={
-              <FormattedMessage id="catalog-translation.form-fields.name" />
+              <FormattedMessage id="admin/catalog-translation.form-fields.name" />
             }
             value={formState.name}
             name="name"

@@ -7,7 +7,7 @@ import SKUTranslation from './components/SKUTranslation/SKUTranslation'
 const SKUTranslationWrapped: FC = () => {
   return (
     <CatalogTranslationWrapper
-      titleComponent={<FormattedMessage id="catalog-translation.sku.header" />}
+      titleComponent={<FormattedMessage id="admin/catalog-translation.sku.header" />}
       hasExport
     >
       <SKUTranslation />

@@ -19,9 +19,9 @@ const ActionButtons: FC<ActionButtonsProps> = ({
     <span className="mr5">
       <Button type="button" variation="secondary" onClick={toggleEdit}>
         {canEdit ? (
-          <FormattedMessage id="catalog-translation.action-buttons.cancel" />
+          <FormattedMessage id="admin/catalog-translation.action-buttons.cancel" />
         ) : (
-          <FormattedMessage id="catalog-translation.action-buttons.edit" />
+          <FormattedMessage id="admin/catalog-translation.action-buttons.edit" />
         )}
       </Button>
     </span>
@@ -32,7 +32,7 @@ const ActionButtons: FC<ActionButtonsProps> = ({
         disabled={!changed}
         isLoading={loading}
       >
-        <FormattedMessage id="catalog-translation.action-buttons.save" />
+        <FormattedMessage id="admin/catalog-translation.action-buttons.save" />
       </Button>
     </span>
   </div>

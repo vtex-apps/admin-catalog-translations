@@ -73,7 +73,7 @@ const ImportStatusList = ({
       <td>
         {error || shouldHaveFinished ? (
           <p className="c-danger i f7">
-            <FormattedMessage id="catalog-translation.import.modal.status-list.error" />
+            <FormattedMessage id="admin/catalog-translation.import.modal.status-list.error" />
           </p>
         ) : (
           <Progress

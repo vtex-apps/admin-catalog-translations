@@ -12,12 +12,12 @@ const tableSchemaGenerator = (intl: IntlShape) => ({
   properties: {
     line: {
       title: intl.formatMessage({
-        id: 'catalog-translation.import.table-header.line',
+        id: 'admin/catalog-translation.import.table-header.line',
       }),
     },
     missingFields: {
       title: intl.formatMessage({
-        id: 'catalog-translation.import.table-header.missing-fields',
+        id: 'admin/catalog-translation.import.table-header.missing-fields',
       }),
       // eslint-disable-next-line react/display-name
       cellRenderer: ({ cellData }: { cellData: string[] }) => (
@@ -80,7 +80,7 @@ const WarningAndErrorsImportModal = ({
         currentItemFrom={from + 1}
         currentItemTo={to}
         textOf={
-          <FormattedMessage id="catalog-translation.import.warning-and-error" />
+          <FormattedMessage id="admin/catalog-translation.import.warning-and-error" />
         }
         totalItems={data.length}
         onNextClick={handleNext}
