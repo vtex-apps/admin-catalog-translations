@@ -19,8 +19,14 @@ import {
 const CATALOG_GRAPHQL_APP = 'vtex.catalog-graphql@1.x'
 
 export class CatalogGQL extends AppGraphQLClient {
-  constructor(ctx: IOContext, opts?: InstanceOptions) {
-    super(CATALOG_GRAPHQL_APP, ctx, opts)
+  constructor(ctx: IOContext, options?: InstanceOptions) {
+    super(CATALOG_GRAPHQL_APP, ctx, {
+      ...options,
+      headers: {
+        ...options?.headers,
+        VtexIdclientAutCookie: ctx.authToken ?? ctx.adminUserAuthToken ?? null,
+      },
+    })
   }
 
   public getCategories = async (active = true) => {
@@ -280,6 +286,7 @@ export class CatalogGQL extends AppGraphQLClient {
 
       return flattenResponse
     } catch (error) {
+      console.error(error)
       return statusToError(error)
     }
   }
