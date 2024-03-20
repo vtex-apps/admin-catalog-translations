@@ -4,7 +4,7 @@
   "main": "index.ts",
   "license": "UNLICENSED",
   "dependencies": {
-    "@vtex/api": "6.45.12",
+    "@vtex/api": "6.46.1",
     "JSONStream": "^1.3.5"
   },
   "devDependencies": {
