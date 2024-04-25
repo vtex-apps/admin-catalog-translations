@@ -1,6 +1,6 @@
 {
   "name": "vtex.admin-catalog-translation",
-  "version": "2.1.2",
+  "version": "2.1.5",
   "main": "index.ts",
   "license": "UNLICENSED",
   "dependencies": {
