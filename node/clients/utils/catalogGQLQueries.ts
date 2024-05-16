@@ -53,6 +53,10 @@ export const TRANSLATE_PRODUCT = `mutation translateProduct($product:ProductInpu
   translateProduct(product: $product, locale: $locale)
 }`
 
+export const TRANSLATE_SKU = `mutation translateSKU($sku:SKUInputTranslation!, $locale: Locale!) {
+  translateSKU(sku: $sku, locale: $locale)
+}`
+
 export const BRAND_QUERY = `
   query GetBrands ($page: Int!) {
     brands(term:"*", page: $page, pageSize: 50) {

@@ -14,3 +14,8 @@ type SKU {
   name: String
   locale: String
 }
+
+input SkuTranslationUpload {
+  id: String!
+  name: String
+}

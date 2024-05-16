@@ -29,6 +29,8 @@ const ImportStatusList = ({
     },
   })
 
+  
+
   const { translatedBy, createdAt, estimatedTime, locale, error, progress } =
     data?.translationUploadRequestInfo ?? {}
 

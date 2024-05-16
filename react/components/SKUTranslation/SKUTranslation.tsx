@@ -7,10 +7,13 @@ import getSKUQuery from './graphql/getSKU.gql'
 import ErrorHandler from '../ErrorHandler'
 import SKUForm from './SKUForm'
 import SKUExportModal from './SKUExportModal'
+import SKUImportModal from './SKUImportModal'
 
 const SKUTranslation = ({
   isExportOpen = false,
   handleOpenExport = () => {},
+  isImportOpen = false,
+  handleOpenImport = () => {},
 }: ComponentProps) => {
   const {
     entryInfo,
@@ -76,6 +79,10 @@ const SKUTranslation = ({
       <SKUExportModal
         isExportOpen={isExportOpen}
         setIsExportOpen={handleOpenExport}
+      />
+      <SKUImportModal
+        isImportOpen={isImportOpen}
+        handleOpenImport={handleOpenImport}
       />
     </>
   )

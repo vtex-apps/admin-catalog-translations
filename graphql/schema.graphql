@@ -7,6 +7,7 @@ enum DownloadBucket {
 enum UploadBucket {
   brand_translation
   product_translation
+  sku_translation
   collection_transl
   field_translation
   category_transl
@@ -63,6 +64,10 @@ type Query {
   """
   productTranslationsUploadRequests: [String]
   """
+  Returns a list of IDs for requests made to upload sku translations.
+  """
+  skuTranslationsUploadRequests: [String]
+  """
   Returns a list of IDs for requests made to upload collection translations.
   """
   collectionTranslationsUploadRequests: [String]
@@ -113,6 +118,7 @@ type Query {
 
 type Mutation {
   uploadProductTranslations(products: Upload!, locale: String!): String
+  uploadSkuTranslations(skus: Upload!, locale: String!): String
   uploadCollectionTranslations(
     collections: Upload!
     locale: String!

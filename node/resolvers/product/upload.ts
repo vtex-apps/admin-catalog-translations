@@ -18,6 +18,7 @@ const uploadProductTranslations = async (
     path: PRODUCT_TRANSLATION_UPLOAD,
     translateEntry: ctx?.clients?.catalogGQL?.translateProduct,
   }
+
   return uploadTranslations(params, ctx)
 }
 

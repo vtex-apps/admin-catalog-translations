@@ -9,6 +9,7 @@ const SKUTranslationWrapped: FC = () => {
     <CatalogTranslationWrapper
       titleComponent={<FormattedMessage id="admin/catalog-translation.sku.header" />}
       hasExport
+      hasImport
     >
       <SKUTranslation />
     </CatalogTranslationWrapper>
