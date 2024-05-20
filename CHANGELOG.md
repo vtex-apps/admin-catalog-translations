@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-### Added
-
-- Feature to import sku translations
-
 ## [2.1.4] - 2024-03-20
 
 ## [2.1.3] - 2024-03-20
