@@ -157,6 +157,7 @@ const ImportEntriesModal = ({
     // eslint-disable-next-line vtex/prefer-early-return
     if (request) {
       updateQuery((prevResult) => {
+
         return {
           [entryQueryName]: [request, ...(prevResult[entryQueryName] ?? [])],
         }

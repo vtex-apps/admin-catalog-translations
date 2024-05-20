@@ -16,3 +16,8 @@ interface SKUTranslationRequest {
   completedAt?: Date
   estimatedTime: number
 }
+
+interface SkuTranslationInput {
+  id: string
+  name?: string
+}

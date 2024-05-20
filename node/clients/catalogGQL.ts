@@ -8,6 +8,7 @@ import {
   GET_PRODUCT_TRANSLATION_QUERY,
   GET_SKU_TRANSLATION_QUERY,
   TRANSLATE_PRODUCT,
+  TRANSLATE_SKU,
   BRAND_QUERY,
   TRANSLATE_BRAND,
   GET_FIELD_TRANSLATION_QUERY,
@@ -144,10 +145,23 @@ export class CatalogGQL extends AppGraphQLClient {
 
   public translateProduct = <T>(params: TranslateEntry<T>) => {
     const { entry: product, locale } = params
+
     return this.graphql.query({
       query: TRANSLATE_PRODUCT,
       variables: {
         product,
+        locale,
+      },
+    })
+  }
+
+  public translateSku = <T>(params: TranslateEntry<T>) => {
+    const { entry: sku, locale } = params
+    
+    return this.graphql.query({
+      query: TRANSLATE_SKU,
+      variables: {
+        sku,
         locale,
       },
     })

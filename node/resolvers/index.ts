@@ -13,7 +13,9 @@ import {
   queries as productQueries,
   mutations as productMutations,
 } from './product'
-import { SKU, queries as skuQueries } from './sku'
+import { SKU,
+  queries as skuQueries,
+  mutations as skuMutations, } from './sku'
 import {
   Brand,
   queries as brandQueries,
@@ -47,6 +49,7 @@ export const resolvers = {
 
 export const mutations = {
   ...productMutations,
+  ...skuMutations,
   ...brandMutations,
   ...categoryMutations,
   ...collectionMutations,

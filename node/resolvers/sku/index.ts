@@ -8,6 +8,11 @@ import {
   pacer,
 } from '../../utils'
 
+import {
+  mutations as uploadMutations,
+  queries as uploadQueries,
+} from './upload'
+
 const CALLS_PER_MINUTE = 350
 
 export const SKU = {
@@ -83,6 +88,7 @@ const skuTranslations = async (
   args: { locale: string; categoryId: string },
   ctx: Context
 ) => {
+
   const {
     clients: { catalog, catalogGQL, vbase, licenseManager },
     vtex: { adminUserAuthToken, requestId, logger },
@@ -169,8 +175,13 @@ const downloadSKUTranslation = async (
   return translations
 }
 
+export const mutations = {
+  ...uploadMutations,
+}
+
 export const queries = {
   skuTranslations,
   skuTranslationRequests,
   downloadSKUTranslation,
+  ...uploadQueries,
 }

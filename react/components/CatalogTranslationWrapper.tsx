@@ -37,6 +37,7 @@ const CatalogTranslationWrapper: FC<CatalogTranslationWrapperProps> = ({
           {hasExport ? <ExportButton openExport={handleOpenExport} /> : null}
           {hasImport ? <ImportButton openImport={handleOpenImport} /> : null}
         </div>
+        
         {React.Children.map(children, (child) =>
           React.isValidElement(child)
             ? React.cloneElement(child, {

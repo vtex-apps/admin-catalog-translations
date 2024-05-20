@@ -26,6 +26,7 @@ type UploadBucket =
   | 'collection_transl'
   | 'field_translation'
   | 'category_transl'
+  | 'sku_translation'
 
 type DownloadBucket =
   | 'product_translation'
