@@ -74,6 +74,18 @@ export const BRAND_QUERY = `
   }
 `
 
+export const GET_BRAND_TRANSLATION_QUERY = `
+  query getTranslation($id:ID!) {
+    brand(id: $id) {
+      id
+      name
+      text
+      siteTitle
+      active
+    }
+  }
+`
+
 export const TRANSLATE_BRAND = `mutation translateBrand($brand:BrandInputTranslation!, $locale: Locale!) {
   translateBrand(brand: $brand, locale: $locale)
 }`

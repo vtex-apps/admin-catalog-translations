@@ -10,6 +10,7 @@ import {
   TRANSLATE_PRODUCT,
   TRANSLATE_SKU,
   BRAND_QUERY,
+  GET_BRAND_TRANSLATION_QUERY,
   TRANSLATE_BRAND,
   GET_FIELD_TRANSLATION_QUERY,
   TRANSLATE_FIELD,
@@ -157,7 +158,7 @@ export class CatalogGQL extends AppGraphQLClient {
 
   public translateSku = <T>(params: TranslateEntry<T>) => {
     const { entry: sku, locale } = params
-    
+
     return this.graphql.query({
       query: TRANSLATE_SKU,
       variables: {
@@ -224,10 +225,30 @@ export class CatalogGQL extends AppGraphQLClient {
         ]
       }
 
-      return translations
+      const flattenResponse = translations.reduce((acc: Brand[], curr) => {
+        return [...acc, curr.data.brand]
+      }, [] as Brand[])
+
+      return flattenResponse
     } catch (error) {
       return statusToError(error)
     }
+  }
+
+  public getBrandTranslation = (id: string, locale: string) => {
+    return this.graphql.query<BrandTranslationResponse, { id: string }>(
+      {
+        query: GET_BRAND_TRANSLATION_QUERY,
+        variables: {
+          id,
+        },
+      },
+      {
+        headers: {
+          'x-vtex-locale': `${locale}`,
+        },
+      }
+    )
   }
 
   public translateBrand = <T>(params: TranslateEntry<T>) => {
