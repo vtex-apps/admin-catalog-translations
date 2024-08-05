@@ -7,7 +7,6 @@ import {
   calculateExportProcessTime,
   pacer,
 } from '../../utils'
-
 import {
   mutations as uploadMutations,
   queries as uploadQueries,
@@ -88,7 +87,6 @@ const skuTranslations = async (
   args: { locale: string; categoryId: string },
   ctx: Context
 ) => {
-
   const {
     clients: { catalog, catalogGQL, vbase, licenseManager },
     vtex: { adminUserAuthToken, requestId, logger },
