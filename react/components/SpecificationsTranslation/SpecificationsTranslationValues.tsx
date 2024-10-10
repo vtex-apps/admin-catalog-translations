@@ -31,13 +31,23 @@ const SpecificationsTranslationValues = ({
     errorMessage,
   } = useCatalogQuery<FieldsData, { fieldId: number }>(getSpecificationById)
   const [specificationValues, setSpecificationValues] = useState<Specification[]>()
-  const { selectedLocale } = useLocaleSelector()
+  const { selectedLocale, xVtexTenant } = useLocaleSelector()
 
-  const [getData, { loading, data }] = useLazyQuery(GetSpecificationValues)
-  console.log("dataaaaaa", data)
+  const [getData, { loading, data }] = useLazyQuery(GetSpecificationValues,{
+    context: {
+      headers: {
+        'x-vtex-tenant': `${xVtexTenant}`,
+        'x-vtex-locale': `${selectedLocale}`,
+      },
+    },
+    fetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+    onError: (e) => {
+      console.log("Error context")
+    },
+  })
 
   const handleSubmitSpecification = (e: SyntheticEvent) => {
-    console.log("entry", entryId)
     e.preventDefault()
     if (!entryId) {
       return
