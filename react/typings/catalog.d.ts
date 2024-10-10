@@ -60,6 +60,15 @@ interface Field extends FieldInputTranslation {
 interface FieldInputTranslation {
   name: string
 }
+interface SpecificationValuesTranslation {
+  fieldId: string
+  fieldValuesNames: SpecificationValuesUnit[]
+}
+
+interface SpecificationValuesUnit {
+  id: string
+  name: string
+}
 interface CategoriesNameAndId {
   getCategoriesName: Array<{ id: string; name: string }>
 }
