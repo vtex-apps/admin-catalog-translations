@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react'
+import React, { SyntheticEvent } from 'react'
 import { InputSearch, PageBlock, Spinner, PageHeader } from 'vtex.styleguide'
 import { useLazyQuery } from 'react-apollo'
 
@@ -30,7 +30,6 @@ const SpecificationsTranslationValues = ({
     handleCleanSearch,
     errorMessage,
   } = useCatalogQuery<FieldsData, { fieldId: number }>(getSpecificationById)
-  const [specificationValues, setSpecificationValues] = useState<Specification[]>()
   const { selectedLocale, xVtexTenant } = useLocaleSelector()
 
   const [getData, { loading, data }] = useLazyQuery(GetSpecificationValues,{
@@ -60,14 +59,6 @@ const SpecificationsTranslationValues = ({
     })
   }
 
-  useEffect(() => {
-    if (!data) {
-      return
-    }
-    setSpecificationValues(data.fieldValues)
-    
-  }, [data])
-
   const { fieldId, ...specificationInfo } = entryInfo?.field || ({} as Field)
 
   return (
@@ -84,7 +75,7 @@ const SpecificationsTranslationValues = ({
             onClear={handleCleanSearch}
           />
         </div>
-        {specificationValues ? (
+        {data?.fieldValues && !loading ? (
           <PageBlock
           variation="full"
           title={`Specification info- ${selectedLocale}`}
@@ -101,7 +92,7 @@ const SpecificationsTranslationValues = ({
           ) : (
               <SpecificationsValuesForm
                 specificationInfo={specificationInfo}
-                specificationValues={specificationValues}
+                specificationValues={data?.fieldValues}
                 specificationId={entryId}
               />
             )}
