@@ -1,0 +1,8 @@
+query GetSpecificationValues($fieldId: ID!) {
+  fieldValues(fieldId: $fieldId) @context(provider: "vtex.catalog-graphql") {
+    fieldId
+    fieldValueId
+    isActive
+    value
+  }
+}
