@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Add
+- Translations to specifications values feature
+
 ## [2.3.1] - 2024-08-05
 
 ### Fixed
