@@ -3,7 +3,7 @@ import { Input } from 'vtex.styleguide'
 import { useMutation } from 'react-apollo'
 
 import { useLocaleSelector } from '../LocaleSelector'
-import translateSpecificationMutation from './graphql/translateSpecification.gql'
+import translateFieldValues from './graphql/translateSpecification.gql'
 import { useAlert } from '../../providers/AlertProvider'
 import useFormTranslation from '../../hooks/useFormTranslation'
 import ActionButtons from '../ActionButtons'
@@ -35,7 +35,7 @@ const SpecificationsForm: FC<SpecificationsFormProps> = ({
   const [translateSpecification, { loading }] = useMutation<
     { translateField: boolean },
     { args: Field; locale: string }
-  >(translateSpecificationMutation)
+  >(translateFieldValues)
 
   const { openAlert } = useAlert()
   const handleSubmit = async (e: SyntheticEvent) => {
