@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- Increased TTL to 60 minutes
+
 ## [2.3.2] - 2024-10-28
 
 ### Add
