@@ -45,7 +45,7 @@ export const filterLocales = (
   const supportedLocales: string[] = []
 
   for (const binding of storeFrontBindings) {
-    if (!uniqueBindings[binding.defaultLocale]) {
+    if (!uniqueBindings[binding.id]) {
       filteredBindings.push(binding)
       supportedLocales.push(...binding.supportedLocales)
       uniqueBindings[binding.defaultLocale] = true
