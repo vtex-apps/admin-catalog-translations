@@ -2,7 +2,7 @@
 
 ##  ⚠️ Maintenance ⚠️
 *Starting June 1st 2023, this application will no longer be maintained by VTEX.*
-
+...
 ---
 
 The catalog translation app provides a way to read and update SEO relevant information for all bindings associated to an account for the following catalog entries:
