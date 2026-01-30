@@ -1,9 +1,8 @@
-# Admin Catalog Translation 
+# Admin Catalog Translation
 
-##  ⚠️ Maintenance ⚠️
-*Starting June 1st 2023, this application will no longer be maintained by VTEX.*
+[<i class="fa-brands fa-github"></i> Source code](https://github.com/vtex-apps/admin-catalog-translations)
 
----
+> ⚠️ This app is no longer maintained by VTEX. This means support and maintenance are no longer provided.
 
 The catalog translation app provides a way to read and update SEO relevant information for all bindings associated to an account for the following catalog entries:
 
