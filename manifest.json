@@ -1,7 +1,7 @@
 {
   "name": "admin-catalog-translation",
   "vendor": "vtex",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "title": "Catalog Translation",
   "description": "",
   "mustUpdateAt": "2022-08-28",
