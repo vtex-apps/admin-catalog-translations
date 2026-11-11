@@ -25,17 +25,21 @@ import {
 
 const CATALOG_GRAPHQL_APP = 'vtex.catalog-graphql@1.x'
 
+const requireUserToken = (ctx: IOContext): string => {
+  if (!ctx.adminUserAuthToken) {
+    throw new AuthenticationError('Missing user token (adminUserAuthToken)')
+  }
+
+  return ctx.adminUserAuthToken
+}
+
 export class CatalogGQL extends AppGraphQLClient {
   constructor(ctx: IOContext, options?: InstanceOptions) {
-    if (!ctx.adminUserAuthToken) {
-      throw new AuthenticationError('Missing user token (adminUserAuthToken)')
-    }
-
     super(CATALOG_GRAPHQL_APP, ctx, {
       ...options,
       headers: {
         ...options?.headers,
-        VtexIdclientAutCookie: ctx.adminUserAuthToken,
+        VtexIdclientAutCookie: requireUserToken(ctx),
       },
     })
   }
