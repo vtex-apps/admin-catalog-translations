@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.4.2] - 2026-11-11
+
+### Fixed
+
+- Send the user's token, not the app token, to `vtex.catalog-graphql`, restoring translation import and export with the authorization enforced since `vtex.catalog-graphql@1.108.0`
+- Log translation request failures, and record the HTTP status and a short reason in the request record
+
 ## [2.4.1] - 2026-02-04
 
 ### Fixed
