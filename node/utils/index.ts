@@ -3,6 +3,8 @@ import { ReadStream } from 'fs'
 import {
   AuthenticationError,
   ForbiddenError,
+  Logger,
+  ResolverError,
   UserInputError,
   VBase,
 } from '@vtex/api'
@@ -54,6 +56,65 @@ export const statusToError = (e: AxiosError) => {
     default:
       throw new TypeError(e.message)
   }
+}
+
+interface TranslationFailure {
+  status: number | null
+  reason: string
+}
+
+const reasonByStatus: Record<number, string> = {
+  400: 'BAD_REQUEST',
+  401: 'UNAUTHENTICATED',
+  403: 'FORBIDDEN',
+  404: 'NOT_FOUND',
+  429: 'RATE_LIMITED',
+}
+
+const statusOf = (error: unknown): number | null => {
+  if (error instanceof ResolverError) {
+    return error.status
+  }
+
+  if (typeof error === 'object' && error !== null && 'response' in error) {
+    const { response } = error as { response?: { status?: unknown } }
+
+    return typeof response?.status === 'number' ? response.status : null
+  }
+
+  return null
+}
+
+const failureOf = (error: unknown): TranslationFailure => {
+  const status = statusOf(error)
+
+  if (status === null) {
+    return { status: null, reason: 'UNKNOWN' }
+  }
+
+  return {
+    status,
+    reason: reasonByStatus[status] ?? (status >= 500 ? 'SERVER' : 'ERROR'),
+  }
+}
+
+const failedRecord = <T extends object>(
+  logger: Pick<Logger, 'error'> | undefined,
+  bucket: UploadBucket,
+  requestId: string,
+  error: unknown,
+  record: T
+): T & TranslationFailure & { error: true } => {
+  const failure = failureOf(error)
+
+  logger?.error({
+    message: 'Translation request failed',
+    bucket,
+    requestId,
+    ...failure,
+  })
+
+  return { ...record, error: true, ...failure }
 }
 
 export const MAX_PRODUCTS_PER_CATEGORY = 50
@@ -117,7 +178,7 @@ export const parseStreamToJSON = <T>(stream: ReadStream): Promise<T[]> => {
 
 export const uploadEntriesAsync = async <T>(
   { entries, requestId, locale, bucket, translateEntry }: UploadEntriesAsync<T>,
-  { vbase }: { vbase: VBase }
+  { vbase, logger }: { vbase: VBase; logger?: Pick<Logger, 'error'> }
 ) => {
   const translationRequest = await vbase.getJSON<UploadRequest>(
     bucket,
@@ -158,15 +219,15 @@ export const uploadEntriesAsync = async <T>(
       progress: 100,
     })
   } catch (error) {
-    const translationRequestUpdated = await vbase.getJSON<UploadRequest>(
+    const translationRequestUpdated =
+      (await vbase.getJSON<UploadRequest>(bucket, requestId, true)) ??
+      translationRequest
+
+    await vbase.saveJSON<UploadRequest>(
       bucket,
       requestId,
-      true
+      failedRecord(logger, bucket, requestId, error, translationRequestUpdated)
     )
-    await vbase.saveJSON<UploadRequest>(bucket, requestId, {
-      ...translationRequestUpdated,
-      error: true,
-    })
   }
 }
 
@@ -176,7 +237,14 @@ const saveTranslationsEntriesToVBase = async <T, X>(
     params,
     getEntryTranslation,
   }: InterfaceTranslationsEntriesToVBase<T>,
-  { vbase }: { catalogGQLClient: CatalogGQL; vbase: VBase }
+  {
+    vbase,
+    logger,
+  }: {
+    catalogGQLClient: CatalogGQL
+    vbase: VBase
+    logger: Pick<Logger, 'error'>
+  }
 ): Promise<void> => {
   const { requestId, bucket, locale } = params
   const translationRequest = await vbase.getJSON<TranslationRequest<X>>(
@@ -210,12 +278,16 @@ const saveTranslationsEntriesToVBase = async <T, X>(
       requestId,
       updateTranslation
     )
-  } catch {
-    const addError = {
-      ...translationRequest,
-      error: true,
-    }
-    await vbase.saveJSON<TranslationRequest<X>>(bucket, requestId, addError)
+  } catch (error) {
+    const translationRequestUpdated =
+      (await vbase.getJSON<TranslationRequest<X>>(bucket, requestId, true)) ??
+      translationRequest
+
+    await vbase.saveJSON<TranslationRequest<X>>(
+      bucket,
+      requestId,
+      failedRecord(logger, bucket, requestId, error, translationRequestUpdated)
+    )
   }
 }
 
@@ -225,7 +297,7 @@ export const uploadTranslations = async <T>(
 ) => {
   const {
     clients: { licenseManager, vbase },
-    vtex: { adminUserAuthToken, requestId },
+    vtex: { adminUserAuthToken, requestId, logger },
   } = ctx
 
   const { createReadStream } = await entries
@@ -267,7 +339,7 @@ export const uploadTranslations = async <T>(
       bucket,
       translateEntry,
     },
-    { vbase }
+    { vbase, logger }
   )
 
   return requestId
@@ -287,7 +359,7 @@ export const entryTranslations = async <T, X>(
 ) => {
   const {
     clients: { catalogGQL, vbase, licenseManager },
-    vtex: { adminUserAuthToken },
+    vtex: { adminUserAuthToken, logger },
   } = ctx
 
   const {
@@ -332,6 +404,7 @@ export const entryTranslations = async <T, X>(
     {
       catalogGQLClient: catalogGQL,
       vbase,
+      logger,
     }
   )
 
