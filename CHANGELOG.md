@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [2.4.2] - 2026-11-11
 
+## [2.4.2] - 2026-11-11
+
 ### Fixed
 
 - Send the user's token, not the app token, to `vtex.catalog-graphql`, restoring translation import and export with the authorization enforced since `vtex.catalog-graphql@1.108.0`
@@ -125,3 +127,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Export all `Categories` translations in batch
 - Export `Products` for a given category in batch - Limit of 1.600 products
+
+
+[Unreleased]: https://github.com/vtex-apps/admin-catalog-translations/compare/v2.4.2...HEAD
+[2.4.2]: https://github.com/vtex-apps/admin-catalog-translations/compare/v2.4.1...v2.4.2
