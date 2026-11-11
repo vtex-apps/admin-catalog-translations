@@ -25,6 +25,7 @@ The catalog translation app provides a way to read and update SEO relevant infor
 
 This app uses the `catalog translation` queries on `vtex.catalog-graphql` instead of the `messages` app. This is because we are targeting SEO-relevant information for Google.
 
+
 Every entry type has its own page to handle translations. They automatically display a list of all languages (default and supported) for all `storefront` bindings configured for the store.
 In this binding list, the first entry is always `X-Vtex-Tenant`, or the default language. For this option, the details cannot be translated. To modify these values, make the changes in your store's catalog.  
 For all the others, it's possible to edit the content. 
