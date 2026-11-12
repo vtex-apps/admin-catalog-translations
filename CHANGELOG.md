@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.4.5] - 2026-11-12
+
 ## [2.4.4] - 2026-11-12
 
 ## [2.4.3] - 2026-11-11
@@ -122,3 +124,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Export all `Categories` translations in batch
 - Export `Products` for a given category in batch - Limit of 1.600 products
+
+
+[Unreleased]: https://github.com/vtex-apps/admin-catalog-translations/compare/v2.4.5...HEAD
+[2.4.5]: https://github.com/vtex-apps/admin-catalog-translations/compare/v2.4.4...v2.4.5
