@@ -3,8 +3,6 @@
 [<i class="fa-brands fa-github"></i> Source code](https://github.com/vtex-apps/admin-catalog-translations)
 
 > ⚠️ This app is no longer maintained by VTEX. This means support and maintenance are no longer provided.
->
-> Version `2.4.2` is compatible with the user authorization enforced by `vtex.catalog-graphql@1.108.0` and later. Versions up to `2.4.1` send the app token instead of the user's token and fail with `401`/`403` on import and export against those versions.
 
 The catalog translation app provides a way to read and update SEO relevant information for all bindings associated with an account for the following catalog entries:
 
@@ -42,25 +40,6 @@ Using [VTEX IO CLI](https://vtex.io/docs/recipes/development/vtex-io-cli-install
 $ vtex install vtex.admin-catalog-translation
 ```
 
----
-
-## Permissions
-
-The app calls `vtex.catalog-graphql` with the signed-in user's token, so the user's role must hold the corresponding Catalog (product `107`) License Manager resources. An appKey, a generic Admin role, or the legacy product `2` resources are not enough.
-
-| Operation | Resource |
-| --- | --- |
-| Translate product, translate SKU | `EditProduct` |
-| Translate category, field, field values, group | `EditCategory` |
-| Translate brand | `EditBrand` |
-| Export products | `ViewProduct` |
-| Export categories | `ViewCategory` |
-| Export brands | `ViewBrand` |
-| Export collections | `ViewCollection` |
-
-Product `107` is recent, so a role that predates it may hold only the legacy product `2` resources of the same names; add the product `107` ones to the role.
-
-A user without these resources gets a `403`, and the translation request is marked as failed with the HTTP status and a short reason, visible in the request record.
 
 ---
 
